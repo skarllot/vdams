@@ -17,7 +17,7 @@
     <DelaySign>false</DelaySign>
     <OutputType>WinExe</OutputType>
     <RootNamespace>cftv_bkp_prep</RootNamespace>
-    <StartupObject>cftv_bkp_prep.Service</StartupObject>
+    <StartupObject>cftv_bkp_prep.MainClass</StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
@@ -68,28 +68,18 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
-    <Reference Include="System.Configuration.Install">
-      <Name>System.Configuration.Install</Name>
-    </Reference>
-    <Reference Include="System.Data">
-      <Name>System.Data</Name>
-    </Reference>
-    <Reference Include="System.Management">
-      <Name>System.Management</Name>
-    </Reference>
     <Reference Include="System.ServiceProcess">
       <Name>System.ServiceProcess</Name>
-    </Reference>
-    <Reference Include="System.Xml">
-      <Name>System.XML</Name>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DirectoryAssorter.cs" />
     <Compile Include="EventId.cs" />
     <Compile Include="IO\ConfigReader.cs" />
+    <Compile Include="IO\ConfigPathItem.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Service.cs">
       <SubType>Component</SubType>

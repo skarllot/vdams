@@ -30,7 +30,6 @@ namespace cftv_bkp_prep
 
         SklLib.Diagnostics.Logger eventLog = MainClass.Logger;
         System.ComponentModel.Container components = null;
-        int refresh = DEFAULT_REFRESH;
         Thread svcThread;
         Thread reloadThread;
         ManualResetEvent stopEvent;
@@ -155,87 +154,62 @@ namespace cftv_bkp_prep
             string cfgpath = (string)obj;
 
             IO.ConfigReader config = new IO.ConfigReader(cfgpath);
+            if (!ValidateConfiguration(config)) {
+                eventLog.WriteEntry("Initial configuration file loading failed",
+                    EventLogEntryType.Error, (int)EventId.ConfigFileLoadError);
+                return;
+            }
 
-            if (config.ScheduleTime > (new TimeSpan(23, 59, 59)))
-                refresh = config.Refresh;
+            DirectoryAssorter dirAssort = new DirectoryAssorter();
 
-            DateTime before;
-            TimeSpan elapsed;
             while (!stopEvent.WaitOne(0)) {
-                before = DateTime.Now;
-                foreach (InterchangerInfo item in infoArr) {
-                    exchanger.Exchange(item);
+                for (int i = 0; i < config.PathCount; i++) {
+                    IO.ConfigPathItem item = config.GetPath(i);
+                    dirAssort.DoWork(item.FullSourcePath, item.FullTargetPath);
 
                     if (stopEvent.WaitOne(0))
                         break;
                 }
 
                 if (reloadEvent.WaitOne(0)) {
-                    InterchangerInfo[] infoArrNew = LoadConfiguration(config, credReader);
-                    if (infoArrNew == null) {
+                    if (!ValidateConfiguration(config)) {
                         eventLog.WriteEntry("Configuration file was changed to invalid state",
-                            EventLogEntryType.Error, EventId.ConfigFileReloadInvalid);
+                            EventLogEntryType.Error, (int)EventId.ConfigFileReloadInvalid);
                     }
                     else {
-                        infoArr = infoArrNew;
-                        if (config.Refresh != -1)
-                            refresh = config.Refresh;
-
                         eventLog.WriteEntry("Configuration file reloaded",
-                            EventLogEntryType.Information, EventId.ConfigFileReloaded);
+                            EventLogEntryType.Information, (int)EventId.ConfigFileReloaded);
                     }
                     reloadEvent.Reset();
                 }
 
-                elapsed = DateTime.Now - before;
-                int elapsedMs = (int)Math.Ceiling(elapsed.TotalMilliseconds);
-                int waitMs = refresh * MINUTE_TO_MILLISECONDS - elapsedMs;
-                if (waitMs < 0) {
-                    waitMs = 0;
-                    eventLog.WriteEntry(string.Format(
-                        "File exchange took {0} and refresh time is set to {1}",
-                        elapsed, new TimeSpan(0, refresh, 0)),
-                        EventLogEntryType.Warning, EventId.ServiceInsufficientWaitTime);
-                }
-
-                if (stopEvent.WaitOne(waitMs))
+                if (stopEvent.WaitOne(DEFAULT_REFRESH))
                     break;
             }
         }
 
-        private InterchangerInfo[] LoadConfiguration(IO.ConfigReader config, IO.CredentialsReader credReader)
+        private bool ValidateConfiguration(IO.ConfigReader config)
         {
-            if (!ValidateConfiguration(config.FileName)) {
+            if (!ValidateConfigFile(config.FileName)) {
                 eventLog.WriteEntry(string.Format("Error loading configuration file {0}", config.FileName),
-                    EventLogEntryType.Error, EventId.ConfigFileLoadError);
-                return null;
-            }
-            if (!ValidateConfiguration(credReader.FileName)) {
-                eventLog.WriteEntry(string.Format("Error loading configuration file {0}", credReader.FileName),
-                    EventLogEntryType.Error, EventId.ConfigFileLoadError);
-                return null;
+                    EventLogEntryType.Error, (int)EventId.ConfigFileLoadError);
+                return false;
             }
             config.LoadFile();
-            credReader.LoadFile();
 
-            List<InterchangerInfo> tmp = new List<InterchangerInfo>();
-            foreach (IO.ConfigReaderItem item in config) {
-                InterchangerInfo? info;
-                try { info = InterchangerInfo.Parse(item, credReader); }
-                catch (Exception e) {
-                    eventLog.WriteEntry(string.Format("Error parsing {0}\nMessage: {1}",
-                        item.Section, e.Message), EventLogEntryType.Error, EventId.ConfigFileParseError);
-                    info = null;
-                }
-
-                if (info.HasValue)
-                    tmp.Add(info.Value);
+            if (config.ScheduleTime > (new TimeSpan(23, 59, 59))) {
+                eventLog.WriteEntry("Invalid scheduled time, must be a valid time of day",
+                    EventLogEntryType.Error, (int)EventId.ConfigFileInvalidSchedule);
+                return false;
             }
 
-            if (tmp.Count == 0)
-                return null;
+            if (config.PathCount < 1) {
+                eventLog.WriteEntry("At least one path must be defined",
+                    EventLogEntryType.Error, (int)EventId.ConfigFileZeroPath);
+                return false;
+            }
 
-            return tmp.ToArray();
+            return true;
         }
 
         internal void StartDebug(string[] args)
@@ -243,7 +217,7 @@ namespace cftv_bkp_prep
             this.OnStart(args);
         }
 
-        private bool ValidateConfiguration(string file)
+        private bool ValidateConfigFile(string file)
         {
             try { SklLib.IO.ConfigFileReader reader = new SklLib.IO.ConfigFileReader(file); }
             catch (FileLoadException) { return false; }

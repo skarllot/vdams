@@ -18,6 +18,7 @@
 
 using SklLib.IO;
 using System;
+using System.Collections.ObjectModel;
 
 namespace cftv_bkp_prep.IO
 {
@@ -25,6 +26,7 @@ namespace cftv_bkp_prep.IO
     {
         const string CFG_MAIN = "MAIN";
         int idxMain;
+        ConfigPathItem[] paths;
 
         public ConfigReader(string path)
         {
@@ -32,14 +34,39 @@ namespace cftv_bkp_prep.IO
         }
 
         public TimeSpan ScheduleTime { get { return GetTimeSpan(CFG_MAIN, "ScheduleTime"); } }
-        public string[] SourcePath { get { return GetCsvString(CFG_MAIN, "SourcePath"); } }
-        public string[] TargetPath { get { return GetCsvString(CFG_MAIN, "TargetPath"); } }
         public int Depth { get { return GetInteger(CFG_MAIN, "Depth"); } }
+        public int PathCount { get { return paths.Length; } }
+
+        public ConfigPathItem GetPath(int index)
+        {
+            if (index < 0)
+                throw new ArgumentOutOfRangeException("Parameter index cannot be less than zero.");
+            if (index >= paths.Length)
+                throw new ArgumentOutOfRangeException("Parameter index is out of array bounds.");
+
+            return paths[index];
+        }
+
+        private ConfigPathItem GetNewPathItem(int index)
+        {
+            if (index >= idxMain)
+                index++;
+            return new ConfigPathItem(cfgreader, sections[index]);
+        }
 
         new public void LoadFile()
         {
             base.LoadFile();
             idxMain = Array.IndexOf<string>(sections, CFG_MAIN);
+
+            if (idxMain == -1)
+                paths = new ConfigPathItem[sections.Length];
+            else
+                paths = new ConfigPathItem[sections.Length - 1];
+
+            for (int i = 0; i < paths.Length; i++) {
+                paths[i] = GetNewPathItem(i);
+            }
         }
 
         public override bool IsValid()

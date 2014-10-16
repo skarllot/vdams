@@ -1,4 +1,4 @@
-﻿// EventId.cs
+﻿// DirectoryAssorter.cs
 //
 // Copyright (C) 2014 Fabrício Godoy
 //
@@ -17,25 +17,16 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace cftv_bkp_prep
 {
-    enum EventId : int
+    class DirectoryAssorter
     {
-        // Service related codes (0-9)
-        //ServiceStateChanged = 0,
-        //ServiceInsufficientWaitTime = 1,
-        //EventLogCreated = 2,
-
-        // Configuration file related codes (10-29)
-        //ConfigFileNotFound = 10,
-        ConfigFileLoadError = 11,
-        ConfigFileInvalidSchedule = 12,
-        ConfigFileZeroPath = 13,
-        ConfigFileReloadInvalid = 14,
-        ConfigFileReloaded = 15,
-
-        // Unhandled error code (65535)
-        //UnexpectedError = UInt16.MaxValue
+        public void DoWork(string sourcePath, string targetPath)
+        {
+        }
     }
 }
