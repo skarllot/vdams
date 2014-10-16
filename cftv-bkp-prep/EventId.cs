@@ -30,6 +30,10 @@ namespace cftv_bkp_prep
         public static readonly EventId ConfigFileInvalidPath = new EventId(16);
         public static readonly EventId ConfigFilePathPermissionError = new EventId(17);
 
+        // Assort operation related codes (30-49)
+        public static readonly EventId AssortPathValidationError = new EventId(30);
+        public static readonly EventId AssortFoundFiles = new EventId(31);
+
         public EventId(ushort value) : base(value) { }
     }
 }

@@ -167,8 +167,7 @@ namespace cftv_bkp_prep
                 if (DateTime.Now.ToString(DEFAULT_TIME_FORMAT) ==
                     config.ScheduleTime.ToString(DEFAULT_TIME_FORMAT)) {
                     for (int i = 0; i < config.PathCount; i++) {
-                        IO.ConfigPathItem item = config.GetPath(i);
-                        dirAssort.DoWork(item.SourceFullPath, item.TargetFullPath);
+                        dirAssort.DoWork(config.GetPath(i), config.Depth);
 
                         if (stopEvent.WaitOne(0))
                             break;

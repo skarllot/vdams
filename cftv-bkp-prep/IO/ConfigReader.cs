@@ -71,7 +71,15 @@ namespace cftv_bkp_prep.IO
 
         public override bool IsValid()
         {
-            return (idxMain == 0);
+            if (idxMain < 0)
+                return false;
+
+            foreach (ConfigPathItem item in paths) {
+                if (!item.IsValid())
+                    return false;
+            }
+
+            return true;
         }
     }
 }

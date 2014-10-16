@@ -26,12 +26,12 @@ namespace cftv_bkp_prep
         public const string PROGRAM_NAME = "cftv-bkp-prep";
         // Latest release: 
         // Major.Minor.Maintenance.Build
-        public const string PROGRAM_VERSION = "0.1.0.1";
+        public const string PROGRAM_VERSION = "0.1.0.5";
         public const string PROGRAM_VERSION_SIMPLE = "0.1";
         public const string PROGRAM_TITLE = PROGRAM_NAME + " " + PROGRAM_VERSION_SIMPLE;
 
-        const string DEFAULT_LOG = MainClass.PROGRAM_NAME;
-        const string DEFAULT_SOURCE = "CftvBkpPrep " + MainClass.PROGRAM_VERSION_SIMPLE;
+        const string LOG_NAME = MainClass.PROGRAM_NAME;
+        const string LOG_SOURCE = "CftvBkpPrep " + MainClass.PROGRAM_VERSION_SIMPLE;
         private static SklLib.Diagnostics.Logger log;
 
         public static readonly bool DEBUG = System.Diagnostics.Debugger.IsAttached;
@@ -40,7 +40,7 @@ namespace cftv_bkp_prep
 
         public static void Main(string[] args)
         {
-            log = new SklLib.Diagnostics.Logger(DEFAULT_SOURCE, DEFAULT_LOG);
+            log = new SklLib.Diagnostics.Logger(LOG_SOURCE, LOG_NAME);
             Service svc = new Service();
 
             if (!DEBUG) {

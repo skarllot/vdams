@@ -18,15 +18,51 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 
 namespace cftv_bkp_prep
 {
     class DirectoryAssorter
     {
-        public void DoWork(string sourcePath, string targetPath)
+        public bool DoWork(IO.ConfigPathItem cfgPath, int depth)
         {
+            if (!cfgPath.IsValid()) {
+                MainClass.Logger.WriteEntry(string.Format("The path \"{0}\" becomes invalid", cfgPath.SectionName),
+                            System.Diagnostics.EventLogEntryType.Error, EventId.AssortPathValidationError);
+                return false;
+            }
+
+            DirectoryInfo dirSource = new DirectoryInfo(cfgPath.SourceFullPath);
+            FileSystemInfo[] nodesSource = dirSource.GetFileSystemInfos("*", SearchOption.AllDirectories);
+            int counter = 1;
+
+            while (counter <= depth) {
+                DateTime dt = DateTime.Today.AddDays(-1 * counter);
+                List<FileSystemInfo> pickedList = new List<FileSystemInfo>();
+                long totalBytes = 0;
+
+                foreach (FileSystemInfo item in nodesSource) {
+                    if ((item.Attributes & FileAttributes.Directory) != 0)
+                        continue;
+
+                    if (item.LastWriteTime.Date == dt.Date) {
+                        pickedList.Add(item);
+                        totalBytes += new FileInfo(item.FullName).Length;
+                    }
+                }
+
+                MainClass.Logger.WriteEntry(string.Format("[{0}] Found {1} files from date {2} and size {3}",
+                    cfgPath.SectionName, pickedList.Count, dt.ToShortDateString(), new SklLib.DataSize(totalBytes).ToString("N2")),
+                    System.Diagnostics.EventLogEntryType.Information, EventId.AssortFoundFiles);
+
+                counter++;
+            }
+
+            return true;
         }
+
+        [System.Runtime.InteropServices.DllImport("Kernel32.dll",
+            CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        static extern bool CreateHardLink(string lpFileName, string lpExistingFileName, IntPtr lpSecurityAttributes);
     }
 }
