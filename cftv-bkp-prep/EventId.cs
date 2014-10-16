@@ -20,22 +20,16 @@ using System;
 
 namespace cftv_bkp_prep
 {
-    enum EventId : int
+    class EventId : SklLib.Diagnostics.EventId
     {
         // Service related codes (0-9)
-        //ServiceStateChanged = 0,
-        //ServiceInsufficientWaitTime = 1,
-        //EventLogCreated = 2,
 
         // Configuration file related codes (10-29)
-        //ConfigFileNotFound = 10,
-        ConfigFileLoadError = 11,
-        ConfigFileInvalidSchedule = 12,
-        ConfigFileZeroPath = 13,
-        ConfigFileReloadInvalid = 14,
-        ConfigFileReloaded = 15,
+        public static readonly EventId ConfigFileInvalidSchedule = new EventId(14);
+        public static readonly EventId ConfigFileZeroPath = new EventId(15);
+        public static readonly EventId ConfigFileInvalidPath = new EventId(16);
+        public static readonly EventId ConfigFilePathPermissionError = new EventId(17);
 
-        // Unhandled error code (65535)
-        //UnexpectedError = UInt16.MaxValue
+        public EventId(ushort value) : base(value) { }
     }
 }

@@ -4,6 +4,111 @@
         <name>SklLib</name>
     </assembly>
     <members>
+        <member name="T:SklLib.Diagnostics.EventId">
+            <summary>
+            Defines identification values to logging events.
+            </summary>
+        </member>
+        <member name="T:SklLib.EnumClass`1">
+            <summary>
+            Represents a value to emulate enum-like behaviour.
+            </summary>
+        </member>
+        <member name="F:SklLib.EnumClass`1.value">
+            <summary>
+            Value represented by this class instance.
+            </summary>
+        </member>
+        <member name="M:SklLib.EnumClass`1.#ctor(`0)">
+            <summary>
+            Initializes a new instance of EnumClass with specified value.
+            </summary>
+            <param name="value">Value represented by this instance.</param>
+        </member>
+        <member name="M:SklLib.EnumClass`1.op_Implicit(SklLib.EnumClass{`0})~`0">
+            <summary>
+            Converts an instance of EnumClass to struct value.
+            </summary>
+            <param name="c">Instance of EnumClass.</param>
+            <returns>Returns a value represented by EnumClass.</returns>
+        </member>
+        <member name="P:SklLib.EnumClass`1.Value">
+            <summary>
+            Value represented by this instance.
+            </summary>
+        </member>
+        <member name="F:SklLib.Diagnostics.EventId.ServiceStateChanged">
+            <summary>
+            Evend ID used when service was started or stopped (0).
+            </summary>
+        </member>
+        <member name="F:SklLib.Diagnostics.EventId.ServiceInsufficientWaitTime">
+            <summary>
+            Event ID used when service running time is bigger than loop wait time (1).
+            </summary>
+        </member>
+        <member name="F:SklLib.Diagnostics.EventId.EventLogCreated">
+            <summary>
+            Event ID used when a new source of event log is created (2).
+            </summary>
+        </member>
+        <member name="F:SklLib.Diagnostics.EventId.ConfigFileNotFound">
+            <summary>
+            Event ID used when a configuration file is not found (10).
+            </summary>
+        </member>
+        <member name="F:SklLib.Diagnostics.EventId.ConfigFileLoadError">
+            <summary>
+            Event ID used when has a error to load a configuration file (11).
+            </summary>
+        </member>
+        <member name="F:SklLib.Diagnostics.EventId.ConfigFileReloadError">
+            <summary>
+            Event ID used when has a error to reload a configuration file (12).
+            </summary>
+        </member>
+        <member name="F:SklLib.Diagnostics.EventId.ConfigFileReloaded">
+            <summary>
+            Event ID used when a configuration file was reloaded successfully (13).
+            </summary>
+        </member>
+        <member name="F:SklLib.Diagnostics.EventId.UnexpectedError">
+            <summary>
+            Unhandled error code (65535).
+            </summary>
+        </member>
+        <member name="M:SklLib.Diagnostics.EventId.#ctor(System.UInt16)">
+            <summary>
+            Initializes a new instance of EventId with specified value.
+            </summary>
+            <param name="value">Value represented by this instance.</param>
+        </member>
+        <member name="T:SklLib.Diagnostics.Logger">
+            <summary>
+            Provides methods to handle Windows native logging.
+            </summary>
+        </member>
+        <member name="F:SklLib.Diagnostics.Logger.EVENT_LOG_MAX_LENGTH">
+            <summary>
+            Defines how much characters can be handled by EventLog.
+            </summary>
+        </member>
+        <member name="M:SklLib.Diagnostics.Logger.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of Logger class based on specified source and log name.
+            </summary>
+            <param name="source">The source of event log entries.</param>
+            <param name="logName">The name of the log.</param>
+            <exception cref="T:System.Exception">Throws when failed to create event log.</exception>
+        </member>
+        <member name="M:SklLib.Diagnostics.Logger.WriteEntry(System.String,System.Diagnostics.EventLogEntryType,SklLib.Diagnostics.EventId)">
+            <summary>
+            Writes a new log entry with specified message.
+            </summary>
+            <param name="message">The message to write to log entry.</param>
+            <param name="type">The event type.</param>
+            <param name="eventId">The application-unique identifier to log type.</param>
+        </member>
         <member name="T:SklLib.Environment.AssemblyInfo">
             <summary>
             Provides assembly information from running entrypoint.

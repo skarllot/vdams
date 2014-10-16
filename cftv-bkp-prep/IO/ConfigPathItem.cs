@@ -19,6 +19,8 @@
 using SklLib.IO;
 using System;
 using System.IO;
+using System.Security;
+using System.Security.Permissions;
 
 namespace cftv_bkp_prep.IO
 {
@@ -34,12 +36,39 @@ namespace cftv_bkp_prep.IO
         public string SourcePath { get { return GetString(sections[0], "SourcePath"); } }
         public string TargetPath { get { return GetString(sections[0], "TargetPath"); } }
 
-        public string FullSourcePath { get { return Path.Combine(Drive, SourcePath); } }
-        public string FullTargetPath { get { return Path.Combine(Drive, TargetPath); } }
+        public string SourceFullPath { get { return Path.Combine(Drive, SourcePath); } }
+        public string TargetFullPath { get { return Path.Combine(Drive, TargetPath); } }
+
+        private static bool HasPermission(FileIOPermissionAccess perm, string path)
+        {
+            FileIOPermission filePerm = new FileIOPermission(perm, path);
+            PermissionSet mgrPerm = new PermissionSet(PermissionState.None);
+            mgrPerm.AddPermission(filePerm);
+            return mgrPerm.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
+        }
+
+        public bool HasReadPermissionToSourcePath()
+        {
+            return HasPermission(FileIOPermissionAccess.Read, SourceFullPath);
+        }
+
+        public bool HasWritePermissionToTargetPath()
+        {
+            return HasPermission(FileIOPermissionAccess.Write, TargetFullPath);
+        }
 
         public override bool IsValid()
         {
-            throw new NotImplementedException();
+            if (!Directory.Exists(SourceFullPath))
+                return false;
+            if (!Directory.Exists(TargetFullPath))
+                return false;
+            if (!HasReadPermissionToSourcePath())
+                return false;
+            if (!HasWritePermissionToTargetPath())
+                return false;
+
+            return true;
         }
     }
 }

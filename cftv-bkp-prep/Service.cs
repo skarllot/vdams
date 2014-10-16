@@ -25,6 +25,7 @@ namespace cftv_bkp_prep
     public class Service : System.ServiceProcess.ServiceBase
     {
         const string DEFAULT_CFG_FILE_NAME = "config.ini";
+        const string DEFAULT_TIME_FORMAT = "HH:mm";
         const int DEFAULT_REFRESH = 1 * MINUTE_TO_MILLISECONDS;
         const int MINUTE_TO_MILLISECONDS = 1000 * 60;
 
@@ -76,7 +77,7 @@ namespace cftv_bkp_prep
                 cfgFile = Path.Combine(dir, fileName);
             if (!File.Exists(cfgFile)) {
                 string msg = string.Format("The configuration file \"{0}\" does not exist.", cfgFile);
-                eventLog.WriteEntry(msg, EventLogEntryType.Error, (int)SklLib.Diagnostics.EventId.ConfigFileNotFound);
+                eventLog.WriteEntry(msg, EventLogEntryType.Error, EventId.ConfigFileNotFound);
                 // http://msdn.microsoft.com/en-us/library/ms681384%28v=vs.85%29
                 this.ExitCode = 15010;
                 throw new FileNotFoundException(msg, cfgFile);
@@ -120,7 +121,7 @@ namespace cftv_bkp_prep
             svcThread = new Thread(new ParameterizedThreadStart(StartThread));
             svcThread.Start(cfgFile);
             eventLog.WriteEntry(string.Format("{0} service started", MainClass.PROGRAM_NAME),
-                EventLogEntryType.Information, (int)SklLib.Diagnostics.EventId.ServiceStateChanged);
+                EventLogEntryType.Information, EventId.ServiceStateChanged);
 
             reloadThread = new Thread(new ParameterizedThreadStart(ConfigWatcher));
             reloadThread.Start(cfgFile);
@@ -140,7 +141,7 @@ namespace cftv_bkp_prep
             }
 
             eventLog.WriteEntry(string.Format("{0} service stopped", MainClass.PROGRAM_NAME),
-                EventLogEntryType.Information, (int)SklLib.Diagnostics.EventId.ServiceStateChanged);
+                EventLogEntryType.Information, EventId.ServiceStateChanged);
         }
 
         /*protected override void OnContinue()
@@ -156,29 +157,32 @@ namespace cftv_bkp_prep
             IO.ConfigReader config = new IO.ConfigReader(cfgpath);
             if (!ValidateConfiguration(config)) {
                 eventLog.WriteEntry("Initial configuration file loading failed",
-                    EventLogEntryType.Error, (int)EventId.ConfigFileLoadError);
+                    EventLogEntryType.Error, EventId.ConfigFileLoadError);
                 return;
             }
 
             DirectoryAssorter dirAssort = new DirectoryAssorter();
 
             while (!stopEvent.WaitOne(0)) {
-                for (int i = 0; i < config.PathCount; i++) {
-                    IO.ConfigPathItem item = config.GetPath(i);
-                    dirAssort.DoWork(item.FullSourcePath, item.FullTargetPath);
+                if (DateTime.Now.ToString(DEFAULT_TIME_FORMAT) ==
+                    config.ScheduleTime.ToString(DEFAULT_TIME_FORMAT)) {
+                    for (int i = 0; i < config.PathCount; i++) {
+                        IO.ConfigPathItem item = config.GetPath(i);
+                        dirAssort.DoWork(item.SourceFullPath, item.TargetFullPath);
 
-                    if (stopEvent.WaitOne(0))
-                        break;
+                        if (stopEvent.WaitOne(0))
+                            break;
+                    }
                 }
 
                 if (reloadEvent.WaitOne(0)) {
                     if (!ValidateConfiguration(config)) {
                         eventLog.WriteEntry("Configuration file was changed to invalid state",
-                            EventLogEntryType.Error, (int)EventId.ConfigFileReloadInvalid);
+                            EventLogEntryType.Error, EventId.ConfigFileReloadError);
                     }
                     else {
                         eventLog.WriteEntry("Configuration file reloaded",
-                            EventLogEntryType.Information, (int)EventId.ConfigFileReloaded);
+                            EventLogEntryType.Information, EventId.ConfigFileReloaded);
                     }
                     reloadEvent.Reset();
                 }
@@ -192,21 +196,51 @@ namespace cftv_bkp_prep
         {
             if (!ValidateConfigFile(config.FileName)) {
                 eventLog.WriteEntry(string.Format("Error loading configuration file {0}", config.FileName),
-                    EventLogEntryType.Error, (int)EventId.ConfigFileLoadError);
+                    EventLogEntryType.Error, EventId.ConfigFileLoadError);
                 return false;
             }
             config.LoadFile();
 
             if (config.ScheduleTime > (new TimeSpan(23, 59, 59))) {
                 eventLog.WriteEntry("Invalid scheduled time, must be a valid time of day",
-                    EventLogEntryType.Error, (int)EventId.ConfigFileInvalidSchedule);
+                    EventLogEntryType.Error, EventId.ConfigFileInvalidSchedule);
                 return false;
             }
 
             if (config.PathCount < 1) {
                 eventLog.WriteEntry("At least one path must be defined",
-                    EventLogEntryType.Error, (int)EventId.ConfigFileZeroPath);
+                    EventLogEntryType.Error, EventId.ConfigFileZeroPath);
                 return false;
+            }
+
+            for (int i = 0; i < config.PathCount; i++) {
+                IO.ConfigPathItem item = config.GetPath(i);
+
+                if (!Directory.Exists(item.SourceFullPath)) {
+                    eventLog.WriteEntry(string.Format("The specified source path \"{0}\" doesn't exist", item.SourceFullPath),
+                        EventLogEntryType.Error, EventId.ConfigFileInvalidPath);
+                    return false;
+                }
+
+                if (!Directory.Exists(item.TargetFullPath)) {
+                    eventLog.WriteEntry(string.Format("The specified target path \"{0}\" doesn't exist", item.TargetFullPath),
+                        EventLogEntryType.Error, EventId.ConfigFileInvalidPath);
+                    return false;
+                }
+
+                if (!item.HasReadPermissionToSourcePath()) {
+                    eventLog.WriteEntry(string.Format(
+                        "The current user doesn't has read permission on specified source path \"{0}\"", item.SourceFullPath),
+                        EventLogEntryType.Error, EventId.ConfigFilePathPermissionError);
+                    return false;
+                }
+
+                if (!item.HasWritePermissionToTargetPath()) {
+                    eventLog.WriteEntry(string.Format(
+                        "The current user doesn't has write permission on specified target path \"{0}\"", item.TargetFullPath),
+                        EventLogEntryType.Error, EventId.ConfigFilePathPermissionError);
+                    return false;
+                }
             }
 
             return true;
