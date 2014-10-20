@@ -83,6 +83,28 @@
             </summary>
             <param name="value">Value represented by this instance.</param>
         </member>
+        <member name="T:SklLib.Diagnostics.LogEventArgs">
+            <summary>
+            Provides data to add a new log entry.
+            </summary>
+        </member>
+        <member name="M:SklLib.Diagnostics.LogEventArgs.#ctor(System.Diagnostics.EventLogEntryType,SklLib.Diagnostics.EventId)">
+            <summary>
+            Initializes a new instance of LogEventArgs with specified log type and ID.
+            </summary>
+            <param name="type">The type of event log.</param>
+            <param name="eventId">The application-unique identifier to log type.</param>
+        </member>
+        <member name="P:SklLib.Diagnostics.LogEventArgs.EntryType">
+            <summary>
+            Gets the type of event log.
+            </summary>
+        </member>
+        <member name="P:SklLib.Diagnostics.LogEventArgs.EventId">
+            <summary>
+            Gets the application-unique identifier to log type.
+            </summary>
+        </member>
         <member name="T:SklLib.Diagnostics.Logger">
             <summary>
             Provides methods to handle Windows native logging.
@@ -101,13 +123,107 @@
             <param name="logName">The name of the log.</param>
             <exception cref="T:System.Exception">Throws when failed to create event log.</exception>
         </member>
+        <member name="M:SklLib.Diagnostics.Logger.BeginWriteEntry">
+            <summary>
+            Starts a transaction to write multiple messages to a single log entry.
+            </summary>
+            <returns>An object to handle a log transaction.</returns>
+        </member>
+        <member name="M:SklLib.Diagnostics.Logger.WriteEntry(System.String,SklLib.Diagnostics.LogEventArgs)">
+            <summary>
+            Writes a new log entry with specified message.
+            </summary>
+            <param name="message">The message to write to log entry.</param>
+            <param name="eventArgs">The event log information data.</param>
+        </member>
         <member name="M:SklLib.Diagnostics.Logger.WriteEntry(System.String,System.Diagnostics.EventLogEntryType,SklLib.Diagnostics.EventId)">
             <summary>
             Writes a new log entry with specified message.
             </summary>
             <param name="message">The message to write to log entry.</param>
-            <param name="type">The event type.</param>
+            <param name="type">The type of event log.</param>
             <param name="eventId">The application-unique identifier to log type.</param>
+        </member>
+        <member name="T:SklLib.Diagnostics.LogTransaction">
+            <summary>
+            Provides methods to handle multiple messages to single log entry.
+            </summary>
+        </member>
+        <member name="T:SklLib.ITransaction`1">
+            <summary>
+            Represents a generic transaction.
+            </summary>
+        </member>
+        <member name="M:SklLib.ITransaction`1.Commit(`0)">
+            <summary>
+            Commits this transaction.
+            </summary>
+            <param name="eventArgs">The additional commit data.</param>
+        </member>
+        <member name="M:SklLib.ITransaction`1.Rollback">
+            <summary>
+            Rolls back a this transaction.
+            </summary>
+        </member>
+        <member name="F:SklLib.Diagnostics.LogTransaction.DEFAULT_LINE_HEADER">
+            <summary>
+            Default header for each message.
+            </summary>
+        </member>
+        <member name="F:SklLib.Diagnostics.LogTransaction.DEFAULT_TIMESTAMP_FORMAT">
+            <summary>
+            Default timestamp format for line header.
+            </summary>
+        </member>
+        <member name="M:SklLib.Diagnostics.LogTransaction.#ctor(SklLib.Diagnostics.Logger)">
+            <summary>
+            Initializes a new instance of LogTransaction linked to Logger class.
+            </summary>
+            <param name="logger">The class that handles message logging.</param>
+        </member>
+        <member name="M:SklLib.Diagnostics.LogTransaction.AppendLine(System.String)">
+            <summary>
+            Appends a line to log message.
+            </summary>
+            <param name="message">The line to append.</param>
+        </member>
+        <member name="M:SklLib.Diagnostics.LogTransaction.AppendLine(System.String,System.Object[])">
+            <summary>
+            Appends a line to log message.
+            </summary>
+            <param name="message">The line to append.</param>
+            <param name="args">Parameters to replace placeholders from line header.</param>
+        </member>
+        <member name="M:SklLib.Diagnostics.LogTransaction.Commit(SklLib.Diagnostics.LogEventArgs)">
+            <summary>
+            Commits this transaction to a new log entry.
+            </summary>
+            <param name="eventArgs">The event log information data.</param>
+        </member>
+        <member name="M:SklLib.Diagnostics.LogTransaction.Dispose">
+            <summary>
+            Frees unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:SklLib.Diagnostics.LogTransaction.Rollback">
+            <summary>
+            Discards this transaction to not add any entry to event log.
+            </summary>
+        </member>
+        <member name="P:SklLib.Diagnostics.LogTransaction.HeaderHasTimestamp">
+            <summary>
+            Gets or sets whether the line header has a timestamp placeholder.
+            </summary>
+        </member>
+        <member name="P:SklLib.Diagnostics.LogTransaction.LineHeader">
+            <summary>
+            Gets or sets the line header.
+            </summary>
+        </member>
+        <member name="P:SklLib.Diagnostics.LogTransaction.TimestampFormat">
+            <summary>
+            Gets or sets the formatting for log timestamp.
+            </summary>
         </member>
         <member name="T:SklLib.Environment.AssemblyInfo">
             <summary>
@@ -372,6 +488,82 @@
         <member name="T:SklLib.IO.ConfigReaderBase">
             <summary>
             Provides base methods to implement a class to represent a configuration file reader.
+            </summary>
+        </member>
+        <member name="T:SklLib.IO.IValidatable">
+            <summary>
+            Defines a object that can be validated.
+            </summary>
+        </member>
+        <member name="M:SklLib.IO.IValidatable.IsValid">
+            <summary>
+            Returns whether current instance is valid.
+            </summary>
+            <returns>True whether is valid; otherwise false.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigReaderBase.GetBoolean(System.String,System.String)">
+            <summary>
+            Gets the specified key from specified section converted to boolean.
+            </summary>
+            <param name="section">The configuration file section.</param>
+            <param name="key">The configuration file key.</param>
+            <returns>The key value as boolean.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigReaderBase.GetInteger(System.String,System.String)">
+            <summary>
+            Gets the specified key from specified section converted to integer.
+            </summary>
+            <param name="section">The configuration file section.</param>
+            <param name="key">The configuration file key.</param>
+            <returns>The key value as integer.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigReaderBase.GetString(System.String,System.String)">
+            <summary>
+            Gets the specified key from specified section as string.
+            </summary>
+            <param name="section">The configuration file section.</param>
+            <param name="key">The configuration file key.</param>
+            <returns>The key value as string.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigReaderBase.GetCsvString(System.String,System.String)">
+            <summary>
+            Gets the specified key from specified section converted to string array.
+            </summary>
+            <param name="section">The configuration file section.</param>
+            <param name="key">The configuration file key.</param>
+            <returns>The key value as string array.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigReaderBase.GetCsvString(System.String,System.String,System.Char)">
+            <summary>
+            Gets the specified key from specified section converted to string array.
+            </summary>
+            <param name="section">The configuration file section.</param>
+            <param name="key">The configuration file key.</param>
+            <param name="separator">The character used as separator between array items.</param>
+            <returns>The key value as string array.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigReaderBase.GetTimeSpan(System.String,System.String)">
+            <summary>
+            Gets the specified key from specified section converted to TimeSpan.
+            </summary>
+            <param name="section">The configuration file section.</param>
+            <param name="key">The configuration file key.</param>
+            <returns>The key value as TimeSpan.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigReaderBase.IsValid">
+            <summary>
+            Determines whether current instance is valid.
+            </summary>
+            <returns>True whether is valid; otherwise false.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigReaderBase.LoadFile">
+            <summary>
+            Reads configuration file and populates current instance.
+            </summary>
+        </member>
+        <member name="P:SklLib.IO.ConfigReaderBase.FileName">
+            <summary>
+            Gets the file name backed by this instance.
             </summary>
         </member>
         <member name="T:SklLib.IO.KeyNotFoundException">
