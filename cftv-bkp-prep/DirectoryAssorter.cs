@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace cftv_bkp_prep
 {
@@ -32,8 +33,22 @@ namespace cftv_bkp_prep
                 return false;
             }
 
-            DirectoryInfo dirSource = new DirectoryInfo(cfgPath.SourceFullPath);
-            FileSystemInfo[] nodesSource = dirSource.GetFileSystemInfos("*", SearchOption.AllDirectories);
+            List<string> nodesSource = new List<string>();
+            GetFileList(cfgPath.SourceFullPath, nodesSource);
+            /*DirectoryInfo dirSource = new DirectoryInfo(cfgPath.SourceFullPath);
+            List<FileSystemInfo> nodesSource = new List<FileSystemInfo>();
+            foreach (var item in dirSource.EnumerateFileSystemInfos("*", SearchOption.AllDirectories)) {
+                try {
+                    if ((item.Attributes & FileAttributes.Directory) != 0)
+                        continue;
+                    if (item.FullName.IndexOf(cfgPath.TargetFullPath) == 0)
+                        continue;
+
+                    nodesSource.Add(item);
+                }
+                catch (UnauthorizedAccessException) { }
+            }
+            //FileSystemInfo[] nodesSource = dirSource.GetFileSystemInfos("*", SearchOption.AllDirectories);
             int counter = 1;
 
             while (counter <= depth) {
@@ -56,9 +71,25 @@ namespace cftv_bkp_prep
                     System.Diagnostics.EventLogEntryType.Information, EventId.AssortFoundFiles);
 
                 counter++;
-            }
+            }*/
 
             return true;
+        }
+
+        private void GetFileList(string path, IList<string> files)
+        {
+            try {
+                Directory.GetFiles(path)
+                    .ToList()
+                    .ForEach(s => files.Add(s));
+
+                Directory.GetDirectories(path)
+                    .ToList()
+                    .ForEach(s => GetFileList(s, files));
+            }
+            catch (UnauthorizedAccessException) {
+                var tst = 0;
+            }
         }
 
         [System.Runtime.InteropServices.DllImport("Kernel32.dll",

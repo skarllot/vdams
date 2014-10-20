@@ -25,7 +25,7 @@ namespace cftv_bkp_prep
     public class Service : System.ServiceProcess.ServiceBase
     {
         const string DEFAULT_CFG_FILE_NAME = "config.ini";
-        const string DEFAULT_TIME_FORMAT = "HH:mm";
+        const string DEFAULT_TIME_FORMAT = "hh\\:mm";
         const int DEFAULT_REFRESH = 1 * MINUTE_TO_MILLISECONDS;
         const int MINUTE_TO_MILLISECONDS = 1000 * 60;
 
@@ -158,6 +158,7 @@ namespace cftv_bkp_prep
             if (!ValidateConfiguration(config)) {
                 eventLog.WriteEntry("Initial configuration file loading failed",
                     EventLogEntryType.Error, EventId.ConfigFileLoadError);
+                stopEvent.Set();
                 return;
             }
 
@@ -165,7 +166,8 @@ namespace cftv_bkp_prep
 
             while (!stopEvent.WaitOne(0)) {
                 if (DateTime.Now.ToString(DEFAULT_TIME_FORMAT) ==
-                    config.ScheduleTime.ToString(DEFAULT_TIME_FORMAT)) {
+                    config.ScheduleTime.ToString(DEFAULT_TIME_FORMAT)
+                    || MainClass.DEBUG) {
                     for (int i = 0; i < config.PathCount; i++) {
                         dirAssort.DoWork(config.GetPath(i), config.Depth);
 
