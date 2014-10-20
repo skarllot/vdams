@@ -169,7 +169,7 @@ namespace cftv_bkp_prep
                     config.ScheduleTime.ToString(DEFAULT_TIME_FORMAT)
                     || MainClass.DEBUG) {
                     for (int i = 0; i < config.PathCount; i++) {
-                        dirAssort.DoWork(config.GetPath(i), config.Depth);
+                        dirAssort.Assort(config.GetPath(i), config.Depth);
 
                         if (stopEvent.WaitOne(0))
                             break;

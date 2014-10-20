@@ -25,7 +25,16 @@ namespace cftv_bkp_prep
 {
     class DirectoryAssorter
     {
-        public bool DoWork(IO.ConfigPathItem cfgPath, int depth)
+        IO.ConfigPathItem cfgPath;
+        int depth;
+
+        public DirectoryAssorter(IO.ConfigPathItem cfgPath, int depth)
+        {
+            this.cfgPath = cfgPath;
+            this.depth = depth;
+        }
+
+        public bool Assort()
         {
             if (!cfgPath.IsValid()) {
                 MainClass.Logger.WriteEntry(string.Format("The path \"{0}\" becomes invalid", cfgPath.SectionName),
@@ -33,8 +42,12 @@ namespace cftv_bkp_prep
                 return false;
             }
 
+            var logTransaction = MainClass.Logger.BeginWriteEntry();
+            logTransaction.AppendLine(string.Format("Initializing assorting to {0}", cfgPath.SectionName));
+
             List<string> nodesSource = new List<string>();
             GetFileList(cfgPath.SourceFullPath, nodesSource);
+            logTransaction.AppendLine(string.Format("Found {0} total files", nodesSource.Count));
             /*DirectoryInfo dirSource = new DirectoryInfo(cfgPath.SourceFullPath);
             List<FileSystemInfo> nodesSource = new List<FileSystemInfo>();
             foreach (var item in dirSource.EnumerateFileSystemInfos("*", SearchOption.AllDirectories)) {
@@ -78,6 +91,10 @@ namespace cftv_bkp_prep
 
         private void GetFileList(string path, IList<string> files)
         {
+            // Avoid target path listing case it is a subdirectory from source path.
+            if (cfgPath.TargetFullPath == path)
+                return;
+
             try {
                 Directory.GetFiles(path)
                     .ToList()
