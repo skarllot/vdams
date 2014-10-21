@@ -25,7 +25,8 @@ namespace cftv_bkp_prep
     public class Service : System.ServiceProcess.ServiceBase
     {
         const string DEFAULT_CFG_FILE_NAME = "config.ini";
-        const string DEFAULT_TIME_FORMAT = "hh\\:mm";
+        const string DEFAULT_TIME_FORMAT_DT = "HH:mm";
+        const string DEFAULT_TIME_FORMAT_TS = "hh\\:mm";
         const int DEFAULT_REFRESH = 1 * MINUTE_TO_MILLISECONDS;
         const int MINUTE_TO_MILLISECONDS = 1000 * 60;
 
@@ -175,8 +176,8 @@ namespace cftv_bkp_prep
             DirectoryAssorter[] arrAssorter = GetAssorter(config);
 
             while (!stopEvent.WaitOne(0)) {
-                if (DateTime.Now.ToString(DEFAULT_TIME_FORMAT) ==
-                    config.ScheduleTime.ToString(DEFAULT_TIME_FORMAT)
+                if (DateTime.Now.ToString(DEFAULT_TIME_FORMAT_DT) ==
+                    config.ScheduleTime.ToString(DEFAULT_TIME_FORMAT_TS)
                     || MainClass.DEBUG) {
                     foreach (DirectoryAssorter item in arrAssorter) {
                         item.Assort();
