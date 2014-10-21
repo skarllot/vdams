@@ -62,6 +62,16 @@ namespace cftv_bkp_prep
             }
         }
 
+        private static DirectoryAssorter[] GetAssorter(IO.ConfigReader config)
+        {
+            DirectoryAssorter[] ret = new DirectoryAssorter[config.PathCount];
+            for (int i = 0; i < ret.Length; i++) {
+                ret[i] = new DirectoryAssorter(config.GetPath(i), config.Depth);
+            }
+
+            return ret;
+        }
+
         private string GetConfigFileFullName(string dir, string fileName)
         {
             string cfgFile = null;
@@ -144,10 +154,10 @@ namespace cftv_bkp_prep
                 EventLogEntryType.Information, EventId.ServiceStateChanged);
         }
 
-        /*protected override void OnContinue()
+        internal void StartDebug(string[] args)
         {
-            eventLog1.WriteEntry("my service is continuing in working");
-        }*/
+            this.OnStart(args);
+        }
 
         private void StartThread(object obj)
         {
@@ -162,14 +172,14 @@ namespace cftv_bkp_prep
                 return;
             }
 
-            DirectoryAssorter dirAssort = new DirectoryAssorter();
+            DirectoryAssorter[] arrAssorter = GetAssorter(config);
 
             while (!stopEvent.WaitOne(0)) {
                 if (DateTime.Now.ToString(DEFAULT_TIME_FORMAT) ==
                     config.ScheduleTime.ToString(DEFAULT_TIME_FORMAT)
                     || MainClass.DEBUG) {
-                    for (int i = 0; i < config.PathCount; i++) {
-                        dirAssort.Assort(config.GetPath(i), config.Depth);
+                    foreach (DirectoryAssorter item in arrAssorter) {
+                        item.Assort();
 
                         if (stopEvent.WaitOne(0))
                             break;
@@ -245,11 +255,6 @@ namespace cftv_bkp_prep
             }
 
             return true;
-        }
-
-        internal void StartDebug(string[] args)
-        {
-            this.OnStart(args);
         }
 
         private bool ValidateConfigFile(string file)

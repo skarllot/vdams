@@ -33,6 +33,7 @@ namespace cftv_bkp_prep.IO
         }
 
         public string Drive { get { return GetString(sections[0], "Drive"); } }
+        public string FileDateFormat { get { return GetString(sections[0], "FileDateFormat"); } }
         public string SectionName { get { return sections[0]; } }
         public string SourcePath { get { return GetString(sections[0], "SourcePath"); } }
         public string TargetPath { get { return GetString(sections[0], "TargetPath"); } }
