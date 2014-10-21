@@ -84,8 +84,6 @@ namespace cftv_bkp_prep
                         }
                     }
                 }
-                fileList.Clear();
-                fileList = null;
 
                 logTransaction.AppendLine(string.Format("Found {0} files, total size of {1}",
                     pickedList.Count, new SklLib.DataSize(totalBytes).ToString("N2")));
@@ -97,8 +95,8 @@ namespace cftv_bkp_prep
 
                 foreach (string item in pickedList) {
                     string innerDir = Path.GetDirectoryName(item).Remove(0, cfgPath.SourceFullPath.Length);
-                    if (innerDir[0] == Path.DirectorySeparatorChar)
-                        innerDir.Remove(0, 1);
+                    if (innerDir.Length > 0 && innerDir[0] == Path.DirectorySeparatorChar)
+                        innerDir = innerDir.Remove(0, 1);
 
                     string targetDir = Path.Combine(dirName, innerDir);
                     string targetFile = Path.Combine(targetDir, Path.GetFileName(item));
@@ -110,7 +108,7 @@ namespace cftv_bkp_prep
                             System.ComponentModel.Win32Exception ex = new System.ComponentModel.Win32Exception(
                                 System.Runtime.InteropServices.Marshal.GetLastWin32Error());
                             MainClass.Logger.WriteEntry(
-                                string.Format("Could not create a hard link from \"{0}\" to \"{1}\"\n\nError: {3}", item, targetFile, ex.Message),
+                                string.Format("Could not create a hard link from \"{0}\" to \"{1}\"\n\nError: {2}", item, targetFile, ex.Message),
                                 System.Diagnostics.EventLogEntryType.Error, EventId.AssortErrorCreateHardLink);
                         }
                     }
@@ -118,6 +116,8 @@ namespace cftv_bkp_prep
                 logTransaction.AppendLine(string.Format("Assort of {0} ended", dt.ToShortDateString()));
                 counter++;
             }
+            fileList.Clear();
+            fileList = null;
 
             logTransaction.Commit(new SklLib.Diagnostics.LogEventArgs(
                 System.Diagnostics.EventLogEntryType.Information, EventId.AssortCompleted));

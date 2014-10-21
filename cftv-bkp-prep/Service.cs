@@ -180,7 +180,15 @@ namespace cftv_bkp_prep
                     config.ScheduleTime.ToString(DEFAULT_TIME_FORMAT_TS)
                     || MainClass.DEBUG) {
                     foreach (DirectoryAssorter item in arrAssorter) {
-                        item.Assort();
+                        try { item.Assort(); }
+                        catch (Exception ex) {
+                            eventLog.WriteEntry(
+                                string.Format("Source: {0}\n\nMessage: {1}\n\nStack trace: {2}",
+                                ex.Source, ex.Message, ex.StackTrace),
+                                EventLogEntryType.Error, EventId.UnexpectedError);
+                            stopEvent.Set();
+                            return;
+                        }
 
                         if (stopEvent.WaitOne(0))
                             break;
