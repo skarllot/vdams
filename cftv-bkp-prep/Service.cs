@@ -192,6 +192,7 @@ namespace cftv_bkp_prep
                             EventLogEntryType.Error, EventId.ConfigFileReloadError);
                     }
                     else {
+                        arrAssorter = GetAssorter(config);
                         eventLog.WriteEntry("Configuration file reloaded",
                             EventLogEntryType.Information, EventId.ConfigFileReloaded);
                     }

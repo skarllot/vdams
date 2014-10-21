@@ -43,46 +43,49 @@ namespace cftv_bkp_prep
                 return false;
             }
 
+            DirectoryInfo dirTarget = new DirectoryInfo(cfgPath.TargetFullPath);
+            foreach (DirectoryInfo item in dirTarget.GetDirectories("*", SearchOption.TopDirectoryOnly)) {
+                item.Delete(true);
+            }
+            foreach (FileInfo item in dirTarget.GetFiles("*", SearchOption.TopDirectoryOnly)) {
+                item.Delete();
+            }
+
             var logTransaction = MainClass.Logger.BeginWriteEntry();
             logTransaction.AppendLine(string.Format("Initializing assorting to {0}", cfgPath.SectionName));
 
             List<string> fileList = (List<string>)GetFileList(cfgPath.SourceFullPath);
             logTransaction.AppendLine(string.Format("Found {0} total files", fileList.Count));
 
-            List<FileInfo> filesInfo = null;
             // If a file date format was not defined into configuration then assort files based on modification date;
-            // If not assort based on file name.
-            if (string.IsNullOrWhiteSpace(cfgPath.FileDateFormat)) {
-                filesInfo = (List<FileInfo>)GetFileInfoFromList(fileList);
-                logTransaction.AppendLine(string.Format("Got file information from {0} files", filesInfo.Count));
-            }
+            // If not, assort based on file name.
+            bool isFileDateFormatDefined = !string.IsNullOrWhiteSpace(cfgPath.FileDateFormat);
 
             int counter = 1;
             while (counter <= depth) {
                 DateTime dt = DateTime.Today.AddDays(-1 * counter);
                 List<string> pickedList = new List<string>();
                 long totalBytes = 0;
+                string strDt = dt.ToString(cfgPath.FileDateFormat);
 
                 logTransaction.AppendLine(string.Format("Looking for file modified on {0}", dt.ToShortDateString()));
-                if (filesInfo == null) {
-                    string strDt = dt.ToString(cfgPath.FileDateFormat);
-                    foreach (string item in fileList) {
+                foreach (string item in fileList) {
+                    if (isFileDateFormatDefined) {
                         if (item.IndexOf(strDt) != -1) {
                             pickedList.Add(item);
                             totalBytes += new FileInfo(item).Length;
                         }
                     }
-                }
-                else {
-                    foreach (FileInfo item in filesInfo) {
-                        if (item.LastWriteTime.Date == dt.Date) {
-                            pickedList.Add(item.FullName);
-                            totalBytes += item.Length;
+                    else {
+                        FileInfo fInfo = new FileInfo(item);
+                        if (fInfo.LastWriteTime.Date == dt.Date) {
+                            pickedList.Add(item);
+                            totalBytes += fInfo.Length;
                         }
                     }
                 }
-                fileList.Clear(); fileList = null;
-                if (filesInfo != null) { filesInfo.Clear(); filesInfo = null; }
+                fileList.Clear();
+                fileList = null;
 
                 logTransaction.AppendLine(string.Format("Found {0} files, total size of {1}",
                     pickedList.Count, new SklLib.DataSize(totalBytes).ToString("N2")));
@@ -102,8 +105,15 @@ namespace cftv_bkp_prep
 
                     if (!Directory.Exists(targetDir))
                         Directory.CreateDirectory(targetDir);
-                    if (!File.Exists(targetFile))
-                        CreateHardLink(targetFile, item, IntPtr.Zero);
+                    if (!File.Exists(targetFile)) {
+                        if (!CreateHardLink(targetFile, item, IntPtr.Zero)) {
+                            System.ComponentModel.Win32Exception ex = new System.ComponentModel.Win32Exception(
+                                System.Runtime.InteropServices.Marshal.GetLastWin32Error());
+                            MainClass.Logger.WriteEntry(
+                                string.Format("Could not create a hard link from \"{0}\" to \"{1}\"\n\nError: {3}", item, targetFile, ex.Message),
+                                System.Diagnostics.EventLogEntryType.Error, EventId.AssortErrorCreateHardLink);
+                        }
+                    }
                 }
                 logTransaction.AppendLine(string.Format("Assort of {0} ended", dt.ToShortDateString()));
                 counter++;
@@ -151,7 +161,7 @@ namespace cftv_bkp_prep
         }
 
         [System.Runtime.InteropServices.DllImport("Kernel32.dll",
-            CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+            CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
         static extern bool CreateHardLink(string lpFileName, string lpExistingFileName, IntPtr lpSecurityAttributes);
     }
 }
