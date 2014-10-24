@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+using SklLib;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -182,9 +183,7 @@ namespace cftv_bkp_prep
                     foreach (DirectoryAssorter item in arrAssorter) {
                         try { item.Assort(); }
                         catch (Exception ex) {
-                            eventLog.WriteEntry(
-                                string.Format("Source: {0}\n\nMessage: {1}\n\nStack trace: {2}",
-                                ex.Source, ex.Message, ex.StackTrace),
+                            eventLog.WriteEntry(ex.CreateDump(),
                                 EventLogEntryType.Error, EventId.UnexpectedError);
                             stopEvent.Set();
                             return;

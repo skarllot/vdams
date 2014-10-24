@@ -80,6 +80,8 @@
     <Compile Include="EventId.cs" />
     <Compile Include="IO\ConfigReader.cs" />
     <Compile Include="IO\ConfigPathItem.cs" />
+    <Compile Include="IO\DirectoryInfoExtension.cs" />
+    <Compile Include="IO\IOExceptionExtension.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Service.cs">
       <SubType>Component</SubType>

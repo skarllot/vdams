@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using cftv_bkp_prep.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,10 +46,30 @@ namespace cftv_bkp_prep
 
             DirectoryInfo dirTarget = new DirectoryInfo(cfgPath.TargetFullPath);
             foreach (DirectoryInfo item in dirTarget.GetDirectories("*", SearchOption.TopDirectoryOnly)) {
-                item.Delete(true);
+                try { item.Delete(true); }
+                catch (IOException ex) {
+                    string fileName = ex.GetIoExceptionFilePath();
+                    if (fileName != null) {
+                        fileName = item.GetFile(fileName).FullName;
+                        MainClass.Logger.WriteEntry(string.Format("The file \"{0}\" cannot be deleted", fileName),
+                            System.Diagnostics.EventLogEntryType.Warning, EventId.AssortFileAccessError);
+                    }
+                    else
+                        throw ex;
+                }
             }
             foreach (FileInfo item in dirTarget.GetFiles("*", SearchOption.TopDirectoryOnly)) {
-                item.Delete();
+                try { item.Delete(); }
+                catch (IOException ex) {
+                    string fileName = ex.GetIoExceptionFilePath();
+                    if (fileName != null) {
+                        fileName = item.FullName;
+                        MainClass.Logger.WriteEntry(string.Format("The file \"{0}\" cannot be deleted", fileName),
+                            System.Diagnostics.EventLogEntryType.Warning, EventId.AssortFileAccessError);
+                    }
+                    else
+                        throw ex;
+                }
             }
 
             var logTransaction = MainClass.Logger.BeginWriteEntry();

@@ -485,6 +485,18 @@
             Windows Millenium Edition
             </summary>
         </member>
+        <member name="T:SklLib.ExceptionExtension">
+            <summary>
+            Provides methods to <see cref="T:System.Exception"/> class.
+            </summary>
+        </member>
+        <member name="M:SklLib.ExceptionExtension.CreateDump(System.Exception)">
+            <summary>
+            Creates a complete Exception dump to text.
+            </summary>
+            <param name="ex">The Exception to dump.</param>
+            <returns>A human-readable text detailing Exception instance.</returns>
+        </member>
         <member name="T:SklLib.IO.ConfigReaderBase">
             <summary>
             Provides base methods to implement a class to represent a configuration file reader.
@@ -946,35 +958,35 @@
         <member name="M:SklLib.Strings.AllIndexOf(System.String,System.Char)">
             <summary>
             Reports a Array with indexes of the all occurrences of the specified Unicode character
-            in indicated string.
+            in a string.
             </summary>
             <param name="str">String where will be made the search.</param>
             <param name="value">A Unicode character to seek.</param>
-            <returns>A Array with indexes positions of value if that character is found, or zeroed array
-            length if it is not.</returns>
+            <returns>A Array with indexes positions of value if that character is found, or empty array
+            if it is not.</returns>
             <exception cref="T:System.ArgumentNullException"><c>str</c> is a null reference.</exception>
         </member>
         <member name="M:SklLib.Strings.AllIndexOf(System.String,System.String)">
             <summary>
             Reports a Array with indexes of the all occurrences of the specified string in
-            indicated string.
+            a string.
             </summary>
             <param name="str">String where will be made the search.</param>
             <param name="value">The string to seek.</param>
-            <returns>A Array with indexes positions of value if that string is found, or zeroed array length
+            <returns>A Array with indexes positions of value if that string is found, or empty array
             if it is not.</returns>
             <exception cref="T:System.ArgumentNullException"><c>str</c> or <c>value</c> is a null reference.</exception>
         </member>
         <member name="M:SklLib.Strings.AdditionalChars(System.String,System.String)">
             <summary>
-            Seeks and stores all of additional characters found in the first <see cref="T:System.String"/>,
-            that were not found in the second <see cref="T:System.String"/>.
+            Seeks and stores all of additional characters found in a <see cref="T:System.String"/>,
+            that were not found in another <see cref="T:System.String"/>.
             </summary>
             <param name="strA">The first <see cref="T:System.String"/>.</param>
             <param name="strB">The second <see cref="T:System.String"/>.</param>
             <returns>A <see cref="T:System.Array"/> of <see cref="T:SklLib.Strings.IndexedChar"/></returns>
             <remarks>
-            This method seeks which characters that first <see cref="T:System.String"/> has, and second
+            This method seeks which characters that a <see cref="T:System.String"/> has, and another
             <see cref="T:System.String"/> doesn't have.
             </remarks>
             <example>
@@ -987,7 +999,7 @@
             {
                 static void Main()
                 {
-                    Strings.IndexedChar[] indexChr = Strings.AdditionalChars("123#example*", "123example");
+                    Strings.IndexedChar[] indexChr = "123#example*".AdditionalChars("123example");
                     for (int i = 0; i &lt; indexChr.Length; i++)
                         Console.WriteLine("{0}) Char = '{1}' at Index = {2}",
                             i + 1, indexChr[i].character, indexChr[i].index);
@@ -1008,18 +1020,17 @@
             1 |2 |3 |e |x |a |m |p |l |e |* <br/>
             1 |2 |3 |e |x |a |m |p |l |e </pre>
             <br></br>
-            <para>The first character is '#', because in the second <see cref="T:System.String"/>
+            <para>The first character is '#', because in another <see cref="T:System.String"/>
             doesn't have '#' at index 3.</para>
-            <para>After, the character at index 3 of first String will removed (123#example* =&gt; 123example*).</para>
-            <para>Next character not found, in the second <see cref="T:System.String"/>, is
-            '*' at index 11.</para>
+            <para>After, the character at index 3 of current String will removed (123#example* =&gt; 123example*).</para>
+            <para>Next character not found, in another <see cref="T:System.String"/>, is '*' at index 11.</para>
             </example>
             <exception cref="T:System.ArgumentException"><c>strB</c> length is major that <c>strA</c> length.</exception>
             <exception cref="T:System.ArgumentNullException"><c>strA</c> or <c>strB</c> is null reference.</exception>
         </member>
         <member name="M:SklLib.Strings.CountNumericChars(System.String)">
             <summary>
-            Counts how many occurrences of number character in indicated string.
+            Counts in a string how many occurrences is found of number character.
             </summary>
             <param name="str">String where will be made the search.</param>
             <returns>Result of number of found occurrences.</returns>
@@ -1027,7 +1038,7 @@
         </member>
         <member name="M:SklLib.Strings.CountOf(System.String,System.Char)">
             <summary>
-            Counts how many occurrences of the specified Unicode character in indicated string.
+            Counts in a string how many occurrences is found of the specified Unicode character.
             </summary>
             <param name="str">String where will be made the search.</param>
             <param name="value">A Unicode character to count.</param>
@@ -1036,7 +1047,7 @@
         </member>
         <member name="M:SklLib.Strings.CountOf(System.String,System.String)">
             <summary>
-            Counts how many occurrence of the specified string in indicated string.
+            Counts in a string how many occurrence is found of the specified string.
             </summary>
             <param name="str">String where will be made the search.</param>
             <param name="value">The string to count.</param>
@@ -1045,20 +1056,20 @@
         </member>
         <member name="M:SklLib.Strings.CountOfAll(System.String,System.Char[])">
             <summary>
-            Counts how many occurrences in indicated string of each character in a specified array of Unicode characters.
+            Counts in a string how many occurrences is found of each character in a specified array of Unicode characters.
             </summary>
             <param name="str">String where will be made the search.</param>
             <param name="allOf">A Unicode character array containing one or more characters to count.</param>
-            <returns>Result of number of all occurrences in indicated string where any character in anyOf was found.</returns>
+            <returns>Result of number of found occurrences.</returns>
             <exception cref="T:System.ArgumentNullException"><c>str</c> or <c>allOf</c> is a null reference.</exception>
         </member>
         <member name="M:SklLib.Strings.CountOfAll(System.String,System.String[])">
             <summary>
-            Counts how many occurrences in indicated string of each string in a specified array of string.
+            Counts in a string how many occurrences is found of each string in a specified array of string.
             </summary>
             <param name="str">String where will be made the search.</param>
             <param name="allOf">The string array containing one or more strings to count.</param>
-            <returns>Result of number of all occurrences in indicated string where any character in anyOf was found.</returns>
+            <returns>Result of number of found occurrences.</returns>
             <exception cref="T:System.ArgumentNullException"><c>str</c> or <c>allOf</c> is a null reference.</exception>
             <exception cref="T:System.ArgumentException"><c>str</c> length is major that any <c>allOf element</c> length.</exception>
         </member>
@@ -1084,8 +1095,8 @@
                     {
                         string text1 = "Você, faça estes testes.";
                         string text2 = "¿Hará usted estas pruebas?";
-                        Console.WriteLine("First example: {0}", Strings.EliminateAccents(text1));
-                        Console.WriteLine("Second example: {0}", Strings.EliminateAccents(text2));
+                        Console.WriteLine("First example: {0}", text1.EliminateAccents());
+                        Console.WriteLine("Second example: {0}", text2.EliminateAccents());
                         Console.ReadKey();
                     }
              }
@@ -1106,7 +1117,7 @@
         </member>
         <member name="M:SklLib.Strings.IsAlphabetic(System.String)">
              <summary>
-             Indicates whether the <see cref="T:System.String"/> contains only letters and spaces.
+             Indicates whether a <see cref="T:System.String"/> contains only letters and spaces.
              </summary>
              <param name="s">A <see cref="T:System.String"/>.</param>
              <returns>true if <c>s</c> is an letter- and space-only String; otherwise, false.</returns>
@@ -1127,10 +1138,10 @@
                         string text2 = "testing?";
                         string text3 = "text3";
                         string text4 = "example";
-                        Console.WriteLine("First example: {0}", Strings.IsAlphabetic(text1));
-                        Console.WriteLine("Second example: {0}", Strings.IsAlphabetic(text2));
-                        Console.WriteLine("Third example: {0}", Strings.IsAlphabetic(text3));
-                        Console.WriteLine("Fourth example: {0}", Strings.IsAlphabetic(text4));
+                        Console.WriteLine("First example: {0}", text1.IsAlphabetic());
+                        Console.WriteLine("Second example: {0}", text2.IsAlphabetic());
+                        Console.WriteLine("Third example: {0}", text3.IsAlphabetic());
+                        Console.WriteLine("Fourth example: {0}", text4.IsAlphabetic());
                         Console.ReadKey();
                     }
              }
@@ -1147,14 +1158,14 @@
         </member>
         <member name="M:SklLib.Strings.IsAlphabeticAndNumeric(System.String)">
             <summary>
-            Indicates whether the <see cref="T:System.String"/> contains only letters, spaces and numeric chars.
+            Indicates whether a <see cref="T:System.String"/> contains only letters, spaces and numeric chars.
             </summary>
             <param name="s">A <see cref="T:System.String"/>.</param>
             <returns>true if <c>s</c> is an letter- and space-only and/or numeric String; otherwise, false.</returns>
         </member>
         <member name="M:SklLib.Strings.IsAlphabeticAndNumeric(System.String,System.Globalization.NumberFormatInfo)">
             <summary>
-            Indicates whether the <see cref="T:System.String"/> contains only letters, spaces and numeric chars.
+            Indicates whether a <see cref="T:System.String"/> contains only letters, spaces and numeric chars.
             </summary>
             <param name="s">A <see cref="T:System.String"/>.</param>
             <param name="numInfo">Culture specific <see cref="T:System.Globalization.NumberFormatInfo"/>.</param>
@@ -1162,24 +1173,24 @@
         </member>
         <member name="M:SklLib.Strings.IsAlphabeticAndNumeric(System.String,System.Boolean)">
             <summary>
-            Indicates whether the <see cref="T:System.String"/> contains only letters, spaces and numeric chars.
+            Indicates whether a <see cref="T:System.String"/> contains only letters, spaces and numeric chars.
             </summary>
             <param name="s">A <see cref="T:System.String"/>.</param>
-            <param name="decimalNumber">Indicates whether the can be a decimal number.</param>
+            <param name="decimalNumber">Indicates whether the number can be decimal.</param>
             <returns>true if <c>s</c> is an letter- and space-only and/or numeric String; otherwise, false.</returns>
         </member>
         <member name="M:SklLib.Strings.IsAlphabeticAndNumeric(System.String,System.Globalization.NumberFormatInfo,System.Boolean)">
             <summary>
-            Indicates whether the <see cref="T:System.String"/> contains only letters, spaces and numeric chars.
+            Indicates whether a <see cref="T:System.String"/> contains only letters, spaces and numeric chars.
             </summary>
             <param name="s">A <see cref="T:System.String"/>.</param>
             <param name="numInfo">Culture specific <see cref="T:System.Globalization.NumberFormatInfo"/>.</param>
-            <param name="decimalNumber">Indicates whether the can be a decimal number.</param>
+            <param name="decimalNumber">Indicates whether the number can be decimal.</param>
             <returns>true if <c>s</c> is an letter- and space-only and/or numeric String; otherwise, false.</returns>
         </member>
         <member name="M:SklLib.Strings.IsLetterOnly(System.String)">
              <summary>
-             Indicates whether the <see cref="T:System.String"/> contains only letters.
+             Indicates whether a <see cref="T:System.String"/> contains only letters.
              </summary>
              <param name="s">A <see cref="T:System.String"/>.</param>
              <returns>true if <c>s</c> is an letter-only String; otherwise, false.</returns>
@@ -1200,10 +1211,10 @@
                         string text2 = "testing?";
                         string text3 = "text3";
                         string text4 = "example";
-                        Console.WriteLine("First example: {0}", Strings.IsLetterOnly(text1));
-                        Console.WriteLine("Second example: {0}", Strings.IsLetterOnly(text2));
-                        Console.WriteLine("Third example: {0}", Strings.IsLetterOnly(text3));
-                        Console.WriteLine("Fourth example: {0}", Strings.IsLetterOnly(text4));
+                        Console.WriteLine("First example: {0}", text1.IsLetterOnly());
+                        Console.WriteLine("Second example: {0}", text2.IsLetterOnly());
+                        Console.WriteLine("Third example: {0}", text3.IsLetterOnly());
+                        Console.WriteLine("Fourth example: {0}", text4.IsLetterOnly());
                         Console.ReadKey();
                     }
              }
@@ -1220,7 +1231,7 @@
         </member>
         <member name="M:SklLib.Strings.IsNumeric(System.String)">
              <summary>
-             Indicates whether the <see cref="T:System.String"/> is categorized as a integer number.
+             Indicates whether a <see cref="T:System.String"/> is categorized as a integer number.
              </summary>
              <param name="s">A <see cref="T:System.String"/>.</param>
              <returns>True if <c>s</c> is numeric; otherwise, false.</returns>
@@ -1243,10 +1254,10 @@
                         string text2 = "8.98";
                         string text3 = "51687";
                         string text4 = "25,598";
-                        Console.WriteLine("First example: {0}", Strings.IsNumeric(text1));
-                        Console.WriteLine("Second example: {0}", Strings.IsNumeric(text2));
-                        Console.WriteLine("Third example: {0}", Strings.IsNumeric(text3));
-                        Console.WriteLine("Fourth example: {0}", Strings.IsNumeric(text4));
+                        Console.WriteLine("First example: {0}", text1.IsNumeric());
+                        Console.WriteLine("Second example: {0}", text2.IsNumeric());
+                        Console.WriteLine("Third example: {0}", text3.IsNumeric());
+                        Console.WriteLine("Fourth example: {0}", text4.IsNumeric());
                         Console.ReadKey();
                     }
                 }
@@ -1263,7 +1274,7 @@
         </member>
         <member name="M:SklLib.Strings.IsNumeric(System.String,System.Globalization.NumberFormatInfo)">
              <summary>
-             Indicates whether the <see cref="T:System.String"/> is categorized as a integer number.
+             Indicates whether a <see cref="T:System.String"/> is categorized as a integer number.
              </summary>
              <param name="s">A <see cref="T:System.String"/>.</param>
              <param name="numInfo">Culture specific <see cref="T:System.Globalization.NumberFormatInfo"/>.</param>
@@ -1288,10 +1299,10 @@
                         string text2 = "8.98";
                         string text3 = "51687";
                         string text4 = "25,598";
-                        Console.WriteLine("First example: {0}", Strings.IsNumeric(text1, nfi));
-                        Console.WriteLine("Second example: {0}", Strings.IsNumeric(text2, nfi));
-                        Console.WriteLine("Third example: {0}", Strings.IsNumeric(text3, nfi));
-                        Console.WriteLine("Fourth example: {0}", Strings.IsNumeric(text4, nfi));
+                        Console.WriteLine("First example: {0}", text1.IsNumeric(nfi));
+                        Console.WriteLine("Second example: {0}", text2.IsNumeric(nfi));
+                        Console.WriteLine("Third example: {0}", text3.IsNumeric(nfi));
+                        Console.WriteLine("Fourth example: {0}", text4.IsNumeric(nfi));
                         Console.ReadKey();
                     }
                 }
@@ -1308,7 +1319,7 @@
         </member>
         <member name="M:SklLib.Strings.IsNumeric(System.String,System.Boolean)">
              <summary>
-             Indicates whether the String is categorized as a integer number or
+             Indicates whether a String is categorized as a integer number or
              a decimal number.
              </summary>
              <param name="s">A <see cref="T:System.String"/>.</param>
@@ -1336,11 +1347,11 @@
                         string text3 = "51687.547";
                         string text4 = "25,598.9";
                         string text5 = "87643";
-                        Console.WriteLine("First example: {0}", Strings.IsNumeric(text1, true));
-                        Console.WriteLine("Second example: {0}", Strings.IsNumeric(text2, true));
-                        Console.WriteLine("Third example: {0}", Strings.IsNumeric(text3, true));
-                        Console.WriteLine("Fourth example: {0}", Strings.IsNumeric(text4, true));
-                        Console.WriteLine("Fifth example: {0}", Strings.IsNumeric(text5, true));
+                        Console.WriteLine("First example: {0}", text1.IsNumeric(true));
+                        Console.WriteLine("Second example: {0}", text2.IsNumeric(true));
+                        Console.WriteLine("Third example: {0}", text3.IsNumeric(true));
+                        Console.WriteLine("Fourth example: {0}", text4.IsNumeric(true));
+                        Console.WriteLine("Fifth example: {0}", text5.IsNumeric(true));
                         Console.ReadKey();
                     }
                 }
@@ -1358,7 +1369,7 @@
         </member>
         <member name="M:SklLib.Strings.IsNumeric(System.String,System.Globalization.NumberFormatInfo,System.Boolean)">
              <summary>
-             Indicates whether the String is categorized as a integer number or
+             Indicates whether a String is categorized as a integer number or
              a decimal number.
              </summary>
              <param name="s">A <see cref="T:System.String"/>.</param>
@@ -1387,11 +1398,11 @@
                         string text3 = "51687.547";
                         string text4 = "25,598.9";
                         string text5 = "87643";
-                        Console.WriteLine("First example: {0}", Strings.IsNumeric(text1, nfi, true));
-                        Console.WriteLine("Second example: {0}", Strings.IsNumeric(text2, nfi, true));
-                        Console.WriteLine("Third example: {0}", Strings.IsNumeric(text3, nfi, true));
-                        Console.WriteLine("Fourth example: {0}", Strings.IsNumeric(text4, nfi, true));
-                        Console.WriteLine("Fifth example: {0}", Strings.IsNumeric(text5, nfi, true));
+                        Console.WriteLine("First example: {0}", text1.IsNumeric(nfi, true));
+                        Console.WriteLine("Second example: {0}", text2.IsNumeric(nfi, true));
+                        Console.WriteLine("Third example: {0}", text3.IsNumeric(nfi, true));
+                        Console.WriteLine("Fourth example: {0}", text4.IsNumeric(nfi, true));
+                        Console.WriteLine("Fifth example: {0}", text5.IsNumeric(nfi, true));
                         Console.ReadKey();
                     }
                 }
@@ -1409,7 +1420,7 @@
         </member>
         <member name="M:SklLib.Strings.RepeatString(System.String,System.Int32)">
             <summary>
-            Repeats specified String to the number of times specified.
+            Repeats a String to the number of times specified.
             </summary>
             <param name="s">A <see cref="T:System.String"/>.</param>
             <param name="count">The number of times that <c>s</c> occurs.</param>
@@ -1422,7 +1433,7 @@
             method.</para>
             <code>
             String str = "-=";
-            String repeated = RepeatString(str, 10);
+            String repeated = str.RepeatString(10);
             // The value of repeated String is "-=-=-=-=-=-=-=-=-=-=", "-=" repeated 10 times.
             </code>
             </example>
@@ -1432,7 +1443,7 @@
         </member>
         <member name="M:SklLib.Strings.Split(System.String,System.Int32)">
             <summary>
-            Splits specified String into chunks of specified size.
+            Splits a String into chunks of specified size.
             </summary>
             <param name="s">A <see cref="T:System.String"/>.</param>
             <param name="chunkSize">The chunk size.</param>
@@ -3288,7 +3299,7 @@
             <para>Dangerous unsafe class.</para>
             </summary>
         </member>
-        <member name="M:SklLib.Performance.Strings.ToUpper(System.String)">
+        <member name="M:SklLib.Performance.Strings.UnsafeToUpper(System.String)">
             <summary>
             Converts the value of each Unicode character to its uppercase equivalent, using the casing
             rules of the current culture.

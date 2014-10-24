@@ -26,7 +26,7 @@ namespace cftv_bkp_prep
         public const string PROGRAM_NAME = "cftv-bkp-prep";
         // Latest release: 
         // Major.Minor.Maintenance.Build
-        public const string PROGRAM_VERSION = "0.1.0.12";
+        public const string PROGRAM_VERSION = "0.1.0.13";
         public const string PROGRAM_VERSION_SIMPLE = "0.1";
         public const string PROGRAM_TITLE = PROGRAM_NAME + " " + PROGRAM_VERSION_SIMPLE;
 

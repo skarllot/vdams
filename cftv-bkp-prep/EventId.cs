@@ -34,6 +34,7 @@ namespace cftv_bkp_prep
         public static readonly EventId AssortPathValidationError = new EventId(30);
         public static readonly EventId AssortCompleted = new EventId(31);
         public static readonly EventId AssortErrorCreateHardLink = new EventId(32);
+        public static readonly EventId AssortFileAccessError = new EventId(33);
 
         public EventId(ushort value) : base(value) { }
     }
