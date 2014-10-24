@@ -23,7 +23,7 @@ namespace cftv_bkp_prep.IO
 {
     static class IOExceptionExtension
     {
-        public static string GetIoExceptionFilePath(this IOException ex)
+        public static string GetAffectedFile(this IOException ex)
         {
             var field = typeof(IOException).GetField("_maybeFullPath",
                 System.Reflection.BindingFlags.NonPublic

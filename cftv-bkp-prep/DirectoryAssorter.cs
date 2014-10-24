@@ -48,27 +48,27 @@ namespace cftv_bkp_prep
             foreach (DirectoryInfo item in dirTarget.GetDirectories("*", SearchOption.TopDirectoryOnly)) {
                 try { item.Delete(true); }
                 catch (IOException ex) {
-                    string fileName = ex.GetIoExceptionFilePath();
+                    string fileName = ex.GetAffectedFile();
                     if (fileName != null) {
                         fileName = item.GetFile(fileName).FullName;
                         MainClass.Logger.WriteEntry(string.Format("The file \"{0}\" cannot be deleted", fileName),
                             System.Diagnostics.EventLogEntryType.Warning, EventId.AssortFileAccessError);
                     }
                     else
-                        throw ex;
+                        throw;
                 }
             }
             foreach (FileInfo item in dirTarget.GetFiles("*", SearchOption.TopDirectoryOnly)) {
                 try { item.Delete(); }
                 catch (IOException ex) {
-                    string fileName = ex.GetIoExceptionFilePath();
+                    string fileName = ex.GetAffectedFile();
                     if (fileName != null) {
                         fileName = item.FullName;
                         MainClass.Logger.WriteEntry(string.Format("The file \"{0}\" cannot be deleted", fileName),
                             System.Diagnostics.EventLogEntryType.Warning, EventId.AssortFileAccessError);
                     }
                     else
-                        throw ex;
+                        throw;
                 }
             }
 
