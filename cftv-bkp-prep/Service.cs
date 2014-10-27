@@ -34,7 +34,7 @@ namespace cftv_bkp_prep
         SklLib.Diagnostics.Logger eventLog = MainClass.Logger;
         System.ComponentModel.Container components = null;
         Thread svcThread;
-        Thread reloadThread;
+        FileSystemWatcher configWatcher;
         ManualResetEvent stopEvent;
         ManualResetEvent reloadEvent;
 
@@ -44,24 +44,6 @@ namespace cftv_bkp_prep
 
             stopEvent = new ManualResetEvent(true);
             reloadEvent = new ManualResetEvent(false);
-        }
-
-        private void ConfigWatcher(object obj)
-        {
-            string cfgpath = (string)obj;
-
-            DateTime dtCfg = File.GetLastWriteTime(cfgpath);
-            DateTime dtCfg2;
-            while (!stopEvent.WaitOne(0)) {
-                dtCfg2 = File.GetLastWriteTime(cfgpath);
-                if (dtCfg != dtCfg2) {
-                    dtCfg = dtCfg2;
-                    reloadEvent.Set();
-                }
-
-                if (stopEvent.WaitOne(DEFAULT_REFRESH))
-                    break;
-            }
         }
 
         private static DirectoryAssorter[] GetAssorter(IO.ConfigReader config)
@@ -135,8 +117,23 @@ namespace cftv_bkp_prep
             eventLog.WriteEntry(string.Format("{0} service started", MainClass.PROGRAM_NAME),
                 EventLogEntryType.Information, EventId.ServiceStateChanged);
 
-            reloadThread = new Thread(new ParameterizedThreadStart(ConfigWatcher));
-            reloadThread.Start(cfgFile);
+            configWatcher = new FileSystemWatcher(Path.GetDirectoryName(cfgFile), Path.GetFileName(cfgFile));
+            configWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size;
+            configWatcher.Changed += configWatcher_Changed;
+            configWatcher.Deleted += configWatcher_Deleted;
+            configWatcher.EnableRaisingEvents = true;
+        }
+
+        void configWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            if (e.ChangeType == WatcherChangeTypes.Changed) {
+                reloadEvent.Set();
+            }
+        }
+
+        void configWatcher_Deleted(object sender, FileSystemEventArgs e)
+        {
+            this.OnStop();
         }
 
         /// <summary>
@@ -146,10 +143,10 @@ namespace cftv_bkp_prep
         {
             base.OnStop();
 
+            configWatcher.EnableRaisingEvents = false;
             if (svcThread != null && svcThread.IsAlive) {
                 stopEvent.Set();
                 svcThread.Join();
-                reloadThread.Join();
             }
 
             eventLog.WriteEntry(string.Format("{0} service stopped", MainClass.PROGRAM_NAME),
@@ -270,6 +267,12 @@ namespace cftv_bkp_prep
         {
             try { SklLib.IO.ConfigFileReader reader = new SklLib.IO.ConfigFileReader(file); }
             catch (FileLoadException) { return false; }
+            catch (Exception ex) {
+                eventLog.WriteEntry(ex.CreateDump(),
+                    EventLogEntryType.Error, EventId.UnexpectedError);
+                stopEvent.Set();
+                return false;
+            }
             return true;
             // return reader.IsValidFile();
         }
