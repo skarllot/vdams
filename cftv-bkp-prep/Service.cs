@@ -114,26 +114,25 @@ namespace cftv_bkp_prep
 
             svcThread = new Thread(new ParameterizedThreadStart(StartThread));
             svcThread.Start(cfgFile);
-            eventLog.WriteEntry(string.Format("{0} service started", MainClass.PROGRAM_NAME),
-                EventLogEntryType.Information, EventId.ServiceStateChanged);
 
             configWatcher = new FileSystemWatcher(Path.GetDirectoryName(cfgFile), Path.GetFileName(cfgFile));
-            configWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size;
+            configWatcher.NotifyFilter = NotifyFilters.LastWrite;
             configWatcher.Changed += configWatcher_Changed;
-            configWatcher.Deleted += configWatcher_Deleted;
             configWatcher.EnableRaisingEvents = true;
+
+            eventLog.WriteEntry(string.Format("{0} service started", MainClass.PROGRAM_NAME),
+                EventLogEntryType.Information, EventId.ServiceStateChanged);
         }
 
         void configWatcher_Changed(object sender, FileSystemEventArgs e)
         {
-            if (e.ChangeType == WatcherChangeTypes.Changed) {
-                reloadEvent.Set();
+            lock (this) {
+                if (!reloadEvent.WaitOne(0)) {
+                    if (e.ChangeType == WatcherChangeTypes.Changed) {
+                        reloadEvent.Set();
+                    }
+                }
             }
-        }
-
-        void configWatcher_Deleted(object sender, FileSystemEventArgs e)
-        {
-            this.OnStop();
         }
 
         /// <summary>
