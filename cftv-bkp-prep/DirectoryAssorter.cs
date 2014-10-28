@@ -46,29 +46,16 @@ namespace cftv_bkp_prep
 
             DirectoryInfo dirTarget = new DirectoryInfo(cfgPath.TargetFullPath);
             foreach (DirectoryInfo item in dirTarget.GetDirectories("*", SearchOption.TopDirectoryOnly)) {
-                try { item.Delete(true); }
-                catch (IOException ex) {
-                    string fileName = ex.GetAffectedFile();
-                    if (fileName != null) {
-                        fileName = item.GetFile(fileName).FullName;
-                        MainClass.Logger.WriteEntry(string.Format("The file \"{0}\" cannot be deleted", fileName),
-                            System.Diagnostics.EventLogEntryType.Warning, EventId.AssortFileAccessError);
-                    }
-                    else
-                        throw;
+                var result = DelayedFileDelete.Default.DeleteDirectory(item.FullName, true);
+                foreach (string f in result.DelayedFiles) {
+                    MainClass.Logger.WriteEntry(string.Format("The file \"{0}\" cannot be deleted", f),
+                        System.Diagnostics.EventLogEntryType.Warning, EventId.AssortFileAccessError);
                 }
             }
             foreach (FileInfo item in dirTarget.GetFiles("*", SearchOption.TopDirectoryOnly)) {
-                try { item.Delete(); }
-                catch (IOException ex) {
-                    string fileName = ex.GetAffectedFile();
-                    if (fileName != null) {
-                        fileName = item.FullName;
-                        MainClass.Logger.WriteEntry(string.Format("The file \"{0}\" cannot be deleted", fileName),
-                            System.Diagnostics.EventLogEntryType.Warning, EventId.AssortFileAccessError);
-                    }
-                    else
-                        throw;
+                if (!DelayedFileDelete.Default.DeleteFile(item.FullName)) {
+                    MainClass.Logger.WriteEntry(string.Format("The file \"{0}\" cannot be deleted", item.FullName),
+                        System.Diagnostics.EventLogEntryType.Warning, EventId.AssortFileAccessError);
                 }
             }
 
