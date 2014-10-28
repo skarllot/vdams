@@ -45,21 +45,32 @@ namespace cftv_bkp_prep
             }
 
             DirectoryInfo dirTarget = new DirectoryInfo(cfgPath.TargetFullPath);
+            List<string> delayedFiles = new List<string>();
             foreach (DirectoryInfo item in dirTarget.GetDirectories("*", SearchOption.TopDirectoryOnly)) {
                 var result = DelayedFileDelete.Default.DeleteDirectory(item.FullName, true);
-                foreach (string f in result.DelayedFiles) {
-                    MainClass.Logger.WriteEntry(string.Format("The file \"{0}\" cannot be deleted", f),
-                        System.Diagnostics.EventLogEntryType.Warning, EventId.AssortFileAccessError);
-                }
+                if (result.DelayedFiles.Length > 0)
+                    delayedFiles.AddRange(result.DelayedFiles);
             }
             foreach (FileInfo item in dirTarget.GetFiles("*", SearchOption.TopDirectoryOnly)) {
-                if (!DelayedFileDelete.Default.DeleteFile(item.FullName)) {
-                    MainClass.Logger.WriteEntry(string.Format("The file \"{0}\" cannot be deleted", item.FullName),
-                        System.Diagnostics.EventLogEntryType.Warning, EventId.AssortFileAccessError);
-                }
+                if (!DelayedFileDelete.Default.DeleteFile(item.FullName))
+                    delayedFiles.Add(item.FullName);
             }
 
             var logTransaction = MainClass.Logger.BeginWriteEntry();
+
+            if (delayedFiles.Count > 0) {
+                logTransaction.LineHeader = string.Empty;
+                logTransaction.HeaderHasTimestamp = false;
+                logTransaction.AppendLine("The following files cannot be deleted:");
+                foreach (string item in delayedFiles) {
+                    logTransaction.AppendLine(item);
+                }
+                logTransaction.AppendLine(string.Format("Total {0} files", delayedFiles.Count));
+                logTransaction.Commit(new SklLib.Diagnostics.LogEventArgs(
+                    System.Diagnostics.EventLogEntryType.Warning, EventId.AssortFileAccessError));
+            }
+
+            logTransaction = MainClass.Logger.BeginWriteEntry();
             logTransaction.AppendLine(string.Format("Initializing assorting to {0}", cfgPath.SectionName));
 
             List<string> fileList = (List<string>)GetFileList(cfgPath.SourceFullPath);
