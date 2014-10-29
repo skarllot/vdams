@@ -19,19 +19,19 @@
 using System;
 using System.ServiceProcess;
 
-namespace cftv_bkp_prep
+namespace vdams
 {
     class MainClass
     {
-        public const string PROGRAM_NAME = "cftv-bkp-prep";
-        // Latest release: 
+        public const string PROGRAM_NAME = "vdams";
+        // Latest release: 0.1.0.18
         // Major.Minor.Maintenance.Build
-        public const string PROGRAM_VERSION = "0.1.0.18";
-        public const string PROGRAM_VERSION_SIMPLE = "0.1";
+        public const string PROGRAM_VERSION = "0.2.0.21";
+        public const string PROGRAM_VERSION_SIMPLE = "0.2";
         public const string PROGRAM_TITLE = PROGRAM_NAME + " " + PROGRAM_VERSION_SIMPLE;
 
         const string LOG_NAME = MainClass.PROGRAM_NAME;
-        const string LOG_SOURCE = "CftvBkpPrep " + MainClass.PROGRAM_VERSION_SIMPLE;
+        const string LOG_SOURCE = "VDAMS " + MainClass.PROGRAM_VERSION_SIMPLE;
         private static SklLib.Diagnostics.Logger log;
 
         public static readonly bool DEBUG = System.Diagnostics.Debugger.IsAttached;

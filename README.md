@@ -1,4 +1,4 @@
-CFTV Backup Prepare
-===================
+VDAMS - Video Data Assorting and Monitoring Service
+===================================================
 
-Prepare CFTV video files for backup.
+Windows Service targeted to video data that allow monitoring and file preparing for backups.

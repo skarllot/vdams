@@ -22,7 +22,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace cftv_bkp_prep.IO
+namespace vdams.IO
 {
     class DelayedFileDelete
     {

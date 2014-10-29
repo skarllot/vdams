@@ -1,4 +1,4 @@
-﻿// IOExceptionExtension.cs
+﻿// DirectoryInfoExtension.cs
 //
 // Copyright (C) 2014 Fabrício Godoy
 //
@@ -19,17 +19,17 @@
 using System;
 using System.IO;
 
-namespace cftv_bkp_prep.IO
+namespace vdams.IO
 {
-    static class IOExceptionExtension
+    static class DirectoryInfoExtension
     {
-        public static string GetAffectedFile(this IOException ex)
+        public static FileInfo GetFile(this DirectoryInfo dirInfo, string fileName)
         {
-            var field = typeof(IOException).GetField("_maybeFullPath",
-                System.Reflection.BindingFlags.NonPublic
-                | System.Reflection.BindingFlags.Instance);
-            var value = field != null ? field.GetValue(ex) : null;
-            return (value != null ? value.ToString() : null);
+            FileInfo[] fList = dirInfo.GetFiles(fileName, SearchOption.AllDirectories);
+            if (fList.Length != 1)
+                return null;
+
+            return fList[0];
         }
     }
 }

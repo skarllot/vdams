@@ -21,7 +21,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
-namespace cftv_bkp_prep
+namespace vdams
 {
     public class Service : System.ServiceProcess.ServiceBase
     {

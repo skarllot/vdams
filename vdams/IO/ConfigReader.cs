@@ -20,7 +20,7 @@ using SklLib.IO;
 using System;
 using System.Collections.ObjectModel;
 
-namespace cftv_bkp_prep.IO
+namespace vdams.IO
 {
     class ConfigReader : ConfigReaderBase
     {

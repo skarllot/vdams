@@ -22,7 +22,7 @@ using System.IO;
 using System.Security;
 using System.Security.Permissions;
 
-namespace cftv_bkp_prep.IO
+namespace vdams.IO
 {
     class ConfigPathItem : ConfigReaderBase
     {

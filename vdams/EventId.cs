@@ -18,7 +18,7 @@
 
 using System;
 
-namespace cftv_bkp_prep
+namespace vdams
 {
     class EventId : SklLib.Diagnostics.EventId
     {
