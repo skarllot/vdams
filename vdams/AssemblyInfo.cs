@@ -24,7 +24,7 @@ using System.Reflection;
 // associated with an assembly.
 //
 [assembly: AssemblyTitle(MainClass.PROGRAM_TITLE)]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Windows Service targeted to video data that allow monitoring and file preparing for backups.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct(MainClass.PROGRAM_NAME + ".exe")]

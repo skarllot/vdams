@@ -497,6 +497,12 @@
             <param name="ex">The Exception to dump.</param>
             <returns>A human-readable text detailing Exception instance.</returns>
         </member>
+        <member name="T:SklLib.IO.ConfigDynamicReaderBase">
+            <summary>
+            Provides base methods to implement a class to represent a configuration file reader
+            that has dynamic named sections.
+            </summary>
+        </member>
         <member name="T:SklLib.IO.ConfigReaderBase">
             <summary>
             Provides base methods to implement a class to represent a configuration file reader.
@@ -513,54 +519,26 @@
             </summary>
             <returns>True whether is valid; otherwise false.</returns>
         </member>
-        <member name="M:SklLib.IO.ConfigReaderBase.GetBoolean(System.String,System.String)">
+        <member name="M:SklLib.IO.ConfigReaderBase.GetSectionByName(System.String)">
             <summary>
-            Gets the specified key from specified section converted to boolean.
+            Gets a section reader instance from its name.
             </summary>
-            <param name="section">The configuration file section.</param>
-            <param name="key">The configuration file key.</param>
-            <returns>The key value as boolean.</returns>
+            <param name="section">The sectio name.</param>
+            <returns>A ConfigSectionReaderBase instance.</returns>
         </member>
-        <member name="M:SklLib.IO.ConfigReaderBase.GetInteger(System.String,System.String)">
+        <member name="M:SklLib.IO.ConfigReaderBase.GetSectionReader(System.String)">
             <summary>
-            Gets the specified key from specified section converted to integer.
+            Gets a new instance ConfigSectionReaderBase class based on section name.
             </summary>
-            <param name="section">The configuration file section.</param>
-            <param name="key">The configuration file key.</param>
-            <returns>The key value as integer.</returns>
+            <param name="section">The section name.</param>
+            <returns>A new instance of ConfigSectionReaderBase class.</returns>
         </member>
-        <member name="M:SklLib.IO.ConfigReaderBase.GetString(System.String,System.String)">
+        <member name="M:SklLib.IO.ConfigReaderBase.HasSection(System.String)">
             <summary>
-            Gets the specified key from specified section as string.
+            Determines whether specified section name exists into current configuration.
             </summary>
-            <param name="section">The configuration file section.</param>
-            <param name="key">The configuration file key.</param>
-            <returns>The key value as string.</returns>
-        </member>
-        <member name="M:SklLib.IO.ConfigReaderBase.GetCsvString(System.String,System.String)">
-            <summary>
-            Gets the specified key from specified section converted to string array.
-            </summary>
-            <param name="section">The configuration file section.</param>
-            <param name="key">The configuration file key.</param>
-            <returns>The key value as string array.</returns>
-        </member>
-        <member name="M:SklLib.IO.ConfigReaderBase.GetCsvString(System.String,System.String,System.Char)">
-            <summary>
-            Gets the specified key from specified section converted to string array.
-            </summary>
-            <param name="section">The configuration file section.</param>
-            <param name="key">The configuration file key.</param>
-            <param name="separator">The character used as separator between array items.</param>
-            <returns>The key value as string array.</returns>
-        </member>
-        <member name="M:SklLib.IO.ConfigReaderBase.GetTimeSpan(System.String,System.String)">
-            <summary>
-            Gets the specified key from specified section converted to TimeSpan.
-            </summary>
-            <param name="section">The configuration file section.</param>
-            <param name="key">The configuration file key.</param>
-            <returns>The key value as TimeSpan.</returns>
+            <param name="section">The section name.</param>
+            <returns>True whether section is found; otherwise false.</returns>
         </member>
         <member name="M:SklLib.IO.ConfigReaderBase.IsValid">
             <summary>
@@ -577,6 +555,127 @@
             <summary>
             Gets the file name backed by this instance.
             </summary>
+        </member>
+        <member name="P:SklLib.IO.ConfigReaderBase.MandatorySections">
+            <summary>
+            Gets a list of sections name that is mandatory.
+            </summary>
+        </member>
+        <member name="M:SklLib.IO.ConfigDynamicReaderBase.GetDynamicSection(System.Int32)">
+            <summary>
+            Gets a section instance based on its index.
+            </summary>
+            <param name="index">The index.</param>
+            <returns>A instance of ConfigSectionReaderBase class.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigDynamicReaderBase.LoadFile">
+            <summary>
+            Reads configuration file and populates current instance.
+            </summary>
+        </member>
+        <member name="P:SklLib.IO.ConfigDynamicReaderBase.StaticNamedSections">
+            <summary>
+            Gets a list of sections name that is static defined.
+            </summary>
+        </member>
+        <member name="T:SklLib.IO.ConfigSectionReaderBase">
+            <summary>
+            Provides base methods to implement a class to represent a section reader from configuration file.
+            </summary>
+        </member>
+        <member name="F:SklLib.IO.ConfigSectionReaderBase.DEFAULT_CSV_SEPARATOR">
+            <summary>
+            Default character for comma-separated values.
+            </summary>
+        </member>
+        <member name="M:SklLib.IO.ConfigSectionReaderBase.#ctor(SklLib.IO.ConfigFileReader,System.String)">
+            <summary>
+            Initializes a new instance of ConfigSectionReaderBase class.
+            </summary>
+            <param name="reader">The configuration file reader.</param>
+            <param name="section">The section name for this instance.</param>
+        </member>
+        <member name="M:SklLib.IO.ConfigSectionReaderBase.GetBoolean(System.String)">
+            <summary>
+            Gets the specified key converted to boolean.
+            </summary>
+            <param name="key">The configuration file key.</param>
+            <returns>The key value as boolean.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigSectionReaderBase.GetInteger(System.String)">
+            <summary>
+            Gets the specified key converted to integer.
+            </summary>
+            <param name="key">The configuration file key.</param>
+            <returns>The key value as integer.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigSectionReaderBase.GetString(System.String)">
+            <summary>
+            Gets the specified key as string.
+            </summary>
+            <param name="key">The configuration file key.</param>
+            <returns>The key value as string.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigSectionReaderBase.GetCsvString(System.String)">
+            <summary>
+            Gets the specified key converted to string array.
+            </summary>
+            <param name="key">The configuration file key.</param>
+            <returns>The key value as string array.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigSectionReaderBase.GetCsvString(System.String,System.Char)">
+            <summary>
+            Gets the specified key converted to string array.
+            </summary>
+            <param name="key">The configuration file key.</param>
+            <param name="separator">The character used as separator between array items.</param>
+            <returns>The key value as string array.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigSectionReaderBase.GetRegex(System.String)">
+            <summary>
+            Gets the specified key converted to Regex class.
+            </summary>
+            <param name="key">The configuration file key.</param>
+            <returns>The key value as Regex class.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigSectionReaderBase.GetTimeSpan(System.String)">
+            <summary>
+            Gets the specified key converted to TimeSpan.
+            </summary>
+            <param name="key">The configuration file key.</param>
+            <returns>The key value as TimeSpan.</returns>
+        </member>
+        <member name="M:SklLib.IO.ConfigSectionReaderBase.IsValid">
+            <summary>
+            Determines whether current instance is valid.
+            </summary>
+            <returns>True whether is valid; otherwise false.</returns>
+        </member>
+        <member name="P:SklLib.IO.ConfigSectionReaderBase.SectionName">
+            <summary>
+            Gets the section name.
+            </summary>
+        </member>
+        <member name="T:SklLib.IO.FileInfoExtension">
+            <summary>
+            Provides methods to <see cref="T:System.IO.FileInfo"/> class.
+            </summary>
+        </member>
+        <member name="M:SklLib.IO.FileInfoExtension.HasPermission(System.IO.FileInfo,System.Security.Permissions.FileIOPermissionAccess)">
+            <summary>
+            Determines whether specified permission is granted to access the file.
+            </summary>
+            <param name="fInfo">The target file to test permission access.</param>
+            <param name="perm">The type of file access required.</param>
+            <returns>True whether the required access permission is granted; otherwise, False.</returns>
+        </member>
+        <member name="M:SklLib.IO.FileInfoExtension.HasPermission(System.String,System.Security.Permissions.FileIOPermissionAccess)">
+            <summary>
+            Determines whether specified permission is granted to access the file.
+            </summary>
+            <param name="path">The path to target file to test permission access.</param>
+            <param name="perm">The type of file access required.</param>
+            <returns>True whether the required access permission is granted; otherwise, False.</returns>
         </member>
         <member name="T:SklLib.IO.KeyNotFoundException">
             <summary>

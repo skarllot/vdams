@@ -22,62 +22,48 @@ using System.Collections.ObjectModel;
 
 namespace vdams.IO
 {
-    class ConfigReader : ConfigReaderBase
+    class ConfigReader : ConfigDynamicReaderBase
     {
         const string CFG_MAIN = "MAIN";
-        int idxMain;
-        ConfigPathItem[] paths;
 
         public ConfigReader(string path)
         {
             base.filename = path;
         }
 
-        public TimeSpan ScheduleTime { get { return GetTimeSpan(CFG_MAIN, "ScheduleTime"); } }
-        public int Depth { get { return GetInteger(CFG_MAIN, "Depth"); } }
-        public int PathCount { get { return paths.Length; } }
+        public ConfigMainSection MainSection { get { return GetSectionByName(CFG_MAIN) as ConfigMainSection; } }
+        public int PathCount { get { return dynSections.Length; } }
 
-        public ConfigPathItem GetPath(int index)
+        protected override string[] StaticNamedSections
         {
-            if (index < 0)
-                throw new ArgumentOutOfRangeException("Parameter index cannot be less than zero.");
-            if (index >= paths.Length)
-                throw new ArgumentOutOfRangeException("Parameter index is out of array bounds.");
-
-            return paths[index];
+            get { return new string[] { CFG_MAIN }; }
         }
 
-        private ConfigPathItem GetNewPathItem(int index)
+        protected override string[] MandatorySections
         {
-            if (index >= idxMain)
-                index++;
-            return new ConfigPathItem(cfgreader, sections[index]);
+            get { return StaticNamedSections; }
         }
 
-        new public void LoadFile()
+        public ConfigPathSection GetPath(int index)
         {
-            base.LoadFile();
-            idxMain = Array.IndexOf<string>(sections, CFG_MAIN);
+            return GetDynamicSection(index) as ConfigPathSection;
+        }
 
-            if (idxMain == -1)
-                paths = new ConfigPathItem[sections.Length];
+        protected override ConfigSectionReaderBase GetSectionReader(string section)
+        {
+            if (section == CFG_MAIN)
+                return new ConfigMainSection(cfgreader, CFG_MAIN);
             else
-                paths = new ConfigPathItem[sections.Length - 1];
-
-            for (int i = 0; i < paths.Length; i++) {
-                paths[i] = GetNewPathItem(i);
-            }
+                return new ConfigPathSection(cfgreader, section);
         }
 
         public override bool IsValid()
         {
-            if (idxMain < 0)
+            if (!base.IsValid())
                 return false;
 
-            foreach (ConfigPathItem item in paths) {
-                if (!item.IsValid())
-                    return false;
-            }
+            if (dynSections.Length < 1)
+                return false;
 
             return true;
         }

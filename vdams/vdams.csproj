@@ -76,10 +76,12 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DirectoryAssorter.cs" />
+    <Compile Include="Assorting\AssortTransaction.cs" />
+    <Compile Include="Assorting\DirectoryAssorter.cs" />
     <Compile Include="EventId.cs" />
+    <Compile Include="IO\ConfigMainSection.cs" />
     <Compile Include="IO\ConfigReader.cs" />
-    <Compile Include="IO\ConfigPathItem.cs" />
+    <Compile Include="IO\ConfigPathSection.cs" />
     <Compile Include="IO\DelayedFileDelete.cs" />
     <Compile Include="IO\DirectoryInfoExtension.cs" />
     <Compile Include="IO\IOExceptionExtension.cs" />
