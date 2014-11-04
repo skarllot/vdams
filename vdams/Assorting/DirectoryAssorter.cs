@@ -16,19 +16,24 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using vdams.IO;
+using SklLib.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
+using vdams.IO;
 
 namespace vdams.Assorting
 {
     class DirectoryAssorter
     {
-        const string DEFAULT_FILELIST_DATE_FORMAT = "yyyy-MM-dd";
-        const string DEFAULT_FILELIST_NAME = "{0}.txt";
+        const string FILELIST_DATE_FORMAT = "yyyy-MM-dd";
+        const string FILELIST_NAME = "{0}.txt";
+        const string FILELIST_REGEX_EXPRESSION = @"^([1-9][0-9]{3})-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1])[.]txt$";
+        const string FILELIST_LATEST_NAME = "latest.txt";
+        static readonly Regex FILELIST_REGEX = new Regex(FILELIST_REGEX_EXPRESSION, RegexOptions.Compiled);
         Configuration.ConfigPathSection cfgPath;
         int depth;
 
@@ -43,8 +48,8 @@ namespace vdams.Assorting
             int counter = 1;
             while (counter <= depth) {
                 DateTime dt = DateTime.Today.AddDays(-1 * counter);
-                string fileName = Path.Combine(path, string.Format(DEFAULT_FILELIST_NAME,
-                    dt.ToString(DEFAULT_FILELIST_DATE_FORMAT)));
+                string fileName = Path.Combine(path, string.Format(FILELIST_NAME,
+                    dt.ToString(FILELIST_DATE_FORMAT)));
                 if (File.Exists(fileName))
                     File.Delete(fileName);
 
@@ -108,8 +113,8 @@ namespace vdams.Assorting
 
                     logTransaction.AppendLine(string.Format("Writing file list of files modified on {0}", dt.ToShortDateString()));
                     string fileName = Path.Combine(transaction.Path,
-                        string.Format(DEFAULT_FILELIST_NAME,
-                        dt.ToString(DEFAULT_FILELIST_DATE_FORMAT)));
+                        string.Format(FILELIST_NAME,
+                        dt.ToString(FILELIST_DATE_FORMAT)));
 
                     StreamWriter writer = new StreamWriter(fileName, true, System.Text.Encoding.UTF8);
                     foreach (string item in pickedList)
@@ -135,7 +140,25 @@ namespace vdams.Assorting
             if (transaction == null)
                 throw new ArgumentNullException("transaction");
 
-            transaction.Terminate();
+            lock (transaction.Locker) {
+                string latestPath = Path.Combine(
+                    transaction.Path, FILELIST_LATEST_NAME);
+                if (File.Exists(latestPath))
+                    File.Delete(latestPath);
+
+                FileInfo[] files = new DirectoryInfo(transaction.Path)
+                    .GetFiles()
+                    .Where(s => FILELIST_REGEX.IsMatch(s.Name))
+                    .OrderByDescending(s => DateTime.ParseExact(
+                        Path.GetFileNameWithoutExtension(s.Name),
+                        FILELIST_DATE_FORMAT, null).Ticks)
+                    .ToArray();
+                if (files.Length > 0) {
+                    files[0].CreateHardLink(latestPath);
+                }
+
+                transaction.Terminate();
+            }
         }
 
         private static IList<FileInfo> GetFileInfoFromList(IList<string> fileList)
@@ -169,9 +192,5 @@ namespace vdams.Assorting
             recursiveGetFileList(path, fileList);
             return fileList;
         }
-
-        [System.Runtime.InteropServices.DllImport("Kernel32.dll",
-            CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
-        static extern bool CreateHardLink(string lpFileName, string lpExistingFileName, IntPtr lpSecurityAttributes);
     }
 }

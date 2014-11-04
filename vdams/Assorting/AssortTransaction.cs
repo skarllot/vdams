@@ -23,6 +23,7 @@ namespace vdams.Assorting
     class AssortTransaction
     {
         object locker = new object();
+        object internalLocker = new object();
         string path;
         bool isRunning;
 
@@ -36,10 +37,10 @@ namespace vdams.Assorting
         {
             get
             {
-                if (locker == null)
-                    return false;
+                lock (internalLocker) {
+                    if (locker == null)
+                        return false;
 
-                lock (locker) {
                     return isRunning;
                 }
             }
@@ -50,7 +51,7 @@ namespace vdams.Assorting
 
         public void Terminate()
         {
-            lock (locker) {
+            lock (internalLocker) {
                 isRunning = false;
                 locker = null;
             }
