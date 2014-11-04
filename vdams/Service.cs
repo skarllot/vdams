@@ -46,7 +46,7 @@ namespace vdams
             reloadEvent = new ManualResetEvent(false);
         }
 
-        private static Assorting.DirectoryAssorter[] GetAssorter(IO.ConfigReader config)
+        private static Assorting.DirectoryAssorter[] GetAssorter(Configuration.ConfigReader config)
         {
             Assorting.DirectoryAssorter[] ret = new Assorting.DirectoryAssorter[config.PathCount];
             for (int i = 0; i < ret.Length; i++) {
@@ -162,7 +162,7 @@ namespace vdams
             stopEvent.Reset();
             string cfgpath = (string)obj;
 
-            IO.ConfigReader config = new IO.ConfigReader(cfgpath);
+            Configuration.ConfigReader config = new Configuration.ConfigReader(cfgpath);
             if (!ValidateConfiguration(config)) {
                 eventLog.WriteEntry("Initial configuration file loading failed",
                     EventLogEntryType.Error, EventId.ConfigFileLoadError);
@@ -213,7 +213,7 @@ namespace vdams
             }
         }
 
-        private bool ValidateConfiguration(IO.ConfigReader config)
+        private bool ValidateConfiguration(Configuration.ConfigReader config)
         {
             if (!ValidateConfigFile(config.FileName)) {
                 eventLog.WriteEntry(string.Format("Error loading configuration file {0}", config.FileName),
@@ -249,7 +249,7 @@ namespace vdams
                 }
 
                 for (int i = 0; i < config.PathCount; i++) {
-                    IO.ConfigPathSection item = config.GetPath(i);
+                    Configuration.ConfigPathSection item = config.GetPath(i);
 
                     if (!Directory.Exists(item.SourcePath)) {
                         eventLog.WriteEntry(string.Format("The specified source path \"{0}\" doesn't exist", item.SourcePath),
@@ -270,7 +270,11 @@ namespace vdams
 
         private bool ValidateConfigFile(string file)
         {
-            try { SklLib.IO.ConfigFileReader reader = new SklLib.IO.ConfigFileReader(file); }
+            try {
+                SklLib.IO.IniFileReader reader = new SklLib.IO.IniFileReader(file);
+                reader.ReloadFile();
+            }
+            catch (FileNotFoundException) { return false; }
             catch (FileLoadException) { return false; }
             catch (Exception ex) {
                 eventLog.WriteEntry(ex.CreateDump(),

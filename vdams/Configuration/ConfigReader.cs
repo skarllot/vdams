@@ -16,13 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using SklLib.Configuration;
 using SklLib.IO;
 using System;
 using System.Collections.ObjectModel;
 
-namespace vdams.IO
+namespace vdams.Configuration
 {
-    class ConfigReader : ConfigDynamicReaderBase
+    class ConfigReader : DynamicIniReaderBase
     {
         const string CFG_MAIN = "MAIN";
 
@@ -49,7 +50,7 @@ namespace vdams.IO
             return GetDynamicSection(index) as ConfigPathSection;
         }
 
-        protected override ConfigSectionReaderBase GetSectionReader(string section)
+        protected override IniSectionReaderBase GetSectionInstance(string section)
         {
             if (section == CFG_MAIN)
                 return new ConfigMainSection(cfgreader, CFG_MAIN);

@@ -1,4 +1,4 @@
-﻿// ConfigPathItem.cs
+﻿// ConfigMainSection.cs
 //
 // Copyright (C) 2014 Fabrício Godoy
 //
@@ -16,23 +16,24 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using SklLib.Configuration;
 using SklLib.IO;
 using System;
 using System.IO;
 using System.Security.Permissions;
 
-namespace vdams.IO
+namespace vdams.Configuration
 {
-    class ConfigMainSection : ConfigSectionReaderBase
+    class ConfigMainSection : IniSectionReaderBase
     {
-        public TimeSpan? ScheduleTime { get { return GetTimeSpan("ScheduleTime"); } }
-        public int DateDepth { get { return GetInteger("DateDepth") ?? 1; } }
-        public string FileListPath { get { return GetString("FileListPath"); } }
-
-        public ConfigMainSection(ConfigFileReader reader, string section)
+        public ConfigMainSection(IniFileReader reader, string section)
             : base(reader, section)
         {
         }
+
+        public TimeSpan? ScheduleTime { get { return GetTimeSpan("ScheduleTime"); } }
+        public int DateDepth { get { return GetInteger("DateDepth") ?? 1; } }
+        public string FileListPath { get { return GetString("FileListPath"); } }
 
         public bool HasPermissionFileListPath()
         {

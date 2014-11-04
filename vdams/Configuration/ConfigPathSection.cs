@@ -1,4 +1,4 @@
-﻿// ConfigPathItem.cs
+﻿// ConfigPathSection.cs
 //
 // Copyright (C) 2014 Fabrício Godoy
 //
@@ -16,16 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using SklLib.Configuration;
 using SklLib.IO;
 using System.IO;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
 
-namespace vdams.IO
+namespace vdams.Configuration
 {
-    class ConfigPathSection : ConfigSectionReaderBase
+    class ConfigPathSection : IniSectionReaderBase
     {
-        public ConfigPathSection(ConfigFileReader reader, string section)
+        public ConfigPathSection(IniFileReader reader, string section)
             : base(reader, section)
         {
         }

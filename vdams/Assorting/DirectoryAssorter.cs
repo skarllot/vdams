@@ -29,10 +29,10 @@ namespace vdams.Assorting
     {
         const string DEFAULT_FILELIST_DATE_FORMAT = "yyyy-MM-dd";
         const string DEFAULT_FILELIST_NAME = "{0}.txt";
-        IO.ConfigPathSection cfgPath;
+        Configuration.ConfigPathSection cfgPath;
         int depth;
 
-        public DirectoryAssorter(IO.ConfigPathSection cfgPath, int depth)
+        public DirectoryAssorter(Configuration.ConfigPathSection cfgPath, int depth)
         {
             this.cfgPath = cfgPath;
             this.depth = depth;
