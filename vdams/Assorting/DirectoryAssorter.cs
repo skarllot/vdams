@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using SklLib.Collections;
 using SklLib.IO;
 using System;
 using System.Collections.Generic;
@@ -92,20 +93,22 @@ namespace vdams.Assorting
                     string strDt = dt.ToString(cfgPath.FileDateFormat);
 
                     logTransaction.AppendLine(string.Format("Looking for file modified on {0}", dt.ToShortDateString()));
-                    foreach (string item in fileList) {
-                        if (isFileDateFormatDefined) {
-                            if (item.IndexOf(strDt) != -1) {
-                                pickedList.Add(item);
-                                totalBytes += new FileInfo(item).Length;
-                            }
-                        }
-                        else {
-                            FileInfo fInfo = new FileInfo(item);
-                            if (fInfo.LastWriteTime.Date == dt.Date) {
-                                pickedList.Add(item);
-                                totalBytes += fInfo.Length;
-                            }
-                        }
+                    if (isFileDateFormatDefined) {
+                        fileList
+                            .Where(s => s.IndexOf(strDt) != -1)
+                            .ForEach(s => {
+                                pickedList.Add(s);
+                                totalBytes += new FileInfo(s).Length;
+                            });
+                    }
+                    else {
+                        fileList
+                            .ConvertAll(s => new FileInfo(s))
+                            .Where(s => s.LastWriteTime.Date == dt.Date)
+                            .ForEach(s => {
+                                pickedList.Add(s.FullName);
+                                totalBytes += s.Length;
+                            });
                     }
 
                     logTransaction.AppendLine(string.Format("Found {0} files, total size of {1}",
@@ -161,16 +164,6 @@ namespace vdams.Assorting
             }
         }
 
-        private static IList<FileInfo> GetFileInfoFromList(IList<string> fileList)
-        {
-            List<FileInfo> fileInfoList = new List<FileInfo>(fileList.Count);
-
-            foreach (string item in fileList) {
-                fileInfoList.Add(new FileInfo(item));
-            }
-            return fileInfoList;
-        }
-
         private static IList<string> GetFileList(string path)
         {
             List<string> fileList = new List<string>();
@@ -179,11 +172,9 @@ namespace vdams.Assorting
             recursiveGetFileList = delegate(string p, IList<string> files) {
                 try {
                     Directory.GetFiles(p)
-                        .ToList()
                         .ForEach(s => files.Add(s));
 
                     Directory.GetDirectories(p)
-                        .ToList()
                         .ForEach(s => recursiveGetFileList(s, files));
                 }
                 catch (UnauthorizedAccessException) { }

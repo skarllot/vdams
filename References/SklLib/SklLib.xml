@@ -4,6 +4,57 @@
         <name>SklLib</name>
     </assembly>
     <members>
+        <member name="T:SklLib.Collections.Enumerable">
+            <summary>
+            Provides methods to extend <see cref="T:System.Collections.Generic.IEnumerable`1"/> interface.
+            </summary>
+        </member>
+        <member name="M:SklLib.Collections.Enumerable.ConvertAll``2(System.Collections.Generic.IEnumerable{``0},System.Converter{``0,``1})">
+            <summary>
+            Converts the elements in the current <see cref="T:System.Collections.Generic.IEnumerable`1"/>
+            to another type, and returns a list containing the converted elements.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <typeparam name="TResult">The type of the resulting value.</typeparam>
+            <param name="source">An <see cref="T:System.Collections.Generic.IEnumerable`1"/> to convert.</param>
+            <param name="converter">
+            A <see cref="T:System.Converter`2"/> delegate that converts each element from one type to another type.
+            </param>
+            <returns>
+            A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of the target type containing the converted
+            elements from the current <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">source is null</exception>
+            <exception cref="T:System.ArgumentNullException">converter is null</exception>
+        </member>
+        <member name="M:SklLib.Collections.Enumerable.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>
+            Performs the specified action on each element of the <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">An <see cref="T:System.Collections.Generic.IEnumerable`1"/> to iterate over.</param>
+            <param name="action">
+            The <see cref="T:System.Action`1"/> delegate to perform on each element of the
+            <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            </param>
+            <returns>The reference of especified source.</returns>
+            <exception cref="T:System.ArgumentNullException">source is null</exception>
+            <exception cref="T:System.ArgumentNullException">action is null</exception>
+        </member>
+        <member name="M:SklLib.Collections.Enumerable.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0,System.Int32})">
+            <summary>
+            Performs the specified action on each element of the <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">An <see cref="T:System.Collections.Generic.IEnumerable`1"/> to iterate over.</param>
+            <param name="action">
+            The <see cref="T:System.Action`1"/> delegate to perform on each element of the
+            <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            </param>
+            <returns>The reference of especified source.</returns>
+            <exception cref="T:System.ArgumentNullException">source is null</exception>
+            <exception cref="T:System.ArgumentNullException">action is null</exception>
+        </member>
         <member name="T:SklLib.Diagnostics.EventId">
             <summary>
             Defines identification values to logging events.
