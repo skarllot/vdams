@@ -24,8 +24,7 @@
             A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of the target type containing the converted
             elements from the current <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
             </returns>
-            <exception cref="T:System.ArgumentNullException">source is null</exception>
-            <exception cref="T:System.ArgumentNullException">converter is null</exception>
+            <exception cref="T:System.ArgumentNullException">source or converter is null</exception>
         </member>
         <member name="M:SklLib.Collections.Enumerable.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
             <summary>
@@ -38,8 +37,7 @@
             <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
             </param>
             <returns>The reference of especified source.</returns>
-            <exception cref="T:System.ArgumentNullException">source is null</exception>
-            <exception cref="T:System.ArgumentNullException">action is null</exception>
+            <exception cref="T:System.ArgumentNullException">source or action is null</exception>
         </member>
         <member name="M:SklLib.Collections.Enumerable.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0,System.Int32})">
             <summary>
@@ -52,8 +50,16 @@
             <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
             </param>
             <returns>The reference of especified source.</returns>
-            <exception cref="T:System.ArgumentNullException">source is null</exception>
-            <exception cref="T:System.ArgumentNullException">action is null</exception>
+            <exception cref="T:System.ArgumentNullException">source or action is null</exception>
+        </member>
+        <member name="M:SklLib.Collections.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.IComparable})">
+            <summary>
+            Invokes a transform function on each element of a generic sequence and returns the maximum resulting value.
+            </summary>
+            <typeparam name="TSource">The type of the elements of source.</typeparam>
+            <param name="source">An <see cref="T:System.Collections.Generic.IEnumerable`1"/> to determine the maximum value of.</param>
+            <param name="selector">A transform function to apply to each element.</param>
+            <returns>The maximum value in the sequence.</returns>
         </member>
         <member name="T:SklLib.Diagnostics.EventId">
             <summary>

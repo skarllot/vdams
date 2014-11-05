@@ -149,15 +149,14 @@ namespace vdams.Assorting
                 if (File.Exists(latestPath))
                     File.Delete(latestPath);
 
-                FileInfo[] files = new DirectoryInfo(transaction.Path)
+                FileInfo fileLatest = new DirectoryInfo(transaction.Path)
                     .GetFiles()
                     .Where(s => FILELIST_REGEX.IsMatch(s.Name))
-                    .OrderByDescending(s => DateTime.ParseExact(
+                    .Max(s => (IComparable)DateTime.ParseExact(
                         Path.GetFileNameWithoutExtension(s.Name),
-                        FILELIST_DATE_FORMAT, null).Ticks)
-                    .ToArray();
-                if (files.Length > 0) {
-                    files[0].CreateHardLink(latestPath);
+                        FILELIST_DATE_FORMAT, null).Ticks);
+                if (fileLatest != null) {
+                    fileLatest.CreateHardLink(latestPath);
                 }
 
                 transaction.Terminate();
