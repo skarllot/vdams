@@ -78,6 +78,7 @@
     </Compile>
     <Compile Include="Assorting\AssortTransaction.cs" />
     <Compile Include="Assorting\DirectoryAssorter.cs" />
+    <Compile Include="Configuration\ConfigFilelistSection.cs" />
     <Compile Include="EventId.cs" />
     <Compile Include="Configuration\ConfigMainSection.cs" />
     <Compile Include="Configuration\ConfigReader.cs" />

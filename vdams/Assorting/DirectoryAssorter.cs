@@ -36,20 +36,19 @@ namespace vdams.Assorting
         const string FILELIST_LATEST_NAME = "latest.txt";
         static readonly Regex FILELIST_REGEX = new Regex(FILELIST_REGEX_EXPRESSION, RegexOptions.Compiled);
         Configuration.ConfigPathSection cfgPath;
-        int depth;
 
-        public DirectoryAssorter(Configuration.ConfigPathSection cfgPath, int depth)
+        public DirectoryAssorter(Configuration.ConfigPathSection cfgPath)
         {
             this.cfgPath = cfgPath;
-            this.depth = depth;
         }
 
-        public static AssortTransaction BeginTransaction(string path, int depth)
+        public static AssortTransaction BeginTransaction(Configuration.ConfigFilelistSection cfgFilelist, int depth)
         {
             int counter = 1;
             while (counter <= depth) {
                 DateTime dt = DateTime.Today.AddDays(-1 * counter);
-                string fileName = Path.Combine(path, string.Format(FILELIST_NAME,
+                string fileName = Path.Combine(
+                    cfgFilelist.DirPath, string.Format(FILELIST_NAME,
                     dt.ToString(FILELIST_DATE_FORMAT)));
                 if (File.Exists(fileName))
                     File.Delete(fileName);
@@ -57,7 +56,7 @@ namespace vdams.Assorting
                 counter++;
             }
 
-            return new AssortTransaction(path);
+            return new AssortTransaction(cfgFilelist, depth);
         }
 
         public bool Assort(AssortTransaction transaction)
@@ -78,7 +77,7 @@ namespace vdams.Assorting
                 var logTransaction = MainClass.Logger.BeginWriteEntry();
                 logTransaction.AppendLine(string.Format("Initializing assorting to {0}", cfgPath.SectionName));
 
-                IList<string> fileList = GetFileList(cfgPath.SourcePath);
+                IList<string> fileList = GetFileList(cfgPath.DirPath);
                 logTransaction.AppendLine(string.Format("Found {0} total files", fileList.Count));
 
                 // If a file date format was not defined into configuration then assort files based on modification date;
@@ -86,7 +85,7 @@ namespace vdams.Assorting
                 bool isFileDateFormatDefined = !string.IsNullOrWhiteSpace(cfgPath.FileDateFormat);
 
                 int counter = 1;
-                while (counter <= depth) {
+                while (counter <= transaction.DateDepth) {
                     DateTime dt = DateTime.Today.AddDays(-1 * counter);
                     List<string> pickedList = new List<string>();
                     long totalBytes = 0;
@@ -115,11 +114,12 @@ namespace vdams.Assorting
                         pickedList.Count, new SklLib.DataSize(totalBytes).ToString("N2")));
 
                     logTransaction.AppendLine(string.Format("Writing file list of files modified on {0}", dt.ToShortDateString()));
-                    string fileName = Path.Combine(transaction.Path,
+                    string fileName = Path.Combine(transaction.Configuration.DirPath,
                         string.Format(FILELIST_NAME,
                         dt.ToString(FILELIST_DATE_FORMAT)));
 
-                    StreamWriter writer = new StreamWriter(fileName, true, System.Text.Encoding.UTF8);
+                    StreamWriter writer = new StreamWriter(fileName, true,
+                        transaction.Configuration.GetEncodingInstance());
                     foreach (string item in pickedList)
                         writer.WriteLine(item);
                     writer.Flush();
@@ -145,11 +145,11 @@ namespace vdams.Assorting
 
             lock (transaction.Locker) {
                 string latestPath = Path.Combine(
-                    transaction.Path, FILELIST_LATEST_NAME);
+                    transaction.Configuration.DirPath, FILELIST_LATEST_NAME);
                 if (File.Exists(latestPath))
                     File.Delete(latestPath);
 
-                FileInfo fileLatest = new DirectoryInfo(transaction.Path)
+                FileInfo fileLatest = new DirectoryInfo(transaction.Configuration.DirPath)
                     .GetFiles()
                     .Where(s => FILELIST_REGEX.IsMatch(s.Name))
                     .Max(s => (IComparable)DateTime.ParseExact(

@@ -29,6 +29,7 @@ namespace vdams
         public static readonly EventId ConfigFileZeroPath = new EventId(15);
         public static readonly EventId ConfigFileInvalidPath = new EventId(16);
         public static readonly EventId ConfigFilePathPermissionError = new EventId(17);
+        public static readonly EventId ConfigFileInvalidEncoding = new EventId(18);
 
         // Assort operation related codes (30-49)
         public static readonly EventId AssortPathValidationError = new EventId(30);

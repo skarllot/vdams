@@ -24,12 +24,14 @@ namespace vdams.Assorting
     {
         object locker = new object();
         object internalLocker = new object();
-        string path;
+        Configuration.ConfigFilelistSection config;
         bool isRunning;
+        int depth;
 
-        public AssortTransaction(string path)
+        public AssortTransaction(Configuration.ConfigFilelistSection cfgFilelist, int depth)
         {
-            this.path = path;
+            this.config = cfgFilelist;
+            this.depth = depth;
             this.isRunning = true;
         }
 
@@ -47,7 +49,8 @@ namespace vdams.Assorting
         }
 
         public object Locker { get { return locker; } }
-        public string Path { get { return path; } }
+        public Configuration.ConfigFilelistSection Configuration { get { return config; } }
+        public int DateDepth { get { return depth; } }
 
         public void Terminate()
         {

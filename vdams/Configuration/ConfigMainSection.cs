@@ -19,8 +19,6 @@
 using SklLib.Configuration;
 using SklLib.IO;
 using System;
-using System.IO;
-using System.Security.Permissions;
 
 namespace vdams.Configuration
 {
@@ -33,29 +31,12 @@ namespace vdams.Configuration
 
         public TimeSpan? ScheduleTime { get { return GetTimeSpan("ScheduleTime"); } }
         public int DateDepth { get { return GetInteger("DateDepth") ?? 1; } }
-        public string FileListPath { get { return GetString("FileListPath"); } }
-
-        public bool HasPermissionFileListPath()
-        {
-            return new FileInfo(FileListPath).HasPermission(FileIOPermissionAccess.Write);
-        }
 
         public override bool IsValid()
         {
             if (ScheduleTime == null
                 || ScheduleTime > new TimeSpan(23, 59, 59)) {
                     return false;
-            }
-
-            if (FileListPath != null) {
-                try {
-                    Path.GetFullPath(FileListPath);
-                    if (!Directory.Exists(FileListPath))
-                        return false;
-                    if (!HasPermissionFileListPath())
-                        return false;
-                }
-                catch { return false; }
             }
 
             return true;

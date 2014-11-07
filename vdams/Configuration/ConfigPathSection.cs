@@ -33,18 +33,18 @@ namespace vdams.Configuration
 
         public Regex CameraNameRegex { get { return GetRegex("CameraNameRegex"); } }
         public string FileDateFormat { get { return GetString("FileDateFormat"); } }
-        public string SourcePath { get { return GetString("SourcePath"); } }
+        public string DirPath { get { return GetString("Directory"); } }
 
         public bool HasPermissionSourcePath()
         {
-            return new FileInfo(SourcePath).HasPermission(FileIOPermissionAccess.Read);
+            return new FileInfo(DirPath).HasPermission(FileIOPermissionAccess.Read);
         }
 
         public override bool IsValid()
         {
             try {
-                Path.GetFullPath(SourcePath);
-                if (!Directory.Exists(SourcePath))
+                Path.GetFullPath(DirPath);
+                if (!Directory.Exists(DirPath))
                     return false;
                 if (!HasPermissionSourcePath())
                     return false;

@@ -26,6 +26,11 @@ namespace vdams.Configuration
     class ConfigReader : DynamicIniReaderBase
     {
         const string CFG_MAIN = "MAIN";
+        const string CFG_FILELIST = "FILELIST";
+        static readonly string[] sSections =
+            new string[] { CFG_MAIN, CFG_FILELIST };
+        static readonly string[] mSections =
+            new string[] { CFG_MAIN };
 
         public ConfigReader(string path)
         {
@@ -33,16 +38,22 @@ namespace vdams.Configuration
         }
 
         public ConfigMainSection MainSection { get { return GetSectionByName(CFG_MAIN) as ConfigMainSection; } }
+        
+        public ConfigFilelistSection FilelistSection
+        {
+            get { return GetSectionByName(CFG_FILELIST) as ConfigFilelistSection; }
+        }
+
         public int PathCount { get { return dynSections.Length; } }
 
         protected override string[] StaticNamedSections
         {
-            get { return new string[] { CFG_MAIN }; }
+            get { return (string[])sSections.Clone(); }
         }
 
         protected override string[] MandatorySections
         {
-            get { return StaticNamedSections; }
+            get { return (string[])mSections.Clone(); }
         }
 
         public ConfigPathSection GetPath(int index)
@@ -54,6 +65,8 @@ namespace vdams.Configuration
         {
             if (section == CFG_MAIN)
                 return new ConfigMainSection(cfgreader, CFG_MAIN);
+            else if (section == CFG_FILELIST)
+                return new ConfigFilelistSection(cfgreader, CFG_FILELIST);
             else
                 return new ConfigPathSection(cfgreader, section);
         }

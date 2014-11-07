@@ -50,7 +50,7 @@ namespace vdams
         {
             Assorting.DirectoryAssorter[] ret = new Assorting.DirectoryAssorter[config.PathCount];
             for (int i = 0; i < ret.Length; i++) {
-                ret[i] = new Assorting.DirectoryAssorter(config.GetPath(i), config.MainSection.DateDepth);
+                ret[i] = new Assorting.DirectoryAssorter(config.GetPath(i));
             }
 
             return ret;
@@ -176,23 +176,25 @@ namespace vdams
                 if (DateTime.Now.ToString(DEFAULT_TIME_FORMAT_DT) ==
                     config.MainSection.ScheduleTime.Value.ToString(DEFAULT_TIME_FORMAT_TS)
                     || MainClass.DEBUG) {
-                    var transaction = Assorting.DirectoryAssorter.BeginTransaction(
-                        config.MainSection.FileListPath, config.MainSection.DateDepth);
-                    foreach (Assorting.DirectoryAssorter item in arrAssorter) {
-                        try {
-                            item.Assort(transaction);
-                        }
-                        catch (Exception ex) {
-                            eventLog.WriteEntry(ex.CreateDump(),
-                                EventLogEntryType.Error, EventId.UnexpectedError);
-                            stopEvent.Set();
-                            return;
-                        }
+                        if (config.FilelistSection != null) {
+                            var transaction = Assorting.DirectoryAssorter.BeginTransaction(
+                                config.FilelistSection, config.MainSection.DateDepth);
+                            foreach (Assorting.DirectoryAssorter item in arrAssorter) {
+                                try {
+                                    item.Assort(transaction);
+                                }
+                                catch (Exception ex) {
+                                    eventLog.WriteEntry(ex.CreateDump(),
+                                        EventLogEntryType.Error, EventId.UnexpectedError);
+                                    stopEvent.Set();
+                                    return;
+                                }
 
-                        if (stopEvent.WaitOne(0))
-                            break;
-                    }
-                    Assorting.DirectoryAssorter.EndTransaction(transaction);
+                                if (stopEvent.WaitOne(0))
+                                    break;
+                            }
+                            Assorting.DirectoryAssorter.EndTransaction(transaction);
+                        }
                 }
 
                 if (reloadEvent.WaitOne(0)) {
@@ -228,19 +230,30 @@ namespace vdams
                         EventLogEntryType.Error, EventId.ConfigFileInvalidSchedule);
                 }
 
-                if (!Directory.Exists(config.MainSection.FileListPath)) {
-                    eventLog.WriteEntry(string.Format("The specified path for file list \"{0}\" doesn't exist", config.MainSection.FileListPath),
-                        EventLogEntryType.Error, EventId.ConfigFileInvalidPath);
-                }
+                if (config.FilelistSection != null) {
+                    if (!Directory.Exists(config.FilelistSection.DirPath)) {
+                        eventLog.WriteEntry(string.Format(
+                            "The specified path for file-list file \"{0}\" doesn't exist", config.FilelistSection.DirPath),
+                            EventLogEntryType.Error, EventId.ConfigFileInvalidPath);
+                    }
 
-                if (!Directory.Exists(config.MainSection.FileListPath)) {
-                    eventLog.WriteEntry(string.Format("The specified path for file list \"{0}\" doesn't exist", config.MainSection.FileListPath),
-                        EventLogEntryType.Error, EventId.ConfigFileInvalidPath);
-                }
-                else if (!config.MainSection.HasPermissionFileListPath()) {
-                    eventLog.WriteEntry(string.Format(
-                        "The current user doesn't has write permission on specified path for file list \"{0}\"", config.MainSection.FileListPath),
-                        EventLogEntryType.Error, EventId.ConfigFilePathPermissionError);
+                    if (!Directory.Exists(config.FilelistSection.DirPath)) {
+                        eventLog.WriteEntry(string.Format(
+                            "The specified path for file-list file \"{0}\" doesn't exist", config.FilelistSection.DirPath),
+                            EventLogEntryType.Error, EventId.ConfigFileInvalidPath);
+                    }
+                    else if (!config.FilelistSection.HasPermissionFileListPath()) {
+                        eventLog.WriteEntry(string.Format(
+                            "The current user doesn't has write permission on specified path for file list \"{0}\"",
+                            config.FilelistSection.DirPath),
+                            EventLogEntryType.Error, EventId.ConfigFilePathPermissionError);
+                    }
+
+                    if (config.FilelistSection.GetEncodingInstance() == null) {
+                        eventLog.WriteEntry(string.Format(
+                            "The specified text enconding for file-list file \"{0}\" is invalid", config.FilelistSection.Encoding),
+                            EventLogEntryType.Error, EventId.ConfigFileInvalidEncoding);
+                    }
                 }
 
                 if (config.PathCount < 1) {
@@ -251,13 +264,13 @@ namespace vdams
                 for (int i = 0; i < config.PathCount; i++) {
                     Configuration.ConfigPathSection item = config.GetPath(i);
 
-                    if (!Directory.Exists(item.SourcePath)) {
-                        eventLog.WriteEntry(string.Format("The specified source path \"{0}\" doesn't exist", item.SourcePath),
+                    if (!Directory.Exists(item.DirPath)) {
+                        eventLog.WriteEntry(string.Format("The specified source path \"{0}\" doesn't exist", item.DirPath),
                             EventLogEntryType.Error, EventId.ConfigFileInvalidPath);
                     }
                     else if (!item.HasPermissionSourcePath()) {
                         eventLog.WriteEntry(string.Format(
-                            "The current user doesn't has read permission on specified source path \"{0}\"", item.SourcePath),
+                            "The current user doesn't has read permission on specified source path \"{0}\"", item.DirPath),
                             EventLogEntryType.Error, EventId.ConfigFilePathPermissionError);
                     }
                 }
