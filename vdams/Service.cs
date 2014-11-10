@@ -26,8 +26,8 @@ namespace vdams
     public class Service : System.ServiceProcess.ServiceBase
     {
         const string DEFAULT_CFG_FILE_NAME = "config.ini";
-        const string DEFAULT_TIME_FORMAT_DT = "HH:mm";
-        const string DEFAULT_TIME_FORMAT_TS = "hh\\:mm";
+        const string TIME_FORMAT_DT = "HH:mm";
+        const string TIME_FORMAT_TS = "hh\\:mm";
         const int DEFAULT_REFRESH = 1 * MINUTE_TO_MILLISECONDS;
         const int MINUTE_TO_MILLISECONDS = 1000 * 60;
 
@@ -37,6 +37,7 @@ namespace vdams
         FileSystemWatcher configWatcher;
         ManualResetEvent stopEvent;
         ManualResetEvent reloadEvent;
+        object lckInstance;
 
         public Service()
         {
@@ -44,6 +45,7 @@ namespace vdams
 
             stopEvent = new ManualResetEvent(true);
             reloadEvent = new ManualResetEvent(false);
+            lckInstance = new object();
         }
 
         private static Assorting.DirectoryAssorter[] GetAssorter(Configuration.ConfigReader config)
@@ -126,7 +128,7 @@ namespace vdams
 
         void configWatcher_Changed(object sender, FileSystemEventArgs e)
         {
-            lock (this) {
+            lock (lckInstance) {
                 if (!reloadEvent.WaitOne(0)) {
                     if (e.ChangeType == WatcherChangeTypes.Changed) {
                         reloadEvent.Set();
@@ -163,7 +165,7 @@ namespace vdams
             string cfgpath = (string)obj;
 
             Configuration.ConfigReader config = new Configuration.ConfigReader(cfgpath);
-            if (!ValidateConfiguration(config)) {
+            if (!TryLoadConfiguration(config)) {
                 eventLog.WriteEntry("Initial configuration file loading failed",
                     EventLogEntryType.Error, EventId.ConfigFileLoadError);
                 stopEvent.Set();
@@ -173,8 +175,8 @@ namespace vdams
             Assorting.DirectoryAssorter[] arrAssorter = GetAssorter(config);
 
             while (!stopEvent.WaitOne(0)) {
-                if (DateTime.Now.ToString(DEFAULT_TIME_FORMAT_DT) ==
-                    config.MainSection.ScheduleTime.Value.ToString(DEFAULT_TIME_FORMAT_TS)
+                if (DateTime.Now.ToString(TIME_FORMAT_DT) ==
+                    config.MainSection.ScheduleTime.Value.ToString(TIME_FORMAT_TS)
                     || MainClass.DEBUG) {
                         if (config.FilelistSection != null) {
                             var transaction = Assorting.DirectoryAssorter.BeginTransaction(
@@ -198,11 +200,13 @@ namespace vdams
                 }
 
                 if (reloadEvent.WaitOne(0)) {
-                    if (!ValidateConfiguration(config)) {
+                    Configuration.ConfigReader tmpConfig = new Configuration.ConfigReader(config.FileName);
+                    if (!TryLoadConfiguration(tmpConfig)) {
                         eventLog.WriteEntry("Configuration file was changed to invalid state",
                             EventLogEntryType.Error, EventId.ConfigFileReloadError);
                     }
                     else {
+                        config = tmpConfig;
                         arrAssorter = GetAssorter(config);
                         eventLog.WriteEntry("Configuration file reloaded",
                             EventLogEntryType.Information, EventId.ConfigFileReloaded);
@@ -215,7 +219,7 @@ namespace vdams
             }
         }
 
-        private bool ValidateConfiguration(Configuration.ConfigReader config)
+        private bool TryLoadConfiguration(Configuration.ConfigReader config)
         {
             if (!ValidateConfigFile(config.FileName)) {
                 eventLog.WriteEntry(string.Format("Error loading configuration file {0}", config.FileName),
@@ -233,18 +237,12 @@ namespace vdams
                 if (config.FilelistSection != null) {
                     if (!Directory.Exists(config.FilelistSection.DirPath)) {
                         eventLog.WriteEntry(string.Format(
-                            "The specified path for file-list file \"{0}\" doesn't exist", config.FilelistSection.DirPath),
-                            EventLogEntryType.Error, EventId.ConfigFileInvalidPath);
-                    }
-
-                    if (!Directory.Exists(config.FilelistSection.DirPath)) {
-                        eventLog.WriteEntry(string.Format(
-                            "The specified path for file-list file \"{0}\" doesn't exist", config.FilelistSection.DirPath),
+                            "The specified path for file-list file \"{0}\" doesn't exist", config.FilelistSection.DirPath ?? string.Empty),
                             EventLogEntryType.Error, EventId.ConfigFileInvalidPath);
                     }
                     else if (!config.FilelistSection.HasPermissionFileListPath()) {
                         eventLog.WriteEntry(string.Format(
-                            "The current user doesn't has write permission on specified path for file list \"{0}\"",
+                            "The current user doesn't has write permission on specified file-list file \"{0}\"",
                             config.FilelistSection.DirPath),
                             EventLogEntryType.Error, EventId.ConfigFilePathPermissionError);
                     }
@@ -265,7 +263,7 @@ namespace vdams
                     Configuration.ConfigPathSection item = config.GetPath(i);
 
                     if (!Directory.Exists(item.DirPath)) {
-                        eventLog.WriteEntry(string.Format("The specified source path \"{0}\" doesn't exist", item.DirPath),
+                        eventLog.WriteEntry(string.Format("The specified source path \"{0}\" doesn't exist", item.DirPath ?? string.Empty),
                             EventLogEntryType.Error, EventId.ConfigFileInvalidPath);
                     }
                     else if (!item.HasPermissionSourcePath()) {

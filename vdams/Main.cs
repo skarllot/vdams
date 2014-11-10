@@ -24,10 +24,10 @@ namespace vdams
     class MainClass
     {
         public const string PROGRAM_NAME = "VDAMS";
-        // Latest release: 0.1.0.18
+        // Latest release: 0.2.0.26
         // Major.Minor.Maintenance.Build
-        public const string PROGRAM_VERSION = "0.2.0.26";
-        public const string PROGRAM_VERSION_SIMPLE = "0.2";
+        public const string PROGRAM_VERSION = "0.2.1.28";
+        public const string PROGRAM_VERSION_SIMPLE = "0.2.1";
         public const string PROGRAM_TITLE = PROGRAM_NAME + " " + PROGRAM_VERSION_SIMPLE;
 
         const string LOG_NAME = MainClass.PROGRAM_NAME;
