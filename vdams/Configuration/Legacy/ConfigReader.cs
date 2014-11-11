@@ -21,7 +21,7 @@ using SklLib.IO;
 using System;
 using System.Collections.ObjectModel;
 
-namespace vdams.Configuration
+namespace vdams.Configuration.Legacy
 {
     class ConfigReader : DynamicIniReaderBase
     {

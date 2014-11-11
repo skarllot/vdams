@@ -68,8 +68,12 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.ServiceProcess">
       <Name>System.ServiceProcess</Name>
+    </Reference>
+    <Reference Include="YamlDotNet">
+      <HintPath>..\packages\YamlDotNet.3.3.0\lib\net35\YamlDotNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -78,11 +82,16 @@
     </Compile>
     <Compile Include="Assorting\AssortTransaction.cs" />
     <Compile Include="Assorting\DirectoryAssorter.cs" />
-    <Compile Include="Configuration\ConfigFilelistSection.cs" />
+    <Compile Include="Configuration\Assort.cs" />
+    <Compile Include="Configuration\Legacy\ConfigFilelistSection.cs" />
+    <Compile Include="Configuration\Configuration.cs" />
+    <Compile Include="Configuration\FileList.cs" />
+    <Compile Include="Configuration\Monitor.cs" />
+    <Compile Include="Configuration\Target.cs" />
     <Compile Include="EventId.cs" />
-    <Compile Include="Configuration\ConfigMainSection.cs" />
-    <Compile Include="Configuration\ConfigReader.cs" />
-    <Compile Include="Configuration\ConfigPathSection.cs" />
+    <Compile Include="Configuration\Legacy\ConfigMainSection.cs" />
+    <Compile Include="Configuration\Legacy\ConfigReader.cs" />
+    <Compile Include="Configuration\Legacy\ConfigPathSection.cs" />
     <Compile Include="IO\DelayedFileDelete.cs" />
     <Compile Include="IO\DirectoryInfoExtension.cs" />
     <Compile Include="IO\IOExceptionExtension.cs" />
@@ -90,12 +99,19 @@
     <Compile Include="Service.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Time.cs" />
+    <Compile Include="TimeFields.cs" />
     <EmbeddedResource Include="Service.resx">
       <DependentUpon>Service.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Examples\config.ini" />
+    <None Include="Examples\config.yml" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Monitoring\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

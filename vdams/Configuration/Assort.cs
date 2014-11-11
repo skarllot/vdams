@@ -1,4 +1,4 @@
-﻿// ConfigMainSection.cs
+﻿// Assort.cs
 //
 // Copyright (C) 2014 Fabrício Godoy
 //
@@ -16,27 +16,32 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using SklLib.Configuration;
-using SklLib.IO;
+using SklLib;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace vdams.Configuration
 {
-    class ConfigMainSection : IniSectionReaderBase
+    class Assort: IValidatable
     {
-        public ConfigMainSection(IniFileReader reader, string section)
-            : base(reader, section)
-        {
-        }
+        [Required]
+        public Target Target { get; set; }
+        public string FileDateFormat { get; set; }
 
-        public TimeSpan? ScheduleTime { get { return GetTimeSpan("ScheduleTime"); } }
-        public int DateDepth { get { return GetInteger("DateDepth") ?? 1; } }
-
-        public override bool IsValid()
+        public bool IsValid()
         {
-            if (ScheduleTime == null
-                || ScheduleTime > new TimeSpan(23, 59, 59)) {
-                    return false;
+            if (Target == null)
+                return false;
+            if (!Target.IsValid())
+                return false;
+
+            if (FileDateFormat != null) {
+                try { DateTime.Now.ToString(FileDateFormat); }
+                catch (Exception e) {
+                    if (e is FormatException || e is ArgumentOutOfRangeException)
+                        return false;
+                    throw;
+                }
             }
 
             return true;

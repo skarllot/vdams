@@ -25,7 +25,8 @@ namespace vdams
 {
     public class Service : System.ServiceProcess.ServiceBase
     {
-        const string DEFAULT_CFG_FILE_NAME = "config.ini";
+        const string CFG_FILE_NAME = "config.yml";
+        const string CFG_FILE_NAME_LEGACY = "config.ini";
         const string TIME_FORMAT_DT = "HH:mm";
         const string TIME_FORMAT_TS = "hh\\:mm";
         const int DEFAULT_REFRESH = 1 * MINUTE_TO_MILLISECONDS;
@@ -48,11 +49,11 @@ namespace vdams
             lckInstance = new object();
         }
 
-        private static Assorting.DirectoryAssorter[] GetAssorter(Configuration.ConfigReader config)
+        private static Assorting.DirectoryAssorter[] GetAssorter(Configuration.Configuration config)
         {
-            Assorting.DirectoryAssorter[] ret = new Assorting.DirectoryAssorter[config.PathCount];
+            Assorting.DirectoryAssorter[] ret = new Assorting.DirectoryAssorter[config.Assort.Count];
             for (int i = 0; i < ret.Length; i++) {
-                ret[i] = new Assorting.DirectoryAssorter(config.GetPath(i));
+                ret[i] = new Assorting.DirectoryAssorter(config.Assort[i]);
             }
 
             return ret;
@@ -112,7 +113,7 @@ namespace vdams
             if (args.Length == 1)
                 dir = args[0];
 
-            string cfgFile = GetConfigFileFullName(dir, DEFAULT_CFG_FILE_NAME);
+            string cfgFile = GetConfigFileFullName(dir, CFG_FILE_NAME);
 
             svcThread = new Thread(new ParameterizedThreadStart(StartThread));
             svcThread.Start(cfgFile);

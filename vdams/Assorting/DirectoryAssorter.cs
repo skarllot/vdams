@@ -35,20 +35,20 @@ namespace vdams.Assorting
         const string FILELIST_REGEX_EXPRESSION = @"^([1-9][0-9]{3})-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1])[.]txt$";
         const string FILELIST_LATEST_NAME = "latest.txt";
         static readonly Regex FILELIST_REGEX = new Regex(FILELIST_REGEX_EXPRESSION, RegexOptions.Compiled);
-        Configuration.ConfigPathSection cfgPath;
+        Configuration.Assort cfgPath;
 
-        public DirectoryAssorter(Configuration.ConfigPathSection cfgPath)
+        public DirectoryAssorter(Configuration.Assort cfgPath)
         {
             this.cfgPath = cfgPath;
         }
 
-        public static AssortTransaction BeginTransaction(Configuration.ConfigFilelistSection cfgFilelist, int depth)
+        public static AssortTransaction BeginTransaction(Configuration.FileList cfgFilelist, int depth)
         {
             int counter = 1;
             while (counter <= depth) {
                 DateTime dt = DateTime.Today.AddDays(-1 * counter);
                 string fileName = Path.Combine(
-                    cfgFilelist.DirPath, string.Format(FILELIST_NAME,
+                    cfgFilelist.Directory, string.Format(FILELIST_NAME,
                     dt.ToString(FILELIST_DATE_FORMAT)));
                 if (File.Exists(fileName))
                     File.Delete(fileName);

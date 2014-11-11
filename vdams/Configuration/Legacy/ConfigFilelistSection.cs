@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Permissions;
 
-namespace vdams.Configuration
+namespace vdams.Configuration.Legacy
 {
     class ConfigFilelistSection : IniSectionReaderBase
     {

@@ -1,4 +1,4 @@
-﻿// ConfigPathSection.cs
+﻿// Target.cs
 //
 // Copyright (C) 2014 Fabrício Godoy
 //
@@ -16,31 +16,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using SklLib.Configuration;
+using SklLib;
 using SklLib.IO;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Security.Permissions;
-using System.Text.RegularExpressions;
+using YamlDotNet.Serialization;
 
 namespace vdams.Configuration
 {
-    class ConfigPathSection : IniSectionReaderBase
+    class Target : IValidatable
     {
-        public ConfigPathSection(IniFileReader reader, string section)
-            : base(reader, section)
-        {
-        }
+        [Required]
+        [YamlAlias("directory")]
+        public string DirPath { get; set; }
 
-        public Regex CameraNameRegex { get { return GetRegex("CameraNameRegex"); } }
-        public string FileDateFormat { get { return GetString("FileDateFormat"); } }
-        public string DirPath { get { return GetString("Directory"); } }
-
-        public bool HasPermissionSourcePath()
+        private bool HasPermissionSourcePath()
         {
             return new FileInfo(DirPath).HasPermission(FileIOPermissionAccess.Read);
         }
 
-        public override bool IsValid()
+        public bool IsValid()
         {
             try {
                 Path.GetFullPath(DirPath);
