@@ -4,24 +4,24 @@ scheduleTime: '02:00'
 dateDepth: 1
 
 targets:
-	- &ROOM1
-	  directory: 'D:\Record'
+  - &ROOM1
+    directory: 'D:\Record'
 
-	- &ROOM2
-	  directory: 'E:\CFTV\Record'
+  - &ROOM2
+    directory: 'E:\CFTV\Record'
 
 fileList:
-	directory: 'D:\Backup'
-	encoding: 'UTF-8'
-	bom: false
+  directory: 'D:\Backup'
+  encoding: 'UTF-8'
+  bom: false
 
 assort:
-	- target: *ROOM1
-	  fileDateFormat: 'yyyyMMdd'
+  - target: *ROOM1
+    fileDateFormat: 'yyyyMMdd'
 
-	- target: *ROOM2
+  - target: *ROOM2
 
 monitor:
-	- target: *ROOM1
-	  cameraNameRegex: '^[0-9]{4}$'
+  - target: *ROOM1
+    cameraNameRegex: '^[0-9]{4}$'
 ...

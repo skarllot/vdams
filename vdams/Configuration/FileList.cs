@@ -28,6 +28,7 @@ namespace vdams.Configuration
 {
     class FileList : IValidatable
     {
+        [YamlAlias("bom")]
         public bool BOM { get; set; }
         [YamlAlias("directory")]
         public string DirPath { get; set; }

@@ -26,15 +26,15 @@ namespace vdams.Configuration
     class Monitor : IValidatable
     {
         public Target Target { get; set; }
-        public string CameraRegex { get; set; }
+        public string CameraNameRegex { get; set; }
 
         public Regex GetCameraRegexInstance()
         {
-            if (string.IsNullOrEmpty(CameraRegex))
+            if (string.IsNullOrEmpty(CameraNameRegex))
                 return null;
 
             Regex result;
-            try { result = new Regex(CameraRegex); }
+            try { result = new Regex(CameraNameRegex); }
             catch { return null; }
 
             return result;
@@ -55,11 +55,11 @@ namespace vdams.Configuration
             else if (!Target.Validate(action))
                 result = false;
 
-            if (!string.IsNullOrEmpty(CameraRegex)
+            if (!string.IsNullOrEmpty(CameraNameRegex)
                 && GetCameraRegexInstance() == null) {
                 action(new InvalidEventArgs(
-                    string.Format("The regular expression '{0}' defined to get camera name is invalid", CameraRegex),
-                    "CameraRegex", CameraRegex));
+                    string.Format("The regular expression '{0}' defined to get camera name is invalid", CameraNameRegex),
+                    "CameraNameRegex", CameraNameRegex));
                 result = false;
             }
 

@@ -103,7 +103,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Examples\config.ini" />
     <None Include="Examples\config.yml" />
     <None Include="packages.config" />
   </ItemGroup>

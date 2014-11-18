@@ -50,6 +50,8 @@ namespace vdams.Configuration
             var deserializer = new Deserializer(namingConvention: new CamelCaseNamingConvention());
             try { result = deserializer.Deserialize<Configuration>(reader); }
             catch { }
+            reader.Close();
+            reader.Dispose();
 
             return result;
         }

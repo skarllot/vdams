@@ -17,7 +17,6 @@
 
 using SklLib;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -27,9 +26,6 @@ namespace vdams
     public class Service : System.ServiceProcess.ServiceBase
     {
         const string CFG_FILE_NAME = "config.yml";
-        const string CFG_FILE_NAME_LEGACY = "config.ini";
-        const string TIME_FORMAT_DT = "HH:mm";
-        const string TIME_FORMAT_TS = "hh\\:mm";
         const int DEFAULT_REFRESH = 1 * MINUTE_TO_MILLISECONDS;
         const int MINUTE_TO_MILLISECONDS = 1000 * 60;
 
