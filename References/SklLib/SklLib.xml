@@ -4,6 +4,115 @@
         <name>SklLib</name>
     </assembly>
     <members>
+        <member name="T:SklLib.Globalization.GrammarNumberWriteInfo">
+            <summary>
+            Defines how to writes grammatical number of any type.
+            </summary>
+        </member>
+        <member name="M:SklLib.Globalization.GrammarNumberWriteInfo.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of <see cref="T:SklLib.Globalization.GrammarNumberWriteInfo"/> and
+            sets an invariable text to singular and plural.
+            </summary>
+            <param name="common"></param>
+        </member>
+        <member name="M:SklLib.Globalization.GrammarNumberWriteInfo.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of <see cref="T:SklLib.Globalization.GrammarNumberWriteInfo"/> and
+            sets the singular and plural text.
+            </summary>
+            <param name="singular">The singular text.</param>
+            <param name="plural">The plural text.</param>
+        </member>
+        <member name="P:SklLib.Globalization.GrammarNumberWriteInfo.Plural">
+            <summary>
+            Gets how to writes the singular of type.
+            </summary>
+        </member>
+        <member name="P:SklLib.Globalization.GrammarNumberWriteInfo.Singular">
+            <summary>
+            Gets how to writes the plural of type.
+            </summary>
+        </member>
+        <member name="T:SklLib.Performance.LazyLoaded`1">
+            <summary>
+            Defines a type that is loaded after request.
+            </summary>
+            <typeparam name="T">The type to store.</typeparam>
+        </member>
+        <member name="M:SklLib.Performance.LazyLoaded`1.#ctor(System.Func{`0})">
+            <summary>
+            Initializes a new instance of <see cref="!:LazyLoaded"/> class and
+            sets the function used to load the stored type.
+            </summary>
+            <param name="loadFunction">The function called after value request.</param>
+        </member>
+        <member name="M:SklLib.Performance.LazyLoaded`1.#ctor(System.Func{`0},`0)">
+            <summary>
+            Initializes a new instance of <see cref="!:LazyLoaded"/> class,
+            sets the function used to load the stored type and defines the
+            default value for stored type.
+            </summary>
+            <param name="loadFunction">The function called after value request.</param>
+            <param name="defaultValue">The default value for type.</param>
+        </member>
+        <member name="M:SklLib.Performance.LazyLoaded`1.op_Implicit(SklLib.Performance.LazyLoaded{`0})~`0">
+            <summary>
+            Converts an instance of <see cref="!:LazyLoaded"/> to its generic type.
+            </summary>
+            <param name="a">Instance of <see cref="!:LazyLoaded"/>.</param>
+            <returns>The value stored by <see cref="!:LazyLoaded"/> instance.</returns>
+        </member>
+        <member name="P:SklLib.Performance.LazyLoaded`1.IsLoaded">
+            <summary>
+            Gets whether current type is already loaded.
+            </summary>
+        </member>
+        <member name="P:SklLib.Performance.LazyLoaded`1.Value">
+            <summary>
+            Gets the value of current type.
+            </summary>
+        </member>
+        <member name="T:SklLib.Measurement.ByteIEC">
+            <summary>
+            Byte IEC multiples.
+            </summary>
+        </member>
+        <member name="F:SklLib.Measurement.ByteIEC.Byte">
+            <summary>
+            Represents a byte.
+            </summary>
+        </member>
+        <member name="F:SklLib.Measurement.ByteIEC.Kibibyte">
+            <summary>
+            Represents a kibibyte (1024 B).
+            </summary>
+        </member>
+        <member name="F:SklLib.Measurement.ByteIEC.Mebibyte">
+            <summary>
+            Represents a mebibyte (1024 KiB).
+            </summary>
+        </member>
+        <member name="F:SklLib.Measurement.ByteIEC.Gibibyte">
+            <summary>
+            Represents a gibibyte (1024 MiB).
+            </summary>
+        </member>
+        <member name="F:SklLib.Measurement.ByteIEC.Tebibyte">
+            <summary>
+            Represents a tebibyte (1024 GiB).
+            </summary>
+        </member>
+        <member name="F:SklLib.Measurement.ByteIEC.Pebibyte">
+            <summary>
+            Represents a pebibyte (1024 TiB).
+            </summary>
+        </member>
+        <member name="F:SklLib.Measurement.ByteIEC.Exbibyte">
+            <summary>
+            Represents a exbibyte (1024 PiB).
+            </summary>
+        </member>
         <member name="T:SklLib.Collections.Enumerable">
             <summary>
             Provides methods to extend <see cref="T:System.Collections.Generic.IEnumerable`1"/> interface.
@@ -36,8 +145,7 @@
             The <see cref="T:System.Action`1"/> delegate to perform on each element of the
             <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
             </param>
-            <returns>The reference of especified source.</returns>
-            <exception cref="T:System.ArgumentNullException">source or action is null</exception>
+            <exception cref="T:System.ArgumentNullException"><c>source</c> or <c>action</c> is null</exception>
         </member>
         <member name="M:SklLib.Collections.Enumerable.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0,System.Int32})">
             <summary>
@@ -49,7 +157,6 @@
             The <see cref="T:System.Action`1"/> delegate to perform on each element of the
             <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
             </param>
-            <returns>The reference of especified source.</returns>
             <exception cref="T:System.ArgumentNullException">source or action is null</exception>
         </member>
         <member name="M:SklLib.Collections.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.IComparable})">
@@ -140,28 +247,6 @@
             </summary>
             <param name="value">Value represented by this instance.</param>
         </member>
-        <member name="T:SklLib.Diagnostics.LogEventArgs">
-            <summary>
-            Provides data to add a new log entry.
-            </summary>
-        </member>
-        <member name="M:SklLib.Diagnostics.LogEventArgs.#ctor(System.Diagnostics.EventLogEntryType,SklLib.Diagnostics.EventId)">
-            <summary>
-            Initializes a new instance of LogEventArgs with specified log type and ID.
-            </summary>
-            <param name="type">The type of event log.</param>
-            <param name="eventId">The application-unique identifier to log type.</param>
-        </member>
-        <member name="P:SklLib.Diagnostics.LogEventArgs.EntryType">
-            <summary>
-            Gets the type of event log.
-            </summary>
-        </member>
-        <member name="P:SklLib.Diagnostics.LogEventArgs.EventId">
-            <summary>
-            Gets the application-unique identifier to log type.
-            </summary>
-        </member>
         <member name="T:SklLib.Diagnostics.Logger">
             <summary>
             Provides methods to handle Windows native logging.
@@ -186,13 +271,6 @@
             </summary>
             <returns>An object to handle a log transaction.</returns>
         </member>
-        <member name="M:SklLib.Diagnostics.Logger.WriteEntry(System.String,SklLib.Diagnostics.LogEventArgs)">
-            <summary>
-            Writes a new log entry with specified message.
-            </summary>
-            <param name="message">The message to write to log entry.</param>
-            <param name="eventArgs">The event log information data.</param>
-        </member>
         <member name="M:SklLib.Diagnostics.Logger.WriteEntry(System.String,System.Diagnostics.EventLogEntryType,SklLib.Diagnostics.EventId)">
             <summary>
             Writes a new log entry with specified message.
@@ -206,20 +284,24 @@
             Provides methods to handle multiple messages to single log entry.
             </summary>
         </member>
-        <member name="T:SklLib.ITransaction`1">
+        <member name="T:SklLib.ITransaction">
             <summary>
             Represents a generic transaction.
             </summary>
         </member>
-        <member name="M:SklLib.ITransaction`1.Commit(`0)">
+        <member name="M:SklLib.ITransaction.Commit">
             <summary>
             Commits this transaction.
             </summary>
-            <param name="eventArgs">The additional commit data.</param>
         </member>
-        <member name="M:SklLib.ITransaction`1.Rollback">
+        <member name="M:SklLib.ITransaction.Rollback">
             <summary>
             Rolls back a this transaction.
+            </summary>
+        </member>
+        <member name="F:SklLib.Diagnostics.LogTransaction.DEFAULT_LOG_TYPE">
+            <summary>
+            Default EventLog type to new <see cref="T:SklLib.Diagnostics.LogTransaction"/> instances.
             </summary>
         </member>
         <member name="F:SklLib.Diagnostics.LogTransaction.DEFAULT_LINE_HEADER">
@@ -230,6 +312,11 @@
         <member name="F:SklLib.Diagnostics.LogTransaction.DEFAULT_TIMESTAMP_FORMAT">
             <summary>
             Default timestamp format for line header.
+            </summary>
+        </member>
+        <member name="F:SklLib.Diagnostics.LogTransaction.DEFAULT_LOG_ID">
+            <summary>
+            Default EventLog event ID to new <see cref="T:SklLib.Diagnostics.LogTransaction"/> instances.
             </summary>
         </member>
         <member name="M:SklLib.Diagnostics.LogTransaction.#ctor(SklLib.Diagnostics.Logger)">
@@ -243,6 +330,7 @@
             Appends a line to log message.
             </summary>
             <param name="message">The line to append.</param>
+            <exception cref="T:System.ObjectDisposedException">Current instance is already disposed.</exception>
         </member>
         <member name="M:SklLib.Diagnostics.LogTransaction.AppendLine(System.String,System.Object[])">
             <summary>
@@ -250,12 +338,14 @@
             </summary>
             <param name="message">The line to append.</param>
             <param name="args">Parameters to replace placeholders from line header.</param>
+            <exception cref="T:System.ObjectDisposedException">Current instance is already disposed.</exception>
         </member>
-        <member name="M:SklLib.Diagnostics.LogTransaction.Commit(SklLib.Diagnostics.LogEventArgs)">
+        <member name="M:SklLib.Diagnostics.LogTransaction.Commit">
             <summary>
             Commits this transaction to a new log entry.
             </summary>
-            <param name="eventArgs">The event log information data.</param>
+            <exception cref="T:System.ObjectDisposedException">Current instance is already disposed.</exception>
+            <exception cref="T:System.InvalidOperationException">Cannot commit empty log message.</exception>
         </member>
         <member name="M:SklLib.Diagnostics.LogTransaction.Dispose">
             <summary>
@@ -265,6 +355,17 @@
         <member name="M:SklLib.Diagnostics.LogTransaction.Rollback">
             <summary>
             Discards this transaction to not add any entry to event log.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">Current instance is already disposed.</exception>
+        </member>
+        <member name="P:SklLib.Diagnostics.LogTransaction.EntryType">
+            <summary>
+            Gets or sets the entry type of current log transaction.
+            </summary>
+        </member>
+        <member name="P:SklLib.Diagnostics.LogTransaction.EventLogId">
+            <summary>
+            Gets or sets the event ID of current log transaction.
             </summary>
         </member>
         <member name="P:SklLib.Diagnostics.LogTransaction.HeaderHasTimestamp">
@@ -570,11 +671,27 @@
             Defines a object that can be validated.
             </summary>
         </member>
-        <member name="M:SklLib.IValidatable.IsValid">
+        <member name="M:SklLib.IValidatable.Validate(System.Action{SklLib.InvalidEventArgs})">
             <summary>
-            Returns whether current instance is valid.
+            Validates each property from current instance and executes a action.
             </summary>
-            <returns>True whether is valid; otherwise false.</returns>
+            <param name="action">Action to execute after each validation.</param>
+            <returns>True whether all properties are valid; otherwise, false.</returns>
+        </member>
+        <member name="F:SklLib.Configuration.IniReaderBase.cfgreader">
+            <summary>
+            The INI file reader.
+            </summary>
+        </member>
+        <member name="F:SklLib.Configuration.IniReaderBase.filename">
+            <summary>
+            The INI file name.
+            </summary>
+        </member>
+        <member name="F:SklLib.Configuration.IniReaderBase.sections">
+            <summary>
+            Stores found sections into target INI file.
+            </summary>
         </member>
         <member name="M:SklLib.Configuration.IniReaderBase.GetSectionByName(System.String)">
             <summary>
@@ -597,12 +714,6 @@
             <param name="section">The section name.</param>
             <returns>True whether section is found; otherwise false.</returns>
         </member>
-        <member name="M:SklLib.Configuration.IniReaderBase.IsValid">
-            <summary>
-            Determines whether current instance is valid.
-            </summary>
-            <returns>True whether is valid; otherwise false.</returns>
-        </member>
         <member name="M:SklLib.Configuration.IniReaderBase.LoadFile">
             <summary>
             Reads configuration file and populates current instance.
@@ -610,6 +721,13 @@
             <exception cref="T:System.ArgumentNullException"><c>fileName</c> is a null reference.</exception>
             <exception cref="T:System.IO.FileNotFoundException">The specifield file was not found.</exception>
             <exception cref="T:System.IO.FileLoadException">The current file is invalid.</exception>
+        </member>
+        <member name="M:SklLib.Configuration.IniReaderBase.Validate(System.Action{SklLib.InvalidEventArgs})">
+            <summary>
+            Validates each section from current instance and executes a action.
+            </summary>
+            <param name="action">Action to execute after each validation.</param>
+            <returns>True whether all sections are valid; otherwise, false.</returns>
         </member>
         <member name="P:SklLib.Configuration.IniReaderBase.FileName">
             <summary>
@@ -619,6 +737,16 @@
         <member name="P:SklLib.Configuration.IniReaderBase.MandatorySections">
             <summary>
             Gets a list of mandatory sections.
+            </summary>
+        </member>
+        <member name="F:SklLib.Configuration.DynamicIniReaderBase.dynSections">
+            <summary>
+            Stores found dynamic named sections.
+            </summary>
+        </member>
+        <member name="F:SklLib.Configuration.DynamicIniReaderBase.staticSections">
+            <summary>
+            Stores found static named sections.
             </summary>
         </member>
         <member name="M:SklLib.Configuration.DynamicIniReaderBase.GetDynamicSection(System.Int32)">
@@ -650,6 +778,16 @@
         <member name="F:SklLib.Configuration.IniSectionReaderBase.DEFAULT_CSV_SEPARATOR">
             <summary>
             Default character for comma-separated values.
+            </summary>
+        </member>
+        <member name="F:SklLib.Configuration.IniSectionReaderBase.cfgreader">
+            <summary>
+            The INI file reader.
+            </summary>
+        </member>
+        <member name="F:SklLib.Configuration.IniSectionReaderBase.section">
+            <summary>
+            The section name represented by this instance.
             </summary>
         </member>
         <member name="M:SklLib.Configuration.IniSectionReaderBase.#ctor(SklLib.IO.IniFileReader,System.String)">
@@ -709,11 +847,12 @@
             <param name="key">The configuration file key.</param>
             <returns>The key value as TimeSpan.</returns>
         </member>
-        <member name="M:SklLib.Configuration.IniSectionReaderBase.IsValid">
+        <member name="M:SklLib.Configuration.IniSectionReaderBase.Validate(System.Action{SklLib.InvalidEventArgs})">
             <summary>
-            Determines whether current instance is valid.
+            Validates each property from current instance and executes a action.
             </summary>
-            <returns>True whether is valid; otherwise false.</returns>
+            <param name="action">Action to execute after each validation.</param>
+            <returns>True whether all properties are valid; otherwise, false.</returns>
         </member>
         <member name="P:SklLib.Configuration.IniSectionReaderBase.SectionName">
             <summary>
@@ -858,6 +997,11 @@
               Looks up a localized string similar to Directory not found exception occurred on %var method..
             </summary>
         </member>
+        <member name="P:SklLib.resExceptions.EventLogMessageEmpty">
+            <summary>
+              Looks up a localized string similar to The log message is empty..
+            </summary>
+        </member>
         <member name="P:SklLib.resExceptions.FileExists">
             <summary>
               Looks up a localized string similar to Was specifield FileMode.CreateNew flag and the file &quot;%var&quot; already exists..
@@ -978,6 +1122,11 @@
               Looks up a localized string similar to The number %var is too small, the minimum supported value is %value..
             </summary>
         </member>
+        <member name="P:SklLib.resExceptions.TypeNotImplementInterface">
+            <summary>
+              Looks up a localized string similar to The type {0} does not implement the interface {1}..
+            </summary>
+        </member>
         <member name="P:SklLib.resExceptions.Unsupported_GroupSize">
             <summary>
               Looks up a localized string similar to This NumberFormatInfo has a unsupported group size..
@@ -993,134 +1142,77 @@
               Looks up a localized string similar to This number isn&apos;t supported with this NumberWriteInfo..
             </summary>
         </member>
-        <member name="T:SklLib.GetType`1">
-            <summary>
-            Represents a generic function that returns a type-specific.
-            </summary>
-            <typeparam name="T">Any type-specific.</typeparam>
-            <returns>Specified type-specific.</returns>
-        </member>
-        <member name="T:SklLib.GetType`2">
-            <summary>
-            Represents a generic function that returns a type-specific and receives
-            another type-specific.
-            </summary>
-            <typeparam name="Ret">Any type-specific to return.</typeparam>
-            <typeparam name="P1">Any type-specific to receive.</typeparam>
-            <param name="param1">First parameter.</param>
-            <returns>Specified type-specific.</returns>
-        </member>
-        <member name="T:SklLib.ByteMeasure">
-            <summary>
-            Byte multiples.
-            </summary>
-        </member>
-        <member name="F:SklLib.ByteMeasure.Bytes">
-            <summary>
-            Represents a byte.
-            </summary>
-        </member>
-        <member name="F:SklLib.ByteMeasure.Kilobytes">
-            <summary>
-            Represents a kilobyte (1024 B).
-            </summary>
-        </member>
-        <member name="F:SklLib.ByteMeasure.Megabytes">
-            <summary>
-            Represents a megabyte (1024 KB).
-            </summary>
-        </member>
-        <member name="F:SklLib.ByteMeasure.Gigabytes">
-            <summary>
-            Represents a gigabyte (1024 MB).
-            </summary>
-        </member>
-        <member name="F:SklLib.ByteMeasure.Terabytes">
-            <summary>
-            Represents a terabyte (1024 GB).
-            </summary>
-        </member>
-        <member name="F:SklLib.ByteMeasure.Petabytes">
-            <summary>
-            Represents a petabyte (1024 TB).
-            </summary>
-        </member>
-        <member name="F:SklLib.ByteMeasure.Exabytes">
-            <summary>
-            Represents a exabyte (1024 PB).
-            </summary>
-        </member>
-        <member name="T:SklLib.SILengthUnit">
+        <member name="T:SklLib.Measurement.SILengthUnit">
             <summary>
             Linear units from International System of Units.
             </summary>
         </member>
-        <member name="F:SklLib.SILengthUnit.Millimeter">
+        <member name="F:SklLib.Measurement.SILengthUnit.Millimeter">
             <summary>
             Millimeter length unit.
             </summary>
         </member>
-        <member name="F:SklLib.SILengthUnit.Centimeter">
+        <member name="F:SklLib.Measurement.SILengthUnit.Centimeter">
             <summary>
             Centimeter length unit.
             </summary>
         </member>
-        <member name="F:SklLib.SILengthUnit.Decimeter">
+        <member name="F:SklLib.Measurement.SILengthUnit.Decimeter">
             <summary>
             Decimeter length unit.
             </summary>
         </member>
-        <member name="F:SklLib.SILengthUnit.Meter">
+        <member name="F:SklLib.Measurement.SILengthUnit.Meter">
             <summary>
             Meter length unit.
             </summary>
         </member>
-        <member name="F:SklLib.SILengthUnit.Decameter">
+        <member name="F:SklLib.Measurement.SILengthUnit.Decameter">
             <summary>
             Decameter length unit.
             </summary>
         </member>
-        <member name="F:SklLib.SILengthUnit.Hectometer">
+        <member name="F:SklLib.Measurement.SILengthUnit.Hectometer">
             <summary>
             Hectometer length unit.
             </summary>
         </member>
-        <member name="F:SklLib.SILengthUnit.Kilometer">
+        <member name="F:SklLib.Measurement.SILengthUnit.Kilometer">
             <summary>
             Kilometer length unit.
             </summary>
         </member>
-        <member name="T:SklLib.ImperialLengthUnit">
+        <member name="T:SklLib.Measurement.ImperialLengthUnit">
             <summary>
             Imperial linear units.
             </summary>
         </member>
-        <member name="F:SklLib.ImperialLengthUnit.Inch">
+        <member name="F:SklLib.Measurement.ImperialLengthUnit.Inch">
             <summary>
             Inch length unit.
             </summary>
         </member>
-        <member name="F:SklLib.ImperialLengthUnit.Foot">
+        <member name="F:SklLib.Measurement.ImperialLengthUnit.Foot">
             <summary>
             Foot length unit.
             </summary>
         </member>
-        <member name="F:SklLib.ImperialLengthUnit.Yard">
+        <member name="F:SklLib.Measurement.ImperialLengthUnit.Yard">
             <summary>
             Yard length unit.
             </summary>
         </member>
-        <member name="F:SklLib.ImperialLengthUnit.Furlong">
+        <member name="F:SklLib.Measurement.ImperialLengthUnit.Furlong">
             <summary>
             Furlon length unit.
             </summary>
         </member>
-        <member name="F:SklLib.ImperialLengthUnit.Mile">
+        <member name="F:SklLib.Measurement.ImperialLengthUnit.Mile">
             <summary>
             Mile length unit.
             </summary>
         </member>
-        <member name="F:SklLib.ImperialLengthUnit.League">
+        <member name="F:SklLib.Measurement.ImperialLengthUnit.League">
             <summary>
             League length unit.
             </summary>
@@ -1634,6 +1726,25 @@
             <exception cref="T:System.ArgumentNullException"><c>s</c> is a null reference.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException"><c>chunkSize</c> is less than zero.</exception>
         </member>
+        <member name="M:SklLib.Strings.SplitReverse(System.String,System.Int32)">
+            <summary>
+            Splits a String into reversed chunks of specified size.
+            </summary>
+            <param name="s">A <see cref="T:System.String"/>.</param>
+            <param name="chunkSize">The chunk size.</param>
+            <returns>An String array from specified String.</returns>
+            <example>
+            <para>The following simple code example demonstrates how you can
+            use the SplitReverse method.</para>
+            <code>
+            String str = "93493726324";
+            String[] chunks = str.SplitReverse(3);
+            // The result will be: { [0]="324", [1]="726", [2]="493", [3]="93" }.
+            </code>
+            </example>
+            <exception cref="T:System.ArgumentNullException"><c>s</c> is a null reference.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"><c>chunkSize</c> is less than zero.</exception>
+        </member>
         <member name="T:SklLib.Strings.IndexedChar">
             <summary>
             Stores a <see cref="T:System.Char"/> and itself position in a <see cref="T:System.String"/>.
@@ -1664,36 +1775,101 @@
             <param name="s">A <see cref="T:System.String"/>.</param>
             <param name="index">Position of <see cref="T:System.Char"/> to get.</param>
         </member>
-        <member name="T:SklLib.LengthSize">
+        <member name="T:SklLib.Tuple`2">
+            <summary>
+            Represents a pair of values.
+            </summary>
+            <typeparam name="T1">The type of first item.</typeparam>
+            <typeparam name="T2">The type of second item.</typeparam>
+        </member>
+        <member name="M:SklLib.Tuple`2.#ctor(`0,`1)">
+            <summary>
+            Initializes a new instance of <see cref="!:Tuple"/> and sets the
+            first and second item.
+            </summary>
+            <param name="item1">The value to first item.</param>
+            <param name="item2">The value to second item.</param>
+        </member>
+        <member name="P:SklLib.Tuple`2.Item1">
+            <summary>
+            Gets or sets the value of first item.
+            </summary>
+        </member>
+        <member name="P:SklLib.Tuple`2.Item2">
+            <summary>
+            Gets or sets the value of second item.
+            </summary>
+        </member>
+        <member name="T:SklLib.Validatable">
+            <summary>
+            Provides methods to <see cref="T:SklLib.IValidatable"/> interface.
+            </summary>
+        </member>
+        <member name="M:SklLib.Validatable.IsValid(SklLib.IValidatable)">
+            <summary>
+            Returns whether current instance is valid.
+            </summary>
+            <param name="obj">The IValidatable instance.</param>
+            <returns>True whether is valid; otherwise false.</returns>
+        </member>
+        <member name="T:SklLib.InvalidEventArgs">
+            <summary>
+            Provides event data when a validated item is invalid.
+            </summary>
+        </member>
+        <member name="M:SklLib.InvalidEventArgs.#ctor(System.String,System.String,System.Object)">
+            <summary>
+            Initializes a new instance of InvalidEventArgs.
+            </summary>
+            <param name="message">Defines a error message.</param>
+            <param name="itemName">Defines the name of validated item.</param>
+            <param name="itemValue">Defines the value of validated item.</param>
+        </member>
+        <member name="P:SklLib.InvalidEventArgs.Message">
+            <summary>
+            Gets the error message.
+            </summary>
+        </member>
+        <member name="P:SklLib.InvalidEventArgs.ItemName">
+            <summary>
+            Gets the name of validated item.
+            </summary>
+        </member>
+        <member name="P:SklLib.InvalidEventArgs.ItemValue">
+            <summary>
+            Gets the value of validated item.
+            </summary>
+        </member>
+        <member name="T:SklLib.Measurement.LengthSize">
             <summary>
             Represents a size of length, and ables a conversion between measures.
             </summary>
         </member>
-        <member name="F:SklLib.LengthSize.DefaultSIUnit">
+        <member name="F:SklLib.Measurement.LengthSize.DefaultSIUnit">
             <summary>
             Defines the default SI lenght unit as meter.
             </summary>
         </member>
-        <member name="F:SklLib.LengthSize.DefaultImperialUnit">
+        <member name="F:SklLib.Measurement.LengthSize.DefaultImperialUnit">
             <summary>
             Defines the default imperial unit as yard.
             </summary>
         </member>
-        <member name="M:SklLib.LengthSize.#ctor(System.Decimal,SklLib.SILengthUnit)">
+        <member name="M:SklLib.Measurement.LengthSize.#ctor(System.Decimal,SklLib.Measurement.SILengthUnit)">
             <summary>
             Initializes a new instance of the LinearSize structure to specified value and measure.
             </summary>
             <param name="value">Value of measurement.</param>
             <param name="unit">Linear measure unit of specified value.</param>
         </member>
-        <member name="M:SklLib.LengthSize.#ctor(System.Decimal,SklLib.ImperialLengthUnit)">
+        <member name="M:SklLib.Measurement.LengthSize.#ctor(System.Decimal,SklLib.Measurement.ImperialLengthUnit)">
             <summary>
             Initializes a new instance of the LinearSize structure to specified value and measure.
             </summary>
             <param name="value">Value of measurement.</param>
             <param name="unit">Linear measure unit of specified value.</param>
         </member>
-        <member name="M:SklLib.LengthSize.PixelsPerInches(System.Int64,System.Single)">
+        <member name="M:SklLib.Measurement.LengthSize.PixelsPerInches(System.Int64,System.Single)">
             <summary>
             Creates a LinearSize structure based in the specified pixels and dpi (Dots per Inch) resolution.
             </summary>
@@ -1701,7 +1877,7 @@
             <param name="dpi">dpi resolution.</param>
             <returns>A LinearSize structure.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.PixelsPerMillimeters(System.Int64,System.Single)">
+        <member name="M:SklLib.Measurement.LengthSize.PixelsPerMillimeters(System.Int64,System.Single)">
             <summary>
             Creates a LinearSize structure based in the specified pixels and ppm (Points per Millimeters).
             </summary>
@@ -1709,7 +1885,7 @@
             <param name="ppm">ppm resolution.</param>
             <returns>A LinearSize structure.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.op_Addition(SklLib.LengthSize,SklLib.LengthSize)">
+        <member name="M:SklLib.Measurement.LengthSize.op_Addition(SklLib.Measurement.LengthSize,SklLib.Measurement.LengthSize)">
             <summary>
             Adds two specified LinearSize values.
             </summary>
@@ -1717,7 +1893,7 @@
             <param name="op2">A LinearSize.</param>
             <returns>The LinearSize result of adding op1 and op2.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.op_Subtraction(SklLib.LengthSize,SklLib.LengthSize)">
+        <member name="M:SklLib.Measurement.LengthSize.op_Subtraction(SklLib.Measurement.LengthSize,SklLib.Measurement.LengthSize)">
             <summary>
             Subtracts two specified LinearSize values.
             </summary>
@@ -1725,7 +1901,7 @@
             <param name="op2">A LinearSize.</param>
             <returns>The LinearSize result of subtracting op1 from op2.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.op_Multiply(SklLib.LengthSize,SklLib.LengthSize)">
+        <member name="M:SklLib.Measurement.LengthSize.op_Multiply(SklLib.Measurement.LengthSize,SklLib.Measurement.LengthSize)">
             <summary>
             Multiplies two specified LinearSize values.
             </summary>
@@ -1733,7 +1909,7 @@
             <param name="op2">A LinearSize.</param>
             <returns>The LinearSize result of multiplying op1 by op2.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.op_Division(SklLib.LengthSize,SklLib.LengthSize)">
+        <member name="M:SklLib.Measurement.LengthSize.op_Division(SklLib.Measurement.LengthSize,SklLib.Measurement.LengthSize)">
             <summary>
             Divides two specified LinearSize values.
             </summary>
@@ -1741,7 +1917,7 @@
             <param name="op2">A LinearSize (the divisor).</param>
             <returns>The LinearSize result of op1 by op2.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.op_Modulus(SklLib.LengthSize,SklLib.LengthSize)">
+        <member name="M:SklLib.Measurement.LengthSize.op_Modulus(SklLib.Measurement.LengthSize,SklLib.Measurement.LengthSize)">
             <summary>
             Returns the remainder resulting from dividing two specified LinearSize values.
             </summary>
@@ -1749,7 +1925,7 @@
             <param name="op2">A LinearSize.</param>
             <returns>The LinearSize remainder resulting from dividing d1 by d2.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.op_Equality(SklLib.LengthSize,SklLib.LengthSize)">
+        <member name="M:SklLib.Measurement.LengthSize.op_Equality(SklLib.Measurement.LengthSize,SklLib.Measurement.LengthSize)">
             <summary>
             Determines whether two specified instances of LinearSize are equal.
             </summary>
@@ -1757,7 +1933,7 @@
             <param name="m">A LinearSize.</param>
             <returns>true if l and m represent the same linear measure value; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.op_Inequality(SklLib.LengthSize,SklLib.LengthSize)">
+        <member name="M:SklLib.Measurement.LengthSize.op_Inequality(SklLib.Measurement.LengthSize,SklLib.Measurement.LengthSize)">
             <summary>
             Determines whether two specified instances of LinearSize are not equal.
             </summary>
@@ -1765,7 +1941,7 @@
             <param name="m">A LinearSize.</param>
             <returns>true if l and m do not represent the same linear measure value; otherwise, false</returns>
         </member>
-        <member name="M:SklLib.LengthSize.op_GreaterThan(SklLib.LengthSize,SklLib.LengthSize)">
+        <member name="M:SklLib.Measurement.LengthSize.op_GreaterThan(SklLib.Measurement.LengthSize,SklLib.Measurement.LengthSize)">
             <summary>
             Determines whether one specified LinearSize is greater than another specified LinearSize.
             </summary>
@@ -1773,7 +1949,7 @@
             <param name="m">A LinearSize.</param>
             <returns>true if l is greater than m; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.op_GreaterThanOrEqual(SklLib.LengthSize,SklLib.LengthSize)">
+        <member name="M:SklLib.Measurement.LengthSize.op_GreaterThanOrEqual(SklLib.Measurement.LengthSize,SklLib.Measurement.LengthSize)">
             <summary>
             Determines whether one specified LinearSize is greater than or equal to another specified LinearSize.
             </summary>
@@ -1781,7 +1957,7 @@
             <param name="m">A LinearSize.</param>
             <returns>true if l is greater than or equal to m; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.op_LessThan(SklLib.LengthSize,SklLib.LengthSize)">
+        <member name="M:SklLib.Measurement.LengthSize.op_LessThan(SklLib.Measurement.LengthSize,SklLib.Measurement.LengthSize)">
             <summary>
             Determines whether one specified LinearSize is less than another specified LinearSize.
             </summary>
@@ -1789,7 +1965,7 @@
             <param name="m">A LinearSize.</param>
             <returns>true if l is less than m; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.op_LessThanOrEqual(SklLib.LengthSize,SklLib.LengthSize)">
+        <member name="M:SklLib.Measurement.LengthSize.op_LessThanOrEqual(SklLib.Measurement.LengthSize,SklLib.Measurement.LengthSize)">
             <summary>
             Determines whether one specified LinearSize is less than or equal to another specified LinearSize.
             </summary>
@@ -1797,13 +1973,13 @@
             <param name="m">A LinearSize.</param>
             <returns>true if l is less than or equal to m; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.GetHashCode">
+        <member name="M:SklLib.Measurement.LengthSize.GetHashCode">
             <summary>
             Returns the hash code for this instance.
             </summary>
             <returns>A 32-bit signed integer hash code.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.Equals(System.Object)">
+        <member name="M:SklLib.Measurement.LengthSize.Equals(System.Object)">
             <summary>
             Returns a value indicating whether this instance and a specified <see cref="T:System.Object"/>
             represent the same type and value.
@@ -1811,41 +1987,41 @@
             <param name="obj">An object to compare to this instance.</param>
             <returns>true if value is a LinearSize and equal to this instance; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.ToString">
+        <member name="M:SklLib.Measurement.LengthSize.ToString">
             <summary>
             Converts the numeric value of this instance to its equivalent <see cref="T:System.String"/> representation
             </summary>
             <returns>A <see cref="T:System.String"/> representing the value of this instance.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.GetPixelsByDpi(System.Single)">
+        <member name="M:SklLib.Measurement.LengthSize.GetPixelsByDpi(System.Single)">
             <summary>
             Get value represented by this instance in pixels.
             </summary>
             <param name="dpi">DPI (Dots Per Inch) resolution.</param>
             <returns>The value in pixels in a specific resolution.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.GetPixelsByPpm(System.Single)">
+        <member name="M:SklLib.Measurement.LengthSize.GetPixelsByPpm(System.Single)">
             <summary>
             Get value represented by this instance in pixels.
             </summary>
             <param name="ppm">PPM (Points Per Millimeter) resolution.</param>
             <returns>The value in pixels in a specific resolution.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.GetValue(SklLib.SILengthUnit)">
+        <member name="M:SklLib.Measurement.LengthSize.GetValue(SklLib.Measurement.SILengthUnit)">
             <summary>
             Gets the value represented by this instance in the specified SI unit.
             </summary>
             <param name="unit">Specifies a SI unit.</param>
             <returns>The value represented by this instance in the specified unit.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.GetValue(SklLib.ImperialLengthUnit)">
+        <member name="M:SklLib.Measurement.LengthSize.GetValue(SklLib.Measurement.ImperialLengthUnit)">
             <summary>
             Gets the value represented by this instance in the specified imperial unit.
             </summary>
             <param name="unit">Specifies a Imperial unit.</param>
             <returns>The value represented by this instance in the specified unit.</returns>
         </member>
-        <member name="M:SklLib.LengthSize.SetValue(SklLib.SILengthUnit,System.Decimal)">
+        <member name="M:SklLib.Measurement.LengthSize.SetValue(SklLib.Measurement.SILengthUnit,System.Decimal)">
             <summary>
             Sets the value represented by this instance in the specified SI unit.
             </summary>
@@ -1856,7 +2032,7 @@
             The value to set.
             </param>
         </member>
-        <member name="M:SklLib.LengthSize.SetValue(SklLib.ImperialLengthUnit,System.Decimal)">
+        <member name="M:SklLib.Measurement.LengthSize.SetValue(SklLib.Measurement.ImperialLengthUnit,System.Decimal)">
             <summary>
             Sets the value represented by this instance in the specified imperial unit.
             </summary>
@@ -1867,7 +2043,7 @@
             The value to set.
             </param>
         </member>
-        <member name="M:SklLib.LengthSize.CompareTo(System.Object)">
+        <member name="M:SklLib.Measurement.LengthSize.CompareTo(System.Object)">
             <summary>
             Compares this instance to a specified object and returns an indication of their relative values.
             </summary>
@@ -1879,7 +2055,7 @@
             <para>- Zero: This instance is equal to value.</para>
             <para>- Greater than zero: This instance is greater than value, or value is null.</para></returns>
         </member>
-        <member name="M:SklLib.LengthSize.CompareTo(SklLib.LengthSize)">
+        <member name="M:SklLib.Measurement.LengthSize.CompareTo(SklLib.Measurement.LengthSize)">
             <summary>
             Compares this instance to a specified LinearSize object and returns an indication of their relative values.
             </summary>
@@ -1891,79 +2067,79 @@
             <para>- Zero: This instance is equal to value.</para>
             <para>- Greater than zero: This instance is greater than value.</para></returns>
         </member>
-        <member name="M:SklLib.LengthSize.Equals(SklLib.LengthSize)">
+        <member name="M:SklLib.Measurement.LengthSize.Equals(SklLib.Measurement.LengthSize)">
             <summary>
             Returns a value indicating whether this instance is equal to the specified LinearSize instance.
             </summary>
             <param name="other">A LinearSize instance to compare to this instance.</param>
             <returns>true if the value parameter equals the value of this instance; otherwise, false.</returns>
         </member>
-        <member name="P:SklLib.LengthSize.Millimeters">
+        <member name="P:SklLib.Measurement.LengthSize.Millimeters">
             <summary>
             Gets or sets the value represented by this instance in millimeters.
             </summary>
         </member>
-        <member name="P:SklLib.LengthSize.Centimeters">
+        <member name="P:SklLib.Measurement.LengthSize.Centimeters">
             <summary>
             Gets or sets the value represented by this instance in centimeters.
             </summary>
         </member>
-        <member name="P:SklLib.LengthSize.Decimeters">
+        <member name="P:SklLib.Measurement.LengthSize.Decimeters">
             <summary>
             Gets or sets the value represented by this instance in decimeters.
             </summary>
         </member>
-        <member name="P:SklLib.LengthSize.Meters">
+        <member name="P:SklLib.Measurement.LengthSize.Meters">
             <summary>
             Gets or sets the value represented by this instance in meters.
             </summary>
         </member>
-        <member name="P:SklLib.LengthSize.Decameters">
+        <member name="P:SklLib.Measurement.LengthSize.Decameters">
             <summary>
             Gets or sets the value represented by this instance in decameters.
             </summary>
         </member>
-        <member name="P:SklLib.LengthSize.Hectometers">
+        <member name="P:SklLib.Measurement.LengthSize.Hectometers">
             <summary>
             Gets or sets the value represented by this instance in hectometers.
             </summary>
         </member>
-        <member name="P:SklLib.LengthSize.Kilometers">
+        <member name="P:SklLib.Measurement.LengthSize.Kilometers">
             <summary>
             Gets or sets the value represented by this instance in kilometers.
             </summary>
         </member>
-        <member name="P:SklLib.LengthSize.Inches">
+        <member name="P:SklLib.Measurement.LengthSize.Inches">
             <summary>
             Gets or sets the value represented by this instance in inches.
             </summary>
         </member>
-        <member name="P:SklLib.LengthSize.Feet">
+        <member name="P:SklLib.Measurement.LengthSize.Feet">
             <summary>
             Gets or sets the value represented by this instance in feet.
             </summary>
         </member>
-        <member name="P:SklLib.LengthSize.Yards">
+        <member name="P:SklLib.Measurement.LengthSize.Yards">
             <summary>
             Gets or sets the value represented by this instance in yards.
             </summary>
         </member>
-        <member name="P:SklLib.LengthSize.Furlongs">
+        <member name="P:SklLib.Measurement.LengthSize.Furlongs">
             <summary>
             Gets or sets the value represented by this instance in furlongs.
             </summary>
         </member>
-        <member name="P:SklLib.LengthSize.Miles">
+        <member name="P:SklLib.Measurement.LengthSize.Miles">
             <summary>
             Gets or sets the value represented by this instance in miles.
             </summary>
         </member>
-        <member name="P:SklLib.LengthSize.Leagues">
+        <member name="P:SklLib.Measurement.LengthSize.Leagues">
             <summary>
             Gets or sets the value represented by this instance in leagues.
             </summary>
         </member>
-        <member name="T:SklLib.IMaskeable">
+        <member name="T:SklLib.Formatting.IMaskeable">
             <summary>
             Defines methods to masking support.
             </summary>
@@ -1972,7 +2148,7 @@
             masking.
             </remarks>
         </member>
-        <member name="M:SklLib.IMaskeable.IsMatch(System.String)">
+        <member name="M:SklLib.Formatting.IMaskeable.IsMatch(System.String)">
             <summary>
             Indicates whether this instance finds a match in the input string.
             </summary>
@@ -1983,7 +2159,7 @@
             match with Mask.</para>
             </remarks>
         </member>
-        <member name="P:SklLib.IMaskeable.Mask">
+        <member name="P:SklLib.Formatting.IMaskeable.Mask">
             <summary>
             Provides a <see cref="T:System.String"/> to use as mask.
             </summary>
@@ -1992,11 +2168,11 @@
             verify a automatic-typed <see cref="T:System.Char"/>.</para>
             <para>To indicate a automatic-typed <see cref="T:System.Char"/>, uses "!" before of a
             <see cref="T:System.Char"/>.</para>
-            <para>The Mask <see cref="T:System.String"/> need return true when used in <see cref="M:SklLib.IMaskeable.IsMatch(System.String)"/> method,
+            <para>The Mask <see cref="T:System.String"/> need return true when used in <see cref="M:SklLib.Formatting.IMaskeable.IsMatch(System.String)"/> method,
             masker classes ignores "!" to match the Mask <see cref="T:System.String"/>.</para>
             </remarks>
         </member>
-        <member name="P:SklLib.IMaskeable.IsReadOnly">
+        <member name="P:SklLib.Formatting.IMaskeable.IsReadOnly">
             <summary>
             Gets a value indicating whether this instance is read-only.
             </summary>
@@ -2029,156 +2205,143 @@
             Gets a value indicating whether this instance is read-only.
             </summary>
         </member>
-        <member name="T:SklLib.DataSize">
+        <member name="T:SklLib.Measurement.InformationSize">
             <summary>
-            Represents a data size, based on bytes multiples.
+            Represents a information size.
             </summary>
         </member>
-        <member name="M:SklLib.DataSize.#ctor(System.Int64)">
+        <member name="M:SklLib.Measurement.InformationSize.#ctor(System.UInt64)">
             <summary>
-            Initializes a new instance of the DataSize structure to specified bytes value.
+            Initializes a new instance of the InformationSize structure to specified value in bytes.
             </summary>
             <param name="bytes">A value in bytes.</param>
         </member>
-        <member name="M:SklLib.DataSize.#ctor(System.Int64,SklLib.ByteMeasure)">
+        <member name="M:SklLib.Measurement.InformationSize.#ctor(System.UInt64,SklLib.Measurement.ByteIEC)">
             <summary>
             Initializes a new instance of the LinearSize structure to specified value.
             </summary>
             <param name="value">A value.</param>
             <param name="mult">Greatness of value.</param>
-            <exception cref="T:System.OverflowException">The value is greater than 8 Exabytes.</exception>
+            <exception cref="T:System.OverflowException">The value is greater than 8 Exbibytes.</exception>
         </member>
-        <member name="M:SklLib.DataSize.op_Addition(SklLib.DataSize,SklLib.DataSize)">
+        <member name="M:SklLib.Measurement.InformationSize.op_Addition(SklLib.Measurement.InformationSize,SklLib.Measurement.InformationSize)">
             <summary>
-            Adds two specified DataSize values.
+            Adds two specified InformationSize values.
             </summary>
-            <param name="op1">A DataSize.</param>
-            <param name="op2">A DataSize.</param>
-            <returns>The DataSize result of adding op1 and op2.</returns>
+            <param name="op1">A InformationSize.</param>
+            <param name="op2">A InformationSize.</param>
+            <returns>The InformationSize result of adding op1 and op2.</returns>
             <exception cref="T:System.OverflowException">The return value is greater than <see cref="F:System.UInt64.MaxValue"/>.</exception>
         </member>
-        <member name="M:SklLib.DataSize.op_Subtraction(SklLib.DataSize,SklLib.DataSize)">
+        <member name="M:SklLib.Measurement.InformationSize.op_Subtraction(SklLib.Measurement.InformationSize,SklLib.Measurement.InformationSize)">
             <summary>
-            Subtracts two specified DataSize values.
+            Subtracts two specified InformationSize values.
             </summary>
-            <param name="op1">A DataSize.</param>
-            <param name="op2">A DataSize.</param>
-            <returns>The DataSize result of subtracting op1 from op2.</returns>
+            <param name="op1">A InformationSize.</param>
+            <param name="op2">A InformationSize.</param>
+            <returns>The InformationSize result of subtracting op1 from op2.</returns>
         </member>
-        <member name="M:SklLib.DataSize.op_Multiply(SklLib.DataSize,SklLib.DataSize)">
+        <member name="M:SklLib.Measurement.InformationSize.op_Multiply(SklLib.Measurement.InformationSize,SklLib.Measurement.InformationSize)">
             <summary>
-            Multiplies two specified DataSize values.
+            Multiplies two specified InformationSize values.
             </summary>
-            <param name="op1">A DataSize.</param>
-            <param name="op2">A DataSize.</param>
-            <returns>The DataSize result of multiplying op1 by op2.</returns>
+            <param name="op1">A InformationSize.</param>
+            <param name="op2">A InformationSize.</param>
+            <returns>The InformationSize result of multiplying op1 by op2.</returns>
+            <exception cref="T:System.OverflowException">The return value is greater than <see cref="F:System.UInt64.MaxValue"/>.</exception>
         </member>
-        <member name="M:SklLib.DataSize.op_Division(SklLib.DataSize,SklLib.DataSize)">
+        <member name="M:SklLib.Measurement.InformationSize.op_Division(SklLib.Measurement.InformationSize,SklLib.Measurement.InformationSize)">
             <summary>
-            Divides two specified DataSize values.
+            Divides two specified InformationSize values.
             </summary>
-            <param name="op1">A DataSize (the dividend).</param>
-            <param name="op2">A DataSize (the divisor).</param>
-            <returns>The DataSize result from dividing of op1 by op2.</returns>
+            <param name="op1">A InformationSize (the dividend).</param>
+            <param name="op2">A InformationSize (the divisor).</param>
+            <returns>The InformationSize result from dividing of op1 by op2.</returns>
         </member>
-        <member name="M:SklLib.DataSize.op_Modulus(SklLib.DataSize,SklLib.DataSize)">
+        <member name="M:SklLib.Measurement.InformationSize.op_Modulus(SklLib.Measurement.InformationSize,SklLib.Measurement.InformationSize)">
             <summary>
-            Returns the remainder resulting from dividing two specified DataSize values.
+            Returns the remainder resulting from dividing two specified InformationSize values.
             </summary>
-            <param name="op1">A DataSize.</param>
-            <param name="op2">A DataSize.</param>
-            <returns>The DataSize remainder resulting from dividing d1 by d2.</returns>
+            <param name="op1">A InformationSize.</param>
+            <param name="op2">A InformationSize.</param>
+            <returns>The InformationSize remainder resulting from dividing d1 by d2.</returns>
         </member>
-        <member name="M:SklLib.DataSize.op_UnaryNegation(SklLib.DataSize)">
+        <member name="M:SklLib.Measurement.InformationSize.op_Equality(SklLib.Measurement.InformationSize,SklLib.Measurement.InformationSize)">
             <summary>
-            Negates the value of the specified DataSize operand.
+            Determines whether two specified instances of InformationSize are equal.
             </summary>
-            <param name="op">The DataSize operand.</param>
-            <returns>The result of op multiplied by negative one (-1).</returns>
-        </member>
-        <member name="M:SklLib.DataSize.op_UnaryPlus(SklLib.DataSize)">
-            <summary>
-            Returns the value of the DataSize operand (the sign of the operand is unchanged).
-            </summary>
-            <param name="op">The DataSize operand.</param>
-            <returns>The value of the operand, op.</returns>
-        </member>
-        <member name="M:SklLib.DataSize.op_Equality(SklLib.DataSize,SklLib.DataSize)">
-            <summary>
-            Determines whether two specified instances of DataSize are equal.
-            </summary>
-            <param name="b">A DataSize.</param>
-            <param name="m">A DataSize.</param>
+            <param name="b">A InformationSize.</param>
+            <param name="m">A InformationSize.</param>
             <returns>true if b and m represent the same binary measure value; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.DataSize.op_Inequality(SklLib.DataSize,SklLib.DataSize)">
+        <member name="M:SklLib.Measurement.InformationSize.op_Inequality(SklLib.Measurement.InformationSize,SklLib.Measurement.InformationSize)">
             <summary>
-            Determines whether two specified instances of DataSize are not equal.
+            Determines whether two specified instances of InformationSize are not equal.
             </summary>
-            <param name="b">A DataSize.</param>
-            <param name="m">A DataSize.</param>
+            <param name="b">A InformationSize.</param>
+            <param name="m">A InformationSize.</param>
             <returns>true if b and m do not represent the same binary measure value; otherwise, false</returns>
         </member>
-        <member name="M:SklLib.DataSize.op_GreaterThan(SklLib.DataSize,SklLib.DataSize)">
+        <member name="M:SklLib.Measurement.InformationSize.op_GreaterThan(SklLib.Measurement.InformationSize,SklLib.Measurement.InformationSize)">
             <summary>
-            Determines whether one specified DataSize is greater than another specified DataSize.
+            Determines whether one specified InformationSize is greater than another specified InformationSize.
             </summary>
-            <param name="b">A DataSize.</param>
-            <param name="m">A DataSize.</param>
+            <param name="b">A InformationSize.</param>
+            <param name="m">A InformationSize.</param>
             <returns>true if b is greater than m; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.DataSize.op_GreaterThanOrEqual(SklLib.DataSize,SklLib.DataSize)">
+        <member name="M:SklLib.Measurement.InformationSize.op_GreaterThanOrEqual(SklLib.Measurement.InformationSize,SklLib.Measurement.InformationSize)">
             <summary>
-            Determines whether one specified DataSize is greater than or equal to another specified DataSize.
+            Determines whether one specified InformationSize is greater than or equal to another specified InformationSize.
             </summary>
-            <param name="b">A DataSize.</param>
-            <param name="m">A DataSize.</param>
+            <param name="b">A InformationSize.</param>
+            <param name="m">A InformationSize.</param>
             <returns>true if b is greater than or equal to m; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.DataSize.op_LessThan(SklLib.DataSize,SklLib.DataSize)">
+        <member name="M:SklLib.Measurement.InformationSize.op_LessThan(SklLib.Measurement.InformationSize,SklLib.Measurement.InformationSize)">
             <summary>
-            Determines whether one specified DataSize is less than another specified DataSize.
+            Determines whether one specified InformationSize is less than another specified InformationSize.
             </summary>
-            <param name="b">A DataSize.</param>
-            <param name="m">A DataSize.</param>
+            <param name="b">A InformationSize.</param>
+            <param name="m">A InformationSize.</param>
             <returns>true if b is less than m; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.DataSize.op_LessThanOrEqual(SklLib.DataSize,SklLib.DataSize)">
+        <member name="M:SklLib.Measurement.InformationSize.op_LessThanOrEqual(SklLib.Measurement.InformationSize,SklLib.Measurement.InformationSize)">
             <summary>
-            Determines whether one specified DataSize is less than or equal to another specified DataSize.
+            Determines whether one specified InformationSize is less than or equal to another specified InformationSize.
             </summary>
-            <param name="b">A DataSize.</param>
-            <param name="m">A DataSize.</param>
+            <param name="b">A InformationSize.</param>
+            <param name="m">A InformationSize.</param>
             <returns>true if b is less than or equal to m; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.DataSize.GetHashCode">
+        <member name="M:SklLib.Measurement.InformationSize.GetHashCode">
             <summary>
             Returns the hash code for this instance.
             </summary>
             <returns>A 32-bit signed integer hash code.</returns>
         </member>
-        <member name="M:SklLib.DataSize.Equals(System.Object)">
+        <member name="M:SklLib.Measurement.InformationSize.Equals(System.Object)">
             <summary>
             Returns a value indicating whether this instance and a specified <see cref="T:System.Object"/>
             represent the same type and value.
             </summary>
             <param name="obj">An object to compare to this instance.</param>
-            <returns>true if value is a DataSize and equal to this instance; otherwise, false.</returns>
+            <returns>true if value is a InformationSize and equal to this instance; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.DataSize.ToString">
+        <member name="M:SklLib.Measurement.InformationSize.ToString">
             <summary>
             Converts the numeric value of this instance to its equivalent <see cref="T:System.String"/> representation
             </summary>
             <returns>A <see cref="T:System.String"/> representing the value of this instance.</returns>
         </member>
-        <member name="M:SklLib.DataSize.GetValue(SklLib.ByteMeasure)">
+        <member name="M:SklLib.Measurement.InformationSize.GetValue(SklLib.Measurement.ByteIEC)">
             <summary>
             Gets the value represented by this instance in the specified measure.
             </summary>
             <param name="mult">Specifies a measure.</param>
             <returns>The value represented by this instance in the specified measure.</returns>
         </member>
-        <member name="M:SklLib.DataSize.ToString(System.String)">
+        <member name="M:SklLib.Measurement.InformationSize.ToString(System.String)">
             <summary>
             Converts the value of this instance to its equivalent string representation using the specified format.
             </summary>
@@ -2186,7 +2349,7 @@
             <returns>A string representation of value of this instance as specified by <c>format</c>.</returns>
             <exception cref="T:System.FormatException">format does not contain a valid custom format pattern.</exception>
             <example>
-            The following console application example show how to use DataSize.ToString method.
+            The following console application example show how to use InformationSize.ToString method.
             <code>
             using System;
             using SklLib;
@@ -2195,34 +2358,34 @@
             {
                 static void Main()
                 {
-                       DataSize binMea = new DataSize();
-                       binMea.Megabytes = 15.317M;
+                       InformationSize binMea = new InformationSize();
+                       binMea.Mebibytes = 15.317M;
             
                        Console.WriteLine(binMea.ToString("G|M-"));
-                           // output: "15.3169994354248046875 MB"
+                           // output: "15.3169994354248046875 MiB"
             
                        Console.WriteLine(binMea.ToString("G|M+"));
-                           // output: "15.3169994354248046875 Megabytes"
+                           // output: "15.3169994354248046875 Mebibytes"
             
                        Console.WriteLine(binMea.ToString("N2|M-"));
-                           // output: "15.32 MB"
+                           // output: "15.32 MiB"
             
                        Console.WriteLine(binMea.ToString("G|K-"));
-                           // output: "15684.607421875 KB"
+                           // output: "15684.607421875 KiB"
             
                     Console.WriteLine(binMea.ToString("N1|K-"));
-                           // output: "15,684.6 KB"
+                           // output: "15,684.6 KiB"
             
-                       binMea.Gigabytes = 4000;
+                       binMea.Gibibytes = 4000;
             
                        Console.WriteLine(binMea.ToString("G|&gt;-"));
-                           // output: "3.90625 TB"
+                           // output: "3.90625 TiB"
             
                     Console.WriteLine(binMea.ToString("N0|&gt;-"));
-                           // output: "4 TB"
+                           // output: "4 TiB"
             
                     Console.WriteLine(binMea.ToString("G|0-"));
-                           // output: "4000 GB"
+                           // output: "4000 GiB"
             
                     Console.ReadKey();
                 }
@@ -2230,7 +2393,7 @@
             </code>
             </example>
         </member>
-        <member name="M:SklLib.DataSize.ToString(System.String,System.IFormatProvider)">
+        <member name="M:SklLib.Measurement.InformationSize.ToString(System.String,System.IFormatProvider)">
             <summary>
             Converts the value of this instance to its equivalent string representation using the specified format
             and culture-specific format information.
@@ -2240,7 +2403,7 @@
             <returns>A string representation of value of this instance as specified by <c>format</c> and <c>provider</c>.</returns>
             <exception cref="T:System.FormatException">format does not contain a valid custom format pattern.</exception>
             <example>
-            The following console application example show how to use DataSize.ToString method.
+            The following console application example show how to use InformationSize.ToString method.
             <code>
             using System;
             using System.Globalization;
@@ -2250,34 +2413,34 @@
             {
                 static void Main()
                 {
-                       DataSize binMea = new DataSize();
-                       binMea.Megabytes = 15.317M;
+                       InformationSize binMea = new InformationSize();
+                       binMea.Mebibytes = 15.317M;
             
                        Console.WriteLine(binMea.ToString("G|M-", NumberFormatInfo.CurrentInfo));
-                           // output: "15.3169994354248046875 MB"
+                           // output: "15.3169994354248046875 MiB"
             
                        Console.WriteLine(binMea.ToString("G|M+", NumberFormatInfo.CurrentInfo));
-                           // output: "15.3169994354248046875 Megabytes"
+                           // output: "15.3169994354248046875 Mebibytes"
             
                        Console.WriteLine(binMea.ToString("N2|M-", NumberFormatInfo.CurrentInfo));
-                           // output: "15.32 MB"
+                           // output: "15.32 MiB"
             
                        Console.WriteLine(binMea.ToString("G|K-", NumberFormatInfo.CurrentInfo));
-                           // output: "15684.607421875 KB"
+                           // output: "15684.607421875 KiB"
             
                     Console.WriteLine(binMea.ToString("N1|K-", NumberFormatInfo.CurrentInfo));
-                           // output: "15,684.6 KB"
+                           // output: "15,684.6 KiB"
             
-                       binMea.Gigabytes = 4000;
+                       binMea.Gibibytes = 4000;
             
                        Console.WriteLine(binMea.ToString("G|&gt;-", NumberFormatInfo.CurrentInfo));
-                           // output: "3.90625 TB"
+                           // output: "3.90625 TiB"
             
                     Console.WriteLine(binMea.ToString("N0|&gt;-", NumberFormatInfo.CurrentInfo));
-                           // output: "4 TB"
+                           // output: "4 TiB"
             
                     Console.WriteLine(binMea.ToString("G|0-", NumberFormatInfo.CurrentInfo));
-                           // output: "4000 GB"
+                           // output: "4000 GiB"
             
                     Console.ReadKey();
                 }
@@ -2285,11 +2448,11 @@
             </code>
             </example>
         </member>
-        <member name="M:SklLib.DataSize.CompareTo(System.Object)">
+        <member name="M:SklLib.Measurement.InformationSize.CompareTo(System.Object)">
             <summary>
             Compares this instance to a specified object and returns an indication of their relative values.
             </summary>
-            <param name="obj">A boxed DataSize object to compare, or null.</param>
+            <param name="obj">A boxed InformationSize object to compare, or null.</param>
             <returns>
             <para>A signed number indicating the relative values of this instance and value.</para>
             <para>Value Description:</para>
@@ -2297,11 +2460,11 @@
             <para>- Zero: This instance is equal to value.</para>
             <para>- Greater than zero: This instance is greater than value, or value is null.</para></returns>
         </member>
-        <member name="M:SklLib.DataSize.CompareTo(SklLib.DataSize)">
+        <member name="M:SklLib.Measurement.InformationSize.CompareTo(SklLib.Measurement.InformationSize)">
             <summary>
-            Compares this instance to a specified DataSize object and returns an indication of their relative values.
+            Compares this instance to a specified InformationSize object and returns an indication of their relative values.
             </summary>
-            <param name="other">A DataSize object to compare.</param>
+            <param name="other">A InformationSize object to compare.</param>
             <returns>
             <para>A signed number indicating the relative values of this instance and the value parameter.</para>
             <para>Value Description:</para>
@@ -2309,53 +2472,53 @@
             <para>- Zero: This instance is equal to value.</para>
             <para>- Greater than zero: This instance is greater than value.</para></returns>
         </member>
-        <member name="M:SklLib.DataSize.Equals(SklLib.DataSize)">
+        <member name="M:SklLib.Measurement.InformationSize.Equals(SklLib.Measurement.InformationSize)">
             <summary>
-            Returns a value indicating whether this instance is equal to the specified DataSize instance.
+            Returns a value indicating whether this instance is equal to the specified InformationSize instance.
             </summary>
-            <param name="other">A DataSize instance to compare to this instance.</param>
+            <param name="other">A InformationSize instance to compare to this instance.</param>
             <returns>true if the value parameter equals the value of this instance; otherwise, false.</returns>
         </member>
-        <member name="P:SklLib.DataSize.Bytes">
+        <member name="P:SklLib.Measurement.InformationSize.Bytes">
             <summary>
             Gets or sets the value represented by this instance in bytes.
             </summary>
         </member>
-        <member name="P:SklLib.DataSize.Kilobytes">
+        <member name="P:SklLib.Measurement.InformationSize.Kibibytes">
             <summary>
-            Gets or sets the value represented by this instance in kilobytes.
+            Gets or sets the value represented by this instance in kibibytes.
             </summary>
-            <exception cref="T:System.OverflowException">The value is greater than 8 Exabytes.</exception>
+            <exception cref="T:System.OverflowException">The value is greater than 8 Exbibytes.</exception>
         </member>
-        <member name="P:SklLib.DataSize.Megabytes">
+        <member name="P:SklLib.Measurement.InformationSize.Mebibytes">
             <summary>
-            Gets or sets the value represented by this instance in megabytes.
+            Gets or sets the value represented by this instance in mebibytes.
             </summary>
-            <exception cref="T:System.OverflowException">The value is greater than 8 Exabytes.</exception>
+            <exception cref="T:System.OverflowException">The value is greater than 8 Exbibytes.</exception>
         </member>
-        <member name="P:SklLib.DataSize.Gigabytes">
+        <member name="P:SklLib.Measurement.InformationSize.Gibibytes">
             <summary>
-            Gets or sets the value represented by this instance in gigabytes.
+            Gets or sets the value represented by this instance in gibibytes.
             </summary>
-            <exception cref="T:System.OverflowException">The value is greater than 8 Exabytes.</exception>
+            <exception cref="T:System.OverflowException">The value is greater than 8 Exbibytes.</exception>
         </member>
-        <member name="P:SklLib.DataSize.Terabytes">
+        <member name="P:SklLib.Measurement.InformationSize.Tebibytes">
             <summary>
-            Gets or sets the value represented by this instance in terabytes.
+            Gets or sets the value represented by this instance in tebibytes.
             </summary>
-            <exception cref="T:System.OverflowException">The value is greater than 8 Exabytes.</exception>
+            <exception cref="T:System.OverflowException">The value is greater than 8 Exbibytes.</exception>
         </member>
-        <member name="P:SklLib.DataSize.Petabytes">
+        <member name="P:SklLib.Measurement.InformationSize.Pebibytes">
             <summary>
-            Gets or sets the value represented by this instance in petabytes.
+            Gets or sets the value represented by this instance in pebibytes.
             </summary>
-            <exception cref="T:System.OverflowException">The value is greater than 8 Exabytes.</exception>
+            <exception cref="T:System.OverflowException">The value is greater than 8 Exbibytes.</exception>
         </member>
-        <member name="P:SklLib.DataSize.Exabytes">
+        <member name="P:SklLib.Measurement.InformationSize.Exbibytes">
             <summary>
-            Gets or sets the value represented by this instance in exabytes.
+            Gets or sets the value represented by this instance in exbibytes.
             </summary>
-            <exception cref="T:System.OverflowException">The value is greater than 8 Exabytes.</exception>
+            <exception cref="T:System.OverflowException">The value is greater than 8 Exbibytes.</exception>
         </member>
         <member name="T:SklLib.Security.Cryptography.Simple">
             <summary>
@@ -2662,42 +2825,42 @@
             <summary>
             Gets or sets Rules to accented suffixes.
             </summary>
-            <value>A <see cref="!:Dictionary"/> as suffixes rule.</value>
+            <value>A <see cref="T:System.Collections.Generic.Dictionary`2"/> as suffixes rule.</value>
             <exception cref="T:System.InvalidOperationException">The property is being set and this
             instance is read-only.</exception>
             <exception cref="T:System.ArgumentNullException">The AccentedSuffixes property is being
             set to a null reference.</exception>
             <remarks>
             Defines word-suffixes that is accented. This property is used in all cases that
-            <see cref="M:SklLib.Formatting.GrammarRules.ApplyRules(System.String)"/> function is used.
+            <see cref="M:SklLib.Formatting.GrammarRules.ApplyRules(System.String,System.Boolean,System.Globalization.TextInfo)"/> function is used.
             </remarks>
         </member>
         <member name="P:SklLib.Formatting.GrammarRules.LoweredWords">
             <summary>
             Gets or sets Rules to fully lower cases words.
             </summary>
-            <value>A <see cref="!:List"/> as words rule.</value>
+            <value>A <see cref="T:System.Collections.Generic.List`1"/> as words rule.</value>
             <exception cref="T:System.InvalidOperationException">The property is being set and this
             instance is read-only.</exception>
             <exception cref="T:System.ArgumentNullException">The LoweredWords property is being set
             to a null reference.</exception>
             <remarks>
             Defines words that never apply title case. Of course, this property only is used
-            if titleCase parameter of <see cref="M:SklLib.Formatting.GrammarRules.ApplyRules(System.String)"/> function have a true value.
+            if titleCase parameter of <see cref="M:SklLib.Formatting.GrammarRules.ApplyRules(System.String,System.Boolean,System.Globalization.TextInfo)"/> function have a true value.
             </remarks>
         </member>
         <member name="P:SklLib.Formatting.GrammarRules.Exceptions">
             <summary>
             Gets or Sets rules exceptions, when this rule is applied other rules is ignored.
             </summary>
-            <value>A <see cref="!:Dictionary"/> as words rule.</value>
+            <value>A <see cref="T:System.Collections.Generic.Dictionary`2"/> as words rule.</value>
             <exception cref="T:System.InvalidOperationException">The property is being set and this
             instance is read-only.</exception>
             <exception cref="T:System.ArgumentNullException">The Exceptions property is being
             set to a null reference.</exception>
             <remarks>
             Defines words that other rules not is applied. This property is used in all cases
-            that <see cref="M:SklLib.Formatting.GrammarRules.ApplyRules(System.String)"/> function is used.
+            that <see cref="M:SklLib.Formatting.GrammarRules.ApplyRules(System.String,System.Boolean,System.Globalization.TextInfo)"/> function is used.
             </remarks>
         </member>
         <member name="P:SklLib.Formatting.GrammarRules.TitleCaseExceptions">
@@ -2705,19 +2868,19 @@
             Gets or sets rules exceptions, only to Title case words, when this rule is applied
             other rules is ignored.
             </summary>
-            <value>A <see cref="!:Dictionary"/> as words rule.</value>
+            <value>A <see cref="T:System.Collections.Generic.Dictionary`2"/> as words rule.</value>
             <exception cref="T:System.InvalidOperationException">The property is being set and this
             instance is read-only.</exception>
             <exception cref="T:System.ArgumentNullException">The TitleCaseExceptions property is being
             set to a null reference.</exception>
             <remarks>
             Defines words that other rules not is applied, when titleCase parameter of
-            <see cref="M:SklLib.Formatting.GrammarRules.ApplyRules(System.String)"/> function have a true value.
+            <see cref="M:SklLib.Formatting.GrammarRules.ApplyRules(System.String,System.Boolean,System.Globalization.TextInfo)"/> function have a true value.
             </remarks>
         </member>
         <member name="P:SklLib.Formatting.GrammarRules.IgnoredCharacters">
             <summary>
-            Gets or sets characters that will be ignored by <see cref="M:SklLib.Formatting.GrammarRules.ApplyRules(System.String)"/> method.
+            Gets or sets characters that will be ignored by <see cref="M:SklLib.Formatting.GrammarRules.ApplyRules(System.String,System.Boolean,System.Globalization.TextInfo)"/> method.
             </summary>
             <value>A <see cref="T:System.String"/> as rule to ignored characters.</value>
             <exception cref="T:System.InvalidOperationException">The property is being set and this
@@ -2754,7 +2917,7 @@
             {
                 static void Main()
                 {
-                    PostalCode pCode = PostalCode.GetCulturePostalCodeInfo("en-US");
+                    PostalCode pCode = PostalCode.GetCultureBasedInfo("en-US");
                        string userPCode = "12345-6789";
                     Console.WriteLine("Compacted Postal Code: {0}", pCode.GetCompactPostalCode(userPCode));
                     string internalPCode = "987654321";
@@ -2772,8 +2935,8 @@
         </member>
         <member name="F:SklLib.Formatting.PostalCode.storedCultureInfo">
             <summary>
-            Stores a <see cref="!:Dictionary"/>, where key is a culture name and value
-            is a delegate to get type- and culture-specific.
+            Stores a <see cref="T:System.Collections.Generic.Dictionary`2"/>, where key is a culture name and value
+            is a lazy-loaded instance of <see cref="T:SklLib.Formatting.PostalCode"/>.
             </summary>
         </member>
         <member name="M:SklLib.Formatting.PostalCode.#ctor">
@@ -2796,8 +2959,8 @@
             <summary>
             Gets the list of names of supported cultures by <see cref="T:SklLib.Formatting.PostalCode"/>.
             </summary>
-            <returns>An <see cref="T:System.Array"/> of type <see cref="T:System.String"/> that contains the cultures names.
-            The <see cref="T:System.Array"/> of cultures is sorted.</returns>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> that contains the cultures names.
+            The list of cultures is sorted.</returns>
         </member>
         <member name="P:SklLib.Formatting.PostalCode.CurrentInfo">
             <summary>
@@ -2813,7 +2976,7 @@
         </member>
         <member name="F:SklLib.Formatting.Telephones.storedCultureInfo">
             <summary>
-            Stores a <see cref="!:Dictionary"/>, where key is a culture name and value
+            Stores a <see cref="T:System.Collections.Generic.Dictionary`2"/>, where key is a culture name and value
             is a delegate to get type- and culture-specific.
             </summary>
         </member>
@@ -2851,10 +3014,20 @@
             Defines how numeric values are written, depending on the culture.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "F:SklLib.Globalization.NumberWriteInfo.storedCultureInfo" -->
+        <member name="F:SklLib.Globalization.NumberWriteInfo.storedCultureInfo">
+            <summary>
+            Stores a <see cref="T:System.Collections.Generic.Dictionary`2"/>, where key is a culture name and value
+            is a lazy-loaded instance of <see cref="T:SklLib.Globalization.NumberWriteInfo"/>.
+            </summary>
+        </member>
         <member name="M:SklLib.Globalization.NumberWriteInfo.#cctor">
             <summary>
             Initializes static fields of NumberWriteInfo.
+            </summary>
+        </member>
+        <member name="M:SklLib.Globalization.NumberWriteInfo.#ctor">
+            <summary>
+            Initializes an empty instance of <see cref="T:SklLib.Globalization.NumberWriteInfo"/>.
             </summary>
         </member>
         <member name="M:SklLib.Globalization.NumberWriteInfo.GetCultureBasedInfo(System.String)">
@@ -2870,8 +3043,8 @@
             <summary>
             Gets the list of names of supported cultures by NumberWriteInfo.
             </summary>
-            <returns>An <see cref="T:System.Array"/> of type <see cref="T:System.String"/> that contains the cultures names.
-            The <see cref="T:System.Array"/> of cultures is sorted.</returns>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> that contains the cultures names.
+            The list of cultures is sorted.</returns>
         </member>
         <member name="M:SklLib.Globalization.NumberWriteInfo.ReadOnly">
             <summary>
@@ -2928,14 +3101,14 @@
         </member>
         <member name="P:SklLib.Globalization.NumberWriteInfo.DozenUnitSeparator">
             <summary>
-            Gets or sets a String to separates Dozen numbers of the Units numbers (example: "-").
+            Gets or sets a String to separates Dozen numbers of the Units numbers (e.g: The '-' from 'twenty-one').
             </summary>
             <exception cref="T:System.InvalidOperationException">The property is being set and this
             instance is read-only.</exception>
         </member>
         <member name="P:SklLib.Globalization.NumberWriteInfo.HundredDozenSeparator">
             <summary>
-            Gets or sets a String to separates Hundred numbers of the Dozen numbers (example: " and ").
+            Gets or sets a String to separates Hundred numbers of the Dozen numbers (e.g: The ' and ' from 'one hundred and one').
             </summary>
             <exception cref="T:System.InvalidOperationException">The property is being set and this
             instance is read-only.</exception>
@@ -2956,14 +3129,14 @@
         </member>
         <member name="P:SklLib.Globalization.NumberWriteInfo.CurrencyIntegerName">
             <summary>
-            Gets or sets how currency integer name is written (example: "dollar&amp;dollars").
+            Gets or sets how currency integer name is written (example: "dollar and dollars").
             </summary>
             <exception cref="T:System.InvalidOperationException">The property is being set and this
             instance is read-only.</exception>
         </member>
         <member name="P:SklLib.Globalization.NumberWriteInfo.CurrencyDecimalName">
             <summary>
-            Gets or sets how currency decimal name is written (example: "cent&amp;cents").
+            Gets or sets how currency decimal name is written (example: "cent and cents").
             </summary>
             <exception cref="T:System.InvalidOperationException">The property is being set and this
             instance is read-only.</exception>
@@ -2980,27 +3153,27 @@
             Gets a value indicating whether this instance is read-only.
             </summary>
         </member>
-        <member name="T:SklLib.Globalization.WriteNumber">
+        <member name="T:SklLib.Globalization.SpeltNumber">
             <summary>
-            Stores how writes a number.
+            Stores how to write a specific number.
             </summary>
         </member>
-        <member name="F:SklLib.Globalization.WriteNumber.value">
+        <member name="M:SklLib.Globalization.SpeltNumber.#ctor(System.Int64,System.String)">
             <summary>
-            A value.
-            </summary>
-        </member>
-        <member name="F:SklLib.Globalization.WriteNumber.write">
-            <summary>
-            How <c>value</c> is written.
-            </summary>
-        </member>
-        <member name="M:SklLib.Globalization.WriteNumber.#ctor(System.Int64,System.String)">
-            <summary>
-            Initializes the WriteNumber struct with loaded values.
+            Initializes the SpeltNumber struct with loaded values.
             </summary>
             <param name="v">A value.</param>
             <param name="w">How <c>v</c> is written.</param>
+        </member>
+        <member name="P:SklLib.Globalization.SpeltNumber.Value">
+            <summary>
+            The number that this instance represents.
+            </summary>
+        </member>
+        <member name="P:SklLib.Globalization.SpeltNumber.Spell">
+            <summary>
+            How the number represented by this instance is spelt.
+            </summary>
         </member>
         <member name="T:SklLib.IO.IniFileBase">
             <summary>
@@ -3165,6 +3338,13 @@
             Sets full path for file name and verifies directory existence.
             </summary>
             <param name="fileName">The configuration file.</param>
+        </member>
+        <member name="M:SklLib.IO.IniFileBase.Validate(System.Action{SklLib.InvalidEventArgs})">
+            <summary>
+            Validates current file as a valid INI file and executes a action.
+            </summary>
+            <param name="action">Action to execute after each validation.</param>
+            <returns>True if current file is a valid INI file; otherwise, false.</returns>
         </member>
         <member name="P:SklLib.IO.IniFileBase.CanTrim">
             <summary>
@@ -3537,46 +3717,46 @@
             <param name="index">Index into String to sets.</param>
             <param name="ch">Char to replacement.</param>
         </member>
-        <member name="T:SklLib.LockedMultiAccess`1">
+        <member name="T:SklLib.Threading.LockedMultiAccess`1">
             <summary>
             Stores a object protected by multiaccess.
             </summary>
             <typeparam name="T">Type of object to protect.</typeparam>
         </member>
-        <member name="M:SklLib.LockedMultiAccess`1.#ctor">
+        <member name="M:SklLib.Threading.LockedMultiAccess`1.#ctor">
             <summary>
             Initializes LockedMultiAccess.
             </summary>
         </member>
-        <member name="M:SklLib.LockedMultiAccess`1.#ctor(`0)">
+        <member name="M:SklLib.Threading.LockedMultiAccess`1.#ctor(`0)">
             <summary>
             Initializes LockedMultiAccess and stores a initial value.
             </summary>
-            <param name="value"></param>
+            <param name="value">The value.</param>
         </member>
-        <member name="M:SklLib.LockedMultiAccess`1.LockObject">
+        <member name="M:SklLib.Threading.LockedMultiAccess`1.LockObject">
             <summary>
-            Locks stored object to be accessed by <see cref="P:SklLib.LockedMultiAccess`1.SafeAccess"/>, if the object is locked then
+            Locks stored object to be accessed by <see cref="P:SklLib.Threading.LockedMultiAccess`1.SafeAccess"/>, if the object is locked then
             waits to unlock.
             </summary>
         </member>
-        <member name="M:SklLib.LockedMultiAccess`1.UnLockObject">
+        <member name="M:SklLib.Threading.LockedMultiAccess`1.UnLockObject">
             <summary>
-            Unlocks stored object to be accessed by <see cref="P:SklLib.LockedMultiAccess`1.SafeAccess"/>.
+            Unlocks stored object to be accessed by <see cref="P:SklLib.Threading.LockedMultiAccess`1.SafeAccess"/>.
             </summary>
         </member>
-        <member name="P:SklLib.LockedMultiAccess`1.DirectAccess">
+        <member name="P:SklLib.Threading.LockedMultiAccess`1.DirectAccess">
             <summary>
             Gets or sets the object stored by this instance directly.
             </summary>
         </member>
-        <member name="P:SklLib.LockedMultiAccess`1.SafeAccess">
+        <member name="P:SklLib.Threading.LockedMultiAccess`1.SafeAccess">
             <summary>
             Gets or sets the object stored by this instance; If the object is locked then
             waits to unlock.
             </summary>
         </member>
-        <member name="P:SklLib.LockedMultiAccess`1.IsLocked">
+        <member name="P:SklLib.Threading.LockedMultiAccess`1.IsLocked">
             <summary>
             Gets a boolean indicating whether current object is locked.
             </summary>
@@ -3651,13 +3831,22 @@
             Gets current operating system version when it is Windows Server edition.
             </summary>
         </member>
-        <member name="T:SklLib.Telephone">
+        <member name="T:SklLib.Formatting.Telephone">
             <summary>
             Stores a complete telephone number; includes country code, area code and
             subscriber number.
             </summary>
         </member>
-        <member name="M:SklLib.Telephone.op_Equality(SklLib.Telephone,SklLib.Telephone)">
+        <member name="M:SklLib.Formatting.Telephone.#ctor(System.Int16,System.Int16,System.Int32)">
+            <summary>
+            Initializes a new instance of <see cref="T:SklLib.Formatting.Telephone"/> and defines country code,
+            area code and subscriber number.
+            </summary>
+            <param name="countryCode">The country code.</param>
+            <param name="areaCode">The area code.</param>
+            <param name="subscriberNumber">The subscriber number.</param>
+        </member>
+        <member name="M:SklLib.Formatting.Telephone.op_Equality(SklLib.Formatting.Telephone,SklLib.Formatting.Telephone)">
             <summary>
             Determines whether two specified instances of Telephone are equal.
             </summary>
@@ -3665,7 +3854,7 @@
             <param name="tel2">A Telephone.</param>
             <returns>true if tel1 and tel2 represent the same telephone value; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.Telephone.op_Inequality(SklLib.Telephone,SklLib.Telephone)">
+        <member name="M:SklLib.Formatting.Telephone.op_Inequality(SklLib.Formatting.Telephone,SklLib.Formatting.Telephone)">
             <summary>
             Determines whether two specified instances of Telephone are not equal.
             </summary>
@@ -3673,13 +3862,13 @@
             <param name="tel2">A Telephone.</param>
             <returns>true if tel1 and tel2 do not represent the same telephone value; otherwise, false</returns>
         </member>
-        <member name="M:SklLib.Telephone.GetHashCode">
+        <member name="M:SklLib.Formatting.Telephone.GetHashCode">
             <summary>
             Returns the hash code for this instance.
             </summary>
             <returns>A 32-bit signed integer hash code.</returns>
         </member>
-        <member name="M:SklLib.Telephone.Equals(System.Object)">
+        <member name="M:SklLib.Formatting.Telephone.Equals(System.Object)">
             <summary>
             Returns a value indicating whether this instance and a specified <see cref="T:System.Object"/>
             represent the same type and value.
@@ -3687,20 +3876,53 @@
             <param name="obj">An object to compare to this instance.</param>
             <returns>true if value is a Telephone and equal to this instance; otherwise, false.</returns>
         </member>
-        <member name="M:SklLib.Telephone.ToString">
+        <member name="M:SklLib.Formatting.Telephone.ToString">
             <summary>
             Converts the numeric value of this instance to its equivalent <see cref="T:System.String"/> representation.
             </summary>
             <returns>A <see cref="T:System.String"/> representing the value of this instance.</returns>
         </member>
-        <member name="M:SklLib.Telephone.Equals(SklLib.Telephone)">
+        <member name="M:SklLib.Formatting.Telephone.ToString(System.String)">
+            <summary>
+            Converts the numeric value of this instance to its equivalent <see cref="T:System.String"/> representation.
+            </summary>
+            <param name="format">The formatting string.</param>
+            <returns>This <see cref="T:SklLib.Formatting.Telephone"/> instance formatted as indicated into format string.</returns>
+        </member>
+        <member name="M:SklLib.Formatting.Telephone.ToBasicTelephoneString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SklLib.Formatting.Telephone.ToLocalTelephoneString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SklLib.Formatting.Telephone.ToCompleteTelephoneString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SklLib.Formatting.Telephone.FromString(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="tel"></param>
+            <param name="mask"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SklLib.Formatting.Telephone.Equals(SklLib.Formatting.Telephone)">
             <summary>
             Returns a value indicating whether this instance is equal to the specified Telephone instance.
             </summary>
             <param name="other">A Telephone instance to compare to this instance.</param>
             <returns>true if the value parameter equals the value of this instance; otherwise, false.</returns>
         </member>
-        <member name="T:SklLib.Telephone.AlphabeticMnemonicSystem">
+        <member name="T:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem">
             <summary>
             Alphabetic mnemonic system used to telephone numbers.
             </summary>
@@ -3712,132 +3934,132 @@
             omitted, though on some modern telephones, they are added.
             </remarks>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.A">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.A">
             <summary>
             Letter "A" is button 2.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.B">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.B">
             <summary>
             Letter "B" is button 2.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.C">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.C">
             <summary>
             Letter "C" is button 2.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.D">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.D">
             <summary>
             Letter "D" is button 3.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.E">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.E">
             <summary>
             Letter "E" is button 3.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.F">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.F">
             <summary>
             Letter "F" is button 3.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.G">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.G">
             <summary>
             Letter "G" is button 4.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.H">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.H">
             <summary>
             Letter "H" is button 4.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.I">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.I">
             <summary>
             Letter "I" is button 4.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.J">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.J">
             <summary>
             Letter "J" is button 5.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.K">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.K">
             <summary>
             Letter "K" is button 5.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.L">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.L">
             <summary>
             Letter "L" is button 5.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.M">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.M">
             <summary>
             Letter "M" is button 6.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.N">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.N">
             <summary>
             Letter "N" is button 6.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.O">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.O">
             <summary>
             Letter "O" is button 6.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.P">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.P">
             <summary>
             Letter "P" is button 7.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.Q">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.Q">
             <summary>
             Letter "Q" is button 7.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.R">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.R">
             <summary>
             Letter "R" is button 7.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.S">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.S">
             <summary>
             Letter "S" is button 7.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.T">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.T">
             <summary>
             Letter "T" is button 8.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.U">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.U">
             <summary>
             Letter "U" is button 8.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.V">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.V">
             <summary>
             Letter "V" is button 8.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.W">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.W">
             <summary>
             Letter "W" is button 9.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.X">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.X">
             <summary>
             Letter "X" is button 9.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.Y">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.Y">
             <summary>
             Letter "Y" is button 9.
             </summary>
         </member>
-        <member name="F:SklLib.Telephone.AlphabeticMnemonicSystem.Z">
+        <member name="F:SklLib.Formatting.Telephone.AlphabeticMnemonicSystem.Z">
             <summary>
             Letter "Z" is button 9.
             </summary>

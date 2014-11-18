@@ -18,6 +18,7 @@
 
 using SklLib;
 using SklLib.IO;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Security.Permissions;
@@ -27,7 +28,6 @@ namespace vdams.Configuration
 {
     class Target : IValidatable
     {
-        [Required]
         [YamlAlias("directory")]
         public string DirPath { get; set; }
 
@@ -36,18 +36,33 @@ namespace vdams.Configuration
             return new FileInfo(DirPath).HasPermission(FileIOPermissionAccess.Read);
         }
 
-        public bool IsValid()
+        public bool Validate(Action<InvalidEventArgs> action)
         {
-            try {
-                Path.GetFullPath(DirPath);
-                if (!Directory.Exists(DirPath))
-                    return false;
-                if (!HasPermissionSourcePath())
-                    return false;
-            }
-            catch { return false; }
+            if (action == null)
+                throw new ArgumentNullException("action");
 
-            return true;
+            bool result = true;
+
+            if (DirPath == null) {
+                action(new InvalidEventArgs(
+                    "The directory must be defined to target configuration",
+                    "DirPath", null));
+                result = false;
+            }
+            else if (!Directory.Exists(DirPath)) {
+                action(new InvalidEventArgs(
+                    string.Format("The specified path '{0}' for target directory doesn't exist", DirPath ?? string.Empty),
+                    "DirPath", DirPath));
+                result = false;
+            }
+            else if (!HasPermissionSourcePath()) {
+                action(new InvalidEventArgs(
+                    string.Format("The current user doesn't has read permission on specified target directory '{0}'", DirPath),
+                    "DirPath", DirPath));
+                result = false;
+            }
+
+            return result;
         }
     }
 }

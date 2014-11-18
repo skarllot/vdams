@@ -17,8 +17,11 @@
 //
 
 using SklLib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace vdams.Configuration
 {
@@ -30,19 +33,75 @@ namespace vdams.Configuration
         public int DateDepth { get { return dateDepth; } set { dateDepth = value; } }
         public FileList FileList { get; set; }
         public List<Monitor> Monitor { get; set; }
-        [Required]
-        public Time ScheduleTime { get; set; }
-        [Required]
+        public Time? ScheduleTime { get; set; }
         public List<Target> Targets { get; set; }
 
-        public bool IsValid()
+        public IEnumerable<Assorting.DirectoryAssorter> GetDirectoryAssorters()
         {
-            if (Assort != null) {
+            foreach (var item in Assort) {
+                yield return new Assorting.DirectoryAssorter(item);
+            }
+        }
+
+        public static Configuration LoadFile(string file)
+        {
+            Configuration result = null;
+            var reader = new System.IO.StreamReader(file, true);
+            var deserializer = new Deserializer(namingConvention: new CamelCaseNamingConvention());
+            try { result = deserializer.Deserialize<Configuration>(reader); }
+            catch { }
+
+            return result;
+        }
+
+        public bool Validate(Action<InvalidEventArgs> action)
+        {
+            if (action == null)
+                throw new ArgumentNullException("action");
+
+            bool result = true;
+
+            if (Assort != null && Assort.Count > 0) {
+                if (FileList == null) {
+                    action(new InvalidEventArgs(
+                        "The file-list configuration was not found, and is required when assorting is defined",
+                        "FileList", null));
+                    result = false;
+                }
+
                 foreach (var item in Assort) {
                     if (!item.IsValid())
-                        return false;
+                        result = false;
                 }
             }
+
+            if (FileList != null) {
+                if (Assort == null || Assort.Count < 1) {
+                    action(new InvalidEventArgs(
+                        "The file-list configuration is defined but assorting targets not",
+                        "Assort", null));
+                    result = false;
+                }
+
+                if (!FileList.Validate(action))
+                    result = false;
+            }
+
+            if (Monitor != null && Monitor.Count > 0) {
+                foreach (var item in Monitor) {
+                    if (!item.Validate(action))
+                        result = false;
+                }
+            }
+
+            if (ScheduleTime == null) {
+                action(new InvalidEventArgs(
+                    "The schedule time is required",
+                    "ScheduleTime", null));
+                result = false;
+            }
+
+            return result;
         }
     }
 }

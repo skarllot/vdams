@@ -16,15 +16,67 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using SklLib;
+using SklLib.IO;
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Security.Permissions;
+using YamlDotNet.Serialization;
 
 namespace vdams.Configuration
 {
-    class FileList
+    class FileList : IValidatable
     {
         public bool BOM { get; set; }
-        [Required]
-        public string Directory { get; set; }
+        [YamlAlias("directory")]
+        public string DirPath { get; set; }
         public string Encoding { get; set; }
+
+        public bool HasPermissionFileListPath()
+        {
+            return new FileInfo(DirPath).HasPermission(FileIOPermissionAccess.Write);
+        }
+
+        public System.Text.Encoding GetEncodingInstance()
+        {
+            return EncodingParser.GetEncodingInstance(Encoding, BOM);
+        }
+
+        public bool Validate(System.Action<InvalidEventArgs> action)
+        {
+            if (action == null)
+                throw new ArgumentNullException("action");
+
+            bool result = true;
+
+            if (DirPath == null) {
+                action(new InvalidEventArgs(
+                    "The directory must be defined for file-list configuration",
+                    "DirPath", null));
+                result = false;
+            }
+            else if (!Directory.Exists(DirPath)) {
+                action(new InvalidEventArgs(
+                    string.Format("The specified path '{0}' for file-list file doesn't exist", DirPath ?? string.Empty),
+                    "DirPath", DirPath));
+                result = false;
+            }
+            else if (!HasPermissionFileListPath()){
+                action(new InvalidEventArgs(
+                    string.Format("The current user doesn't has write permission on specified file-list file '{0}'", DirPath),
+                    "DirPath", DirPath));
+                result = false;
+            }
+
+            if (GetEncodingInstance() == null) {
+                action(new InvalidEventArgs(
+                    string.Format("The specified encoding '{0}' for file-list file is invalid", Encoding ?? string.Empty),
+                    "Encoding", Encoding));
+                result = false;
+            }
+
+            return result;
+        }
     }
 }

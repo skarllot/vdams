@@ -155,7 +155,10 @@ namespace vdams
 
         public override int GetHashCode()
         {
-            return (dt.Hour ^ dt.Minute ^ dt.Second ^ dt.Millisecond);
+            return ((dt.Hour * 1000 * 60 * 60)
+                + (dt.Minute * 1000 * 60)
+                + (dt.Second * 1000)
+                + dt.Millisecond);
         }
 
         public override bool Equals(object obj)

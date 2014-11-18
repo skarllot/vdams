@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+using SklLib;
 using SklLib.Collections;
 using SklLib.IO;
 using System;
@@ -48,7 +49,7 @@ namespace vdams.Assorting
             while (counter <= depth) {
                 DateTime dt = DateTime.Today.AddDays(-1 * counter);
                 string fileName = Path.Combine(
-                    cfgFilelist.Directory, string.Format(FILELIST_NAME,
+                    cfgFilelist.DirPath, string.Format(FILELIST_NAME,
                     dt.ToString(FILELIST_DATE_FORMAT)));
                 if (File.Exists(fileName))
                     File.Delete(fileName);
@@ -69,15 +70,15 @@ namespace vdams.Assorting
                     throw new InvalidOperationException("No assorting transaction is running");
 
                 if (!cfgPath.IsValid()) {
-                    MainClass.Logger.WriteEntry(string.Format("The path \"{0}\" becomes invalid", cfgPath.SectionName),
+                    MainClass.Logger.WriteEntry(string.Format("The path '{0}' becomes invalid", cfgPath.Target.DirPath),
                                 System.Diagnostics.EventLogEntryType.Error, EventId.AssortPathValidationError);
                     return false;
                 }
 
                 var logTransaction = MainClass.Logger.BeginWriteEntry();
-                logTransaction.AppendLine(string.Format("Initializing assorting to {0}", cfgPath.SectionName));
+                logTransaction.AppendLine(string.Format("Initializing assorting to '{0}'", cfgPath.Target.DirPath));
 
-                IList<string> fileList = GetFileList(cfgPath.DirPath);
+                IList<string> fileList = GetFileList(cfgPath.Target.DirPath);
                 logTransaction.AppendLine(string.Format("Found {0} total files", fileList.Count));
 
                 // If a file date format was not defined into configuration then assort files based on modification date;
@@ -92,26 +93,27 @@ namespace vdams.Assorting
                     string strDt = dt.ToString(cfgPath.FileDateFormat);
 
                     logTransaction.AppendLine(string.Format("Looking for file modified on {0}", dt.ToShortDateString()));
+                    IEnumerable<FileInfo> selectedFiles;
                     if (isFileDateFormatDefined) {
-                        fileList
-                            .Where(s => s.IndexOf(strDt) != -1)
-                            .ForEach(s => {
-                                pickedList.Add(s);
-                                totalBytes += new FileInfo(s).Length;
-                            });
+                        selectedFiles =
+                            from a in fileList
+                            where a.IndexOf(strDt) != -1
+                            select new FileInfo(a);
                     }
                     else {
-                        fileList
-                            .ConvertAll(s => new FileInfo(s))
-                            .Where(s => s.LastWriteTime.Date == dt.Date)
-                            .ForEach(s => {
-                                pickedList.Add(s.FullName);
-                                totalBytes += s.Length;
-                            });
+                        selectedFiles =
+                            from a in fileList
+                            let fi = new FileInfo(a)
+                            where fi.LastWriteTime.Date == dt.Date
+                            select fi;
+                    }
+                    foreach (FileInfo item in selectedFiles) {
+                        pickedList.Add(item.FullName);
+                        totalBytes += item.Length;
                     }
 
                     logTransaction.AppendLine(string.Format("Found {0} files, total size of {1}",
-                        pickedList.Count, new SklLib.DataSize(totalBytes).ToString("N2")));
+                        pickedList.Count, new SklLib.Measurement.InformationSize((ulong)totalBytes).ToString("N2")));
 
                     logTransaction.AppendLine(string.Format("Writing file list of files modified on {0}", dt.ToShortDateString()));
                     string fileName = Path.Combine(transaction.Configuration.DirPath,
@@ -132,8 +134,9 @@ namespace vdams.Assorting
                 fileList.Clear();
                 fileList = null;
 
-                logTransaction.Commit(new SklLib.Diagnostics.LogEventArgs(
-                    System.Diagnostics.EventLogEntryType.Information, EventId.AssortCompleted));
+                logTransaction.EntryType = System.Diagnostics.EventLogEntryType.Information;
+                logTransaction.EventLogId = EventId.AssortCompleted;
+                logTransaction.Commit();
                 return true;
             }
         }

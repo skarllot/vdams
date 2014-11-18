@@ -25,11 +25,7 @@ namespace vdams
         // Service related codes (0-9)
 
         // Configuration file related codes (10-29)
-        public static readonly EventId ConfigFileInvalidSchedule = new EventId(14);
-        public static readonly EventId ConfigFileZeroPath = new EventId(15);
-        public static readonly EventId ConfigFileInvalidPath = new EventId(16);
-        public static readonly EventId ConfigFilePathPermissionError = new EventId(17);
-        public static readonly EventId ConfigFileInvalidEncoding = new EventId(18);
+        public static readonly EventId ConfigFileInvalid = new EventId(14);
 
         // Assort operation related codes (30-49)
         public static readonly EventId AssortPathValidationError = new EventId(30);
@@ -38,5 +34,6 @@ namespace vdams
         public static readonly EventId AssortFileAccessError = new EventId(33);
 
         public EventId(ushort value) : base(value) { }
+
     }
 }

@@ -24,27 +24,38 @@ namespace vdams.Configuration
 {
     class Assort: IValidatable
     {
-        [Required]
         public Target Target { get; set; }
         public string FileDateFormat { get; set; }
 
-        public bool IsValid()
+        public bool Validate(Action<InvalidEventArgs> action)
         {
-            if (Target == null)
-                return false;
-            if (!Target.IsValid())
-                return false;
+            if (action == null)
+                throw new ArgumentNullException("action");
+
+            bool result = true;
+            if (Target == null) {
+                action(new InvalidEventArgs(
+                    "The target directory was not defined for assorting operation",
+                    "Target", null));
+                result = false;
+            }
+            else if (!Target.Validate(action))
+                result = false;
 
             if (FileDateFormat != null) {
                 try { DateTime.Now.ToString(FileDateFormat); }
                 catch (Exception e) {
-                    if (e is FormatException || e is ArgumentOutOfRangeException)
-                        return false;
+                    if (e is FormatException || e is ArgumentOutOfRangeException) {
+                        action(new InvalidEventArgs(
+                            string.Format("The date format '{0}' defined for file name is invalid", FileDateFormat),
+                            "FileDateFormat", FileDateFormat));
+                        result = false;
+                    }
                     throw;
                 }
             }
 
-            return true;
+            return result;
         }
     }
 }

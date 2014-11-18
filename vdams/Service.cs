@@ -17,6 +17,7 @@
 
 using SklLib;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -47,16 +48,6 @@ namespace vdams
             stopEvent = new ManualResetEvent(true);
             reloadEvent = new ManualResetEvent(false);
             lckInstance = new object();
-        }
-
-        private static Assorting.DirectoryAssorter[] GetAssorter(Configuration.Configuration config)
-        {
-            Assorting.DirectoryAssorter[] ret = new Assorting.DirectoryAssorter[config.Assort.Count];
-            for (int i = 0; i < ret.Length; i++) {
-                ret[i] = new Assorting.DirectoryAssorter(config.Assort[i]);
-            }
-
-            return ret;
         }
 
         private string GetConfigFileFullName(string dir, string fileName)
@@ -165,26 +156,30 @@ namespace vdams
             stopEvent.Reset();
             string cfgpath = (string)obj;
 
-            Configuration.ConfigReader config = new Configuration.ConfigReader(cfgpath);
-            if (!TryLoadConfiguration(config)) {
-                eventLog.WriteEntry("Initial configuration file loading failed",
+            Configuration.Configuration config = Configuration.Configuration.LoadFile(cfgpath);
+            if (config == null) {
+                eventLog.WriteEntry(string.Format("Error loading configuration file {0}", cfgpath),
                     EventLogEntryType.Error, EventId.ConfigFileLoadError);
                 stopEvent.Set();
                 return;
             }
-
-            Assorting.DirectoryAssorter[] arrAssorter = GetAssorter(config);
+            var transaction = eventLog.BeginWriteEntry();
+            transaction.EntryType = EventLogEntryType.Error;
+            transaction.EventLogId = EventId.ConfigFileInvalid;
+            if (!config.Validate(arg => transaction.AppendLine(arg.Message)))
+                transaction.Commit();
+            else
+                transaction.Rollback();
 
             while (!stopEvent.WaitOne(0)) {
-                if (DateTime.Now.ToString(TIME_FORMAT_DT) ==
-                    config.MainSection.ScheduleTime.Value.ToString(TIME_FORMAT_TS)
+                if (config.ScheduleTime.Value.CompareTo(DateTime.Now, TimeFields.HourMinute) == 0
                     || MainClass.DEBUG) {
-                        if (config.FilelistSection != null) {
-                            var transaction = Assorting.DirectoryAssorter.BeginTransaction(
-                                config.FilelistSection, config.MainSection.DateDepth);
-                            foreach (Assorting.DirectoryAssorter item in arrAssorter) {
+                        if (config.Assort != null) {
+                            var assortTransaction = Assorting.DirectoryAssorter.BeginTransaction(
+                                config.FileList, config.DateDepth);
+                            foreach (Assorting.DirectoryAssorter item in config.GetDirectoryAssorters()) {
                                 try {
-                                    item.Assort(transaction);
+                                    item.Assort(assortTransaction);
                                 }
                                 catch (Exception ex) {
                                     eventLog.WriteEntry(ex.CreateDump(),
@@ -196,19 +191,22 @@ namespace vdams
                                 if (stopEvent.WaitOne(0))
                                     break;
                             }
-                            Assorting.DirectoryAssorter.EndTransaction(transaction);
+                            Assorting.DirectoryAssorter.EndTransaction(assortTransaction);
                         }
                 }
 
                 if (reloadEvent.WaitOne(0)) {
-                    Configuration.ConfigReader tmpConfig = new Configuration.ConfigReader(config.FileName);
-                    if (!TryLoadConfiguration(tmpConfig)) {
-                        eventLog.WriteEntry("Configuration file was changed to invalid state",
-                            EventLogEntryType.Error, EventId.ConfigFileReloadError);
+                    var tmpConfig = Configuration.Configuration.LoadFile(cfgpath);
+                    transaction = eventLog.BeginWriteEntry();
+                    transaction.EntryType = EventLogEntryType.Error;
+                    transaction.EventLogId = EventId.ConfigFileReloadError;
+                    transaction.AppendLine("Configuration file was changed to invalid state. Details:");
+                    if (tmpConfig.Validate(args => transaction.AppendLine(args.Message))) {
+                        transaction.Commit();
                     }
                     else {
+                        transaction.Rollback();
                         config = tmpConfig;
-                        arrAssorter = GetAssorter(config);
                         eventLog.WriteEntry("Configuration file reloaded",
                             EventLogEntryType.Information, EventId.ConfigFileReloaded);
                     }
@@ -218,84 +216,6 @@ namespace vdams
                 if (stopEvent.WaitOne(DEFAULT_REFRESH))
                     break;
             }
-        }
-
-        private bool TryLoadConfiguration(Configuration.ConfigReader config)
-        {
-            if (!ValidateConfigFile(config.FileName)) {
-                eventLog.WriteEntry(string.Format("Error loading configuration file {0}", config.FileName),
-                    EventLogEntryType.Error, EventId.ConfigFileLoadError);
-                return false;
-            }
-            config.LoadFile();
-
-            if (!config.IsValid()) {
-                if (config.MainSection.ScheduleTime > (new TimeSpan(23, 59, 59))) {
-                    eventLog.WriteEntry("Invalid scheduled time, must be a valid time of day",
-                        EventLogEntryType.Error, EventId.ConfigFileInvalidSchedule);
-                }
-
-                if (config.FilelistSection != null) {
-                    if (!Directory.Exists(config.FilelistSection.DirPath)) {
-                        eventLog.WriteEntry(string.Format(
-                            "The specified path for file-list file \"{0}\" doesn't exist", config.FilelistSection.DirPath ?? string.Empty),
-                            EventLogEntryType.Error, EventId.ConfigFileInvalidPath);
-                    }
-                    else if (!config.FilelistSection.HasPermissionFileListPath()) {
-                        eventLog.WriteEntry(string.Format(
-                            "The current user doesn't has write permission on specified file-list file \"{0}\"",
-                            config.FilelistSection.DirPath),
-                            EventLogEntryType.Error, EventId.ConfigFilePathPermissionError);
-                    }
-
-                    if (config.FilelistSection.GetEncodingInstance() == null) {
-                        eventLog.WriteEntry(string.Format(
-                            "The specified text enconding for file-list file \"{0}\" is invalid", config.FilelistSection.Encoding),
-                            EventLogEntryType.Error, EventId.ConfigFileInvalidEncoding);
-                    }
-                }
-
-                if (config.PathCount < 1) {
-                    eventLog.WriteEntry("At least one path must be defined",
-                        EventLogEntryType.Error, EventId.ConfigFileZeroPath);
-                }
-
-                for (int i = 0; i < config.PathCount; i++) {
-                    Configuration.ConfigPathSection item = config.GetPath(i);
-
-                    if (!Directory.Exists(item.DirPath)) {
-                        eventLog.WriteEntry(string.Format("The specified source path \"{0}\" doesn't exist", item.DirPath ?? string.Empty),
-                            EventLogEntryType.Error, EventId.ConfigFileInvalidPath);
-                    }
-                    else if (!item.HasPermissionSourcePath()) {
-                        eventLog.WriteEntry(string.Format(
-                            "The current user doesn't has read permission on specified source path \"{0}\"", item.DirPath),
-                            EventLogEntryType.Error, EventId.ConfigFilePathPermissionError);
-                    }
-                }
-
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool ValidateConfigFile(string file)
-        {
-            try {
-                SklLib.IO.IniFileReader reader = new SklLib.IO.IniFileReader(file);
-                reader.ReloadFile();
-            }
-            catch (FileNotFoundException) { return false; }
-            catch (FileLoadException) { return false; }
-            catch (Exception ex) {
-                eventLog.WriteEntry(ex.CreateDump(),
-                    EventLogEntryType.Error, EventId.UnexpectedError);
-                stopEvent.Set();
-                return false;
-            }
-            return true;
-            // return reader.IsValidFile();
         }
     }
 }
