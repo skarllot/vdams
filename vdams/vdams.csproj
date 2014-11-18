@@ -91,8 +91,12 @@
     <Compile Include="EventId.cs" />
     <Compile Include="IO\DelayedFileDelete.cs" />
     <Compile Include="IO\DirectoryInfoExtension.cs" />
+    <Compile Include="IO\DirectoryListing.cs" />
     <Compile Include="IO\IOExceptionExtension.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Monitoring\CameraInfo.cs" />
+    <Compile Include="Monitoring\DirectoryMonitor.cs" />
+    <Compile Include="Monitoring\MonitorTransaction.cs" />
     <Compile Include="Service.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -106,9 +110,7 @@
     <None Include="Examples\config.yml" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Monitoring\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent />

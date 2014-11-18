@@ -43,6 +43,13 @@ namespace vdams.Configuration
             }
         }
 
+        public IEnumerable<Monitoring.DirectoryMonitor> GetDirectoryMonitors()
+        {
+            foreach (var item in Monitor) {
+                yield return new Monitoring.DirectoryMonitor(item);
+            }
+        }
+
         public static Configuration LoadFile(string file)
         {
             Configuration result = null;

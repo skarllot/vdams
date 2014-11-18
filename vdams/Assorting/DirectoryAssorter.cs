@@ -36,11 +36,11 @@ namespace vdams.Assorting
         const string FILELIST_REGEX_EXPRESSION = @"^([1-9][0-9]{3})-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1])[.]txt$";
         const string FILELIST_LATEST_NAME = "latest.txt";
         static readonly Regex FILELIST_REGEX = new Regex(FILELIST_REGEX_EXPRESSION, RegexOptions.Compiled);
-        Configuration.Assort cfgPath;
+        Configuration.Assort cfgAssort;
 
-        public DirectoryAssorter(Configuration.Assort cfgPath)
+        public DirectoryAssorter(Configuration.Assort cfgAssort)
         {
-            this.cfgPath = cfgPath;
+            this.cfgAssort = cfgAssort;
         }
 
         public static AssortTransaction BeginTransaction(Configuration.FileList cfgFilelist, int depth)
@@ -69,28 +69,28 @@ namespace vdams.Assorting
                 if (!transaction.IsRunning)
                     throw new InvalidOperationException("No assorting transaction is running");
 
-                if (!cfgPath.IsValid()) {
-                    MainClass.Logger.WriteEntry(string.Format("The path '{0}' becomes invalid", cfgPath.Target.DirPath),
+                if (!cfgAssort.IsValid()) {
+                    MainClass.Logger.WriteEntry(string.Format("The path '{0}' becomes invalid", cfgAssort.Target.DirPath),
                                 System.Diagnostics.EventLogEntryType.Error, EventId.AssortPathValidationError);
                     return false;
                 }
 
                 var logTransaction = MainClass.Logger.BeginWriteEntry();
-                logTransaction.AppendLine(string.Format("Initializing assorting to '{0}'", cfgPath.Target.DirPath));
+                logTransaction.AppendLine(string.Format("Initializing assorting to '{0}'", cfgAssort.Target.DirPath));
 
-                IList<string> fileList = GetFileList(cfgPath.Target.DirPath);
-                logTransaction.AppendLine(string.Format("Found {0} total files", fileList.Count));
+                IEnumerable<string> fileList = DirectoryListing.GetFiles(cfgAssort.Target.DirPath);
+                logTransaction.AppendLine(string.Format("Found {0} total files", fileList.Count()));
 
                 // If a file date format was not defined into configuration then assort files based on modification date;
                 // If not, assort based on file name.
-                bool isFileDateFormatDefined = !string.IsNullOrWhiteSpace(cfgPath.FileDateFormat);
+                bool isFileDateFormatDefined = !string.IsNullOrWhiteSpace(cfgAssort.FileDateFormat);
 
                 int counter = 1;
                 while (counter <= transaction.DateDepth) {
                     DateTime dt = DateTime.Today.AddDays(-1 * counter);
                     List<string> pickedList = new List<string>();
                     long totalBytes = 0;
-                    string strDt = dt.ToString(cfgPath.FileDateFormat);
+                    string strDt = dt.ToString(cfgAssort.FileDateFormat);
 
                     logTransaction.AppendLine(string.Format("Looking for file modified on {0}", dt.ToShortDateString()));
                     IEnumerable<FileInfo> selectedFiles;
@@ -131,7 +131,6 @@ namespace vdams.Assorting
                     logTransaction.AppendLine(string.Format("Assort of {0} ended", dt.ToShortDateString()));
                     counter++;
                 }
-                fileList.Clear();
                 fileList = null;
 
                 logTransaction.EntryType = System.Diagnostics.EventLogEntryType.Information;
@@ -164,26 +163,6 @@ namespace vdams.Assorting
 
                 transaction.Terminate();
             }
-        }
-
-        private static IList<string> GetFileList(string path)
-        {
-            List<string> fileList = new List<string>();
-            Action<string, IList<string>> recursiveGetFileList = null;
-
-            recursiveGetFileList = delegate(string p, IList<string> files) {
-                try {
-                    Directory.GetFiles(p)
-                        .ForEach(s => files.Add(s));
-
-                    Directory.GetDirectories(p)
-                        .ForEach(s => recursiveGetFileList(s, files));
-                }
-                catch (UnauthorizedAccessException) { }
-            };
-
-            recursiveGetFileList(path, fileList);
-            return fileList;
         }
     }
 }

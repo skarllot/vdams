@@ -170,6 +170,25 @@ namespace vdams
             while (!stopEvent.WaitOne(0)) {
                 if (config.ScheduleTime.Value.CompareTo(DateTime.Now, TimeFields.HourMinute) == 0
                     || MainClass.DEBUG) {
+                        if (config.Monitor != null) {
+                            var monitorTransaction = Monitoring.DirectoryMonitor.BeginTransaction();
+                            foreach (Monitoring.DirectoryMonitor item in config.GetDirectoryMonitors()) {
+                                try {
+                                    item.CollectInfo(monitorTransaction);
+                                }
+                                catch (Exception ex) {
+                                    eventLog.WriteEntry(ex.CreateDump(),
+                                        EventLogEntryType.Error, EventId.UnexpectedError);
+                                    stopEvent.Set();
+                                    return;
+                                }
+
+                                if (stopEvent.WaitOne(0))
+                                    break;
+                            }
+                            Monitoring.DirectoryMonitor.EndTransaction(monitorTransaction);
+                        }
+
                         if (config.Assort != null) {
                             var assortTransaction = Assorting.DirectoryAssorter.BeginTransaction(
                                 config.FileList, config.DateDepth);
