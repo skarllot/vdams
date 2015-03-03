@@ -20,6 +20,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Linq;
 
 namespace vdams
 {
@@ -152,9 +153,11 @@ namespace vdams
             stopEvent.Reset();
             string cfgpath = (string)obj;
 
-            Configuration.Configuration config = Configuration.Configuration.LoadFile(cfgpath);
-            if (config == null) {
-                eventLog.WriteEntry(string.Format("Error loading configuration file {0}", cfgpath),
+            Configuration.Configuration config;
+            try { config = Configuration.Configuration.LoadFile(cfgpath); }
+            catch (Exception e) {
+                eventLog.WriteEntry(string.Format(
+                    "Error loading configuration file {0}\n\nDetail: {1}", cfgpath, e.Message),
                     EventLogEntryType.Error, EventId.ConfigFileLoadError);
                 stopEvent.Set();
                 return;
@@ -162,52 +165,51 @@ namespace vdams
             var transaction = eventLog.BeginWriteEntry();
             transaction.EntryType = EventLogEntryType.Error;
             transaction.EventLogId = EventId.ConfigFileInvalid;
-            if (!config.Validate(arg => transaction.AppendLine(arg.Message)))
+            if (!config.Validate(arg => transaction.AppendLine(arg.Message))) {
                 transaction.Commit();
+                return;
+            }
             else
                 transaction.Rollback();
 
             while (!stopEvent.WaitOne(0)) {
-                if (config.ScheduleTime.Value.CompareTo(DateTime.Now, TimeFields.HourMinute) == 0
+                if (config.FileList.ScheduleTime.Value.CompareTo(DateTime.Now, TimeFields.HourMinute) == 0
                     || MainClass.DEBUG) {
-                        if (config.Monitor != null) {
-                            var monitorTransaction = Monitoring.DirectoryMonitor.BeginTransaction();
-                            foreach (Monitoring.DirectoryMonitor item in config.GetDirectoryMonitors()) {
-                                try {
-                                    item.CollectInfo(monitorTransaction);
-                                }
-                                catch (Exception ex) {
-                                    eventLog.WriteEntry(ex.CreateDump(),
-                                        EventLogEntryType.Error, EventId.UnexpectedError);
-                                    stopEvent.Set();
-                                    return;
-                                }
+                    var assorters = config.GetDirectoryAssorters();
+                    var monitors = config.GetDirectoryMonitors();
+                    var monitorTransaction = Monitoring.DirectoryMonitor.BeginTransaction();
+                    var assortTransaction = Assorting.DirectoryAssorter.BeginTransaction(
+                        config.FileList);
 
-                                if (stopEvent.WaitOne(0))
-                                    break;
+                    foreach (var itemTarget in config.GetTargets()) {
+                        foreach (var m in monitors.Where(a => a.Target == itemTarget.Name)) {
+                            try { m.CollectInfo(monitorTransaction, itemTarget); }
+                            catch (Exception ex) {
+                                eventLog.WriteEntry(ex.CreateDump(),
+                                    EventLogEntryType.Error, EventId.UnexpectedError);
+                                stopEvent.Set();
+                                return;
                             }
-                            Monitoring.DirectoryMonitor.EndTransaction(monitorTransaction);
+
+                            if (stopEvent.WaitOne(0))
+                                break;
                         }
 
-                        if (config.Assort != null) {
-                            var assortTransaction = Assorting.DirectoryAssorter.BeginTransaction(
-                                config.FileList, config.DateDepth);
-                            foreach (Assorting.DirectoryAssorter item in config.GetDirectoryAssorters()) {
-                                try {
-                                    item.Assort(assortTransaction);
-                                }
-                                catch (Exception ex) {
-                                    eventLog.WriteEntry(ex.CreateDump(),
-                                        EventLogEntryType.Error, EventId.UnexpectedError);
-                                    stopEvent.Set();
-                                    return;
-                                }
-
-                                if (stopEvent.WaitOne(0))
-                                    break;
+                        foreach (var a in assorters.Where(b => b.Target == itemTarget.Name)) {
+                            try { a.Assort(assortTransaction, itemTarget); }
+                            catch (Exception ex) {
+                                eventLog.WriteEntry(ex.CreateDump(),
+                                    EventLogEntryType.Error, EventId.UnexpectedError);
+                                stopEvent.Set();
+                                return;
                             }
-                            Assorting.DirectoryAssorter.EndTransaction(assortTransaction);
+
+                            if (stopEvent.WaitOne(0))
+                                break;
                         }
+                    }
+                    Assorting.DirectoryAssorter.EndTransaction(assortTransaction);
+                    Monitoring.DirectoryMonitor.EndTransaction(monitorTransaction);
                 }
 
                 if (reloadEvent.WaitOne(0)) {

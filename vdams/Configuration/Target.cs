@@ -19,17 +19,32 @@
 using SklLib;
 using SklLib.IO;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Security.Permissions;
+using System.Text.RegularExpressions;
 using YamlDotNet.Serialization;
 
 namespace vdams.Configuration
 {
     class Target : IValidatable
     {
+        public string Name { get; set; }
         [YamlAlias("directory")]
         public string DirPath { get; set; }
+        public string FileDateFormat { get; set; }
+        public string CameraNameRegex { get; set; }
+
+        public Regex GetCameraRegexInstance()
+        {
+            if (string.IsNullOrEmpty(CameraNameRegex))
+                return null;
+
+            Regex result;
+            try { result = new Regex(CameraNameRegex); }
+            catch { return null; }
+
+            return result;
+        }
 
         private bool HasPermissionSourcePath()
         {
@@ -42,6 +57,13 @@ namespace vdams.Configuration
                 throw new ArgumentNullException("action");
 
             bool result = true;
+
+            if (string.IsNullOrWhiteSpace(Name)) {
+                action(new InvalidEventArgs(
+                    "The name of target cannot be null or empty",
+                    "Name", Name));
+                result = false;
+            }
 
             if (DirPath == null) {
                 action(new InvalidEventArgs(
@@ -59,6 +81,27 @@ namespace vdams.Configuration
                 action(new InvalidEventArgs(
                     string.Format("The current user doesn't has read permission on specified target directory '{0}'", DirPath),
                     "DirPath", DirPath));
+                result = false;
+            }
+
+            if (FileDateFormat != null) {
+                try { DateTime.Now.ToString(FileDateFormat); }
+                catch (Exception e) {
+                    if (e is FormatException || e is ArgumentOutOfRangeException) {
+                        action(new InvalidEventArgs(
+                            string.Format("The date format '{0}' defined for file name is invalid", FileDateFormat),
+                            "FileDateFormat", FileDateFormat));
+                        result = false;
+                    }
+                    throw;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(CameraNameRegex)
+                && GetCameraRegexInstance() == null) {
+                action(new InvalidEventArgs(
+                    string.Format("The regular expression '{0}' defined to get camera name is invalid", CameraNameRegex),
+                    "CameraNameRegex", CameraNameRegex));
                 result = false;
             }
 

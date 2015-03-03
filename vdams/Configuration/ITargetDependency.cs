@@ -1,4 +1,4 @@
-﻿// Monitor.cs
+﻿// ITargetDependency.cs
 //
 // Copyright (C) 2014 Fabrício Godoy
 //
@@ -16,31 +16,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using SklLib;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace vdams.Configuration
 {
-    class Monitor : IValidatable, ITargetDependency
+    interface ITargetDependency
     {
-        public string Target { get; set; }
-
-        public bool Validate(Action<InvalidEventArgs> action)
-        {
-            if (action == null)
-                throw new ArgumentNullException("action");
-
-            bool result = true;
-            if (Target == null) {
-                action(new InvalidEventArgs(
-                    "The target directory was not defined for monitoring operation",
-                    "Target", null));
-                result = false;
-            }
-
-            return result;
-        }
+        string Target { get; set; }
     }
 }

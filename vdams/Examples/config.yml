@@ -1,27 +1,30 @@
 ﻿%YAML 1.1
 ---
-scheduleTime: '02:00'
-dateDepth: 1
-
 targets:
-  - &ROOM1
+  - name: ROOM1
     directory: 'D:\Record'
+	fileDateFormat: 'yyyyMMdd'
+	cameraNameRegex: '^[0-9]{4}$'
 
-  - &ROOM2
+  - name: ROOM2
     directory: 'E:\CFTV\Record'
 
 fileList:
   directory: 'D:\Backup'
   encoding: 'UTF-8'
   bom: false
+  scheduleTime: '02:00'
+  dateDepth: 1
+
+monitorCache:
+  directory: 'D:\Monitor'
+  updateInterval: '00:01:30'
 
 assort:
-  - target: *ROOM1
-    fileDateFormat: 'yyyyMMdd'
+  - target: ROOM1
 
-  - target: *ROOM2
+  - target: ROOM2
 
 monitor:
-  - target: *ROOM1
-    cameraNameRegex: '^[0-9]{4}$'
+  - target: ROOM1
 ...

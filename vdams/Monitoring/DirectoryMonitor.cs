@@ -35,12 +35,14 @@ namespace vdams.Monitoring
             this.cfgMonitor = cfgMonitor;
         }
 
+        public string Target { get { return cfgMonitor.Target; } }
+
         public static MonitorTransaction BeginTransaction()
         {
             return new MonitorTransaction();
         }
 
-        public bool CollectInfo(MonitorTransaction transaction)
+        public bool CollectInfo(MonitorTransaction transaction, Targeting target)
         {
             if (transaction == null)
                 throw new ArgumentNullException("transaction");
@@ -49,18 +51,12 @@ namespace vdams.Monitoring
                 if (!transaction.IsRunning)
                     throw new InvalidOperationException("No monitoring transaction is running");
 
-                if (!cfgMonitor.IsValid()) {
-                    MainClass.Logger.WriteEntry(string.Format("The path '{0}' becomes invalid", cfgMonitor.Target.DirPath),
-                                System.Diagnostics.EventLogEntryType.Error, EventId.AssortPathValidationError);
-                    return false;
-                }
-
                 var logTransaction = MainClass.Logger.BeginWriteEntry();
-                logTransaction.AppendLine(string.Format("Initializing monitoring to '{0}'", cfgMonitor.Target.DirPath));
+                logTransaction.AppendLine(string.Format("Initializing monitoring to '{0}'", target.DirPath));
 
                 var camDirList =
-                    from a in Directory.GetDirectories(cfgMonitor.Target.DirPath)
-                    let r = cfgMonitor.GetCameraRegexInstance()
+                    from a in Directory.GetDirectories(target.DirPath)
+                    let r = target.GetCameraRegexInstance()
                     let dirInfo = new DirectoryInfo(a)
                     where r.IsMatch(dirInfo.Name)
                     select dirInfo;

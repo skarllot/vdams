@@ -22,10 +22,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace vdams.Configuration
 {
-    class Assort: IValidatable
+    class Assort: IValidatable, ITargetDependency
     {
-        public Target Target { get; set; }
-        public string FileDateFormat { get; set; }
+        public string Target { get; set; }
 
         public bool Validate(Action<InvalidEventArgs> action)
         {
@@ -38,21 +37,6 @@ namespace vdams.Configuration
                     "The target directory was not defined for assorting operation",
                     "Target", null));
                 result = false;
-            }
-            else if (!Target.Validate(action))
-                result = false;
-
-            if (FileDateFormat != null) {
-                try { DateTime.Now.ToString(FileDateFormat); }
-                catch (Exception e) {
-                    if (e is FormatException || e is ArgumentOutOfRangeException) {
-                        action(new InvalidEventArgs(
-                            string.Format("The date format '{0}' defined for file name is invalid", FileDateFormat),
-                            "FileDateFormat", FileDateFormat));
-                        result = false;
-                    }
-                    throw;
-                }
             }
 
             return result;

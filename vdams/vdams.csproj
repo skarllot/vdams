@@ -85,7 +85,9 @@
     <Compile Include="Configuration\Assort.cs" />
     <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="Configuration\FileList.cs" />
+    <Compile Include="Configuration\ITargetDependency.cs" />
     <Compile Include="Configuration\Monitor.cs" />
+    <Compile Include="Configuration\MonitorCache.cs" />
     <Compile Include="Configuration\Target.cs" />
     <Compile Include="EncodingParser.cs" />
     <Compile Include="EventId.cs" />
@@ -100,6 +102,7 @@
     <Compile Include="Service.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Targeting.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="TimeFields.cs" />
     <EmbeddedResource Include="Service.resx">

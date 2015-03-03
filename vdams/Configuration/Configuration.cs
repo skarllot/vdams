@@ -19,7 +19,7 @@
 using SklLib;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -27,14 +27,17 @@ namespace vdams.Configuration
 {
     class Configuration : IValidatable
     {
-        int dateDepth = 1;
-
         public List<Assort> Assort { get; set; }
-        public int DateDepth { get { return dateDepth; } set { dateDepth = value; } }
         public FileList FileList { get; set; }
         public List<Monitor> Monitor { get; set; }
-        public Time? ScheduleTime { get; set; }
         public List<Target> Targets { get; set; }
+
+        public Configuration()
+        {
+            Assort = new List<Assort>();
+            Monitor = new List<Monitor>();
+            Targets = new List<Target>();
+        }
 
         public IEnumerable<Assorting.DirectoryAssorter> GetDirectoryAssorters()
         {
@@ -50,15 +53,24 @@ namespace vdams.Configuration
             }
         }
 
+        public IEnumerable<Targeting> GetTargets()
+        {
+            foreach (var item in Targets) {
+                yield return new Targeting(item);
+            }
+        }
+
         public static Configuration LoadFile(string file)
         {
             Configuration result = null;
             var reader = new System.IO.StreamReader(file, true);
             var deserializer = new Deserializer(namingConvention: new CamelCaseNamingConvention());
             try { result = deserializer.Deserialize<Configuration>(reader); }
-            catch { }
-            reader.Close();
-            reader.Dispose();
+            catch (Exception e) { throw e; }
+            finally {
+                reader.Close();
+                reader.Dispose();
+            }
 
             return result;
         }
@@ -70,6 +82,32 @@ namespace vdams.Configuration
 
             bool result = true;
 
+            if (Targets == null || Targets.Count == 0) {
+                action(new InvalidEventArgs(
+                    "At least one target should be defined",
+                    "Targets", null));
+                result = false;
+            }
+            else {
+                foreach (var item in Targets) {
+                    if (!item.Validate(action))
+                        result = false;
+                }
+
+                var uniqueness =
+                    from a in Targets
+                    group a by a.Name into grp
+                    where grp.Count() > 1
+                    select grp.Key;
+                if (uniqueness.Count() != 0) {
+                    foreach (var item in uniqueness) {
+                        action(new InvalidEventArgs(
+                            string.Format("The target name '{0}' is not unique", item),
+                            "Targets", item));
+                    }
+                    result = false;
+                }
+            }
             if (Assort != null && Assort.Count > 0) {
                 if (FileList == null) {
                     action(new InvalidEventArgs(
@@ -79,7 +117,10 @@ namespace vdams.Configuration
                 }
 
                 foreach (var item in Assort) {
-                    if (!item.IsValid())
+                    if (!item.Validate(action))
+                        result = false;
+
+                    if (!ValidateTarget(item, action))
                         result = false;
                 }
             }
@@ -100,13 +141,24 @@ namespace vdams.Configuration
                 foreach (var item in Monitor) {
                     if (!item.Validate(action))
                         result = false;
+
+                    if (!ValidateTarget(item, action))
+                        result = false;
                 }
             }
 
-            if (ScheduleTime == null) {
+            return result;
+        }
+
+        private bool ValidateTarget(
+            ITargetDependency source,
+            Action<InvalidEventArgs> action)
+        {
+            bool result = true;
+            if (Targets.Count(a => a.Name == source.Target) == 0) {
                 action(new InvalidEventArgs(
-                    "The schedule time is required",
-                    "ScheduleTime", null));
+                    string.Format("The target name '{0}' does not exist", source.Target),
+                    "Target", source.Target));
                 result = false;
             }
 

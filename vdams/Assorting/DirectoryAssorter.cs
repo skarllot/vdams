@@ -43,10 +43,12 @@ namespace vdams.Assorting
             this.cfgAssort = cfgAssort;
         }
 
-        public static AssortTransaction BeginTransaction(Configuration.FileList cfgFilelist, int depth)
+        public string Target { get { return cfgAssort.Target; } }
+
+        public static AssortTransaction BeginTransaction(Configuration.FileList cfgFilelist)
         {
             int counter = 1;
-            while (counter <= depth) {
+            while (counter <= cfgFilelist.DateDepth) {
                 DateTime dt = DateTime.Today.AddDays(-1 * counter);
                 string fileName = Path.Combine(
                     cfgFilelist.DirPath, string.Format(FILELIST_NAME,
@@ -57,10 +59,10 @@ namespace vdams.Assorting
                 counter++;
             }
 
-            return new AssortTransaction(cfgFilelist, depth);
+            return new AssortTransaction(cfgFilelist);
         }
 
-        public bool Assort(AssortTransaction transaction)
+        public bool Assort(AssortTransaction transaction, Targeting target)
         {
             if (transaction == null)
                 throw new ArgumentNullException("transaction");
@@ -69,43 +71,36 @@ namespace vdams.Assorting
                 if (!transaction.IsRunning)
                     throw new InvalidOperationException("No assorting transaction is running");
 
-                if (!cfgAssort.IsValid()) {
-                    MainClass.Logger.WriteEntry(string.Format("The path '{0}' becomes invalid", cfgAssort.Target.DirPath),
-                                System.Diagnostics.EventLogEntryType.Error, EventId.AssortPathValidationError);
-                    return false;
-                }
-
                 var logTransaction = MainClass.Logger.BeginWriteEntry();
-                logTransaction.AppendLine(string.Format("Initializing assorting to '{0}'", cfgAssort.Target.DirPath));
+                logTransaction.AppendLine(string.Format("Initializing assorting to '{0}'", target.DirPath));
 
-                IEnumerable<string> fileList = DirectoryListing.GetFiles(cfgAssort.Target.DirPath);
+                var fileList = target.FileList;
                 logTransaction.AppendLine(string.Format("Found {0} total files", fileList.Count()));
 
                 // If a file date format was not defined into configuration then assort files based on modification date;
                 // If not, assort based on file name.
-                bool isFileDateFormatDefined = !string.IsNullOrWhiteSpace(cfgAssort.FileDateFormat);
+                bool isFileDateFormatDefined = !string.IsNullOrWhiteSpace(target.FileDateFormat);
 
                 int counter = 1;
-                while (counter <= transaction.DateDepth) {
+                while (counter <= transaction.Configuration.DateDepth) {
                     DateTime dt = DateTime.Today.AddDays(-1 * counter);
                     List<string> pickedList = new List<string>();
                     long totalBytes = 0;
-                    string strDt = dt.ToString(cfgAssort.FileDateFormat);
+                    string strDt = dt.ToString(target.FileDateFormat);
 
                     logTransaction.AppendLine(string.Format("Looking for file modified on {0}", dt.ToShortDateString()));
                     IEnumerable<FileInfo> selectedFiles;
                     if (isFileDateFormatDefined) {
                         selectedFiles =
                             from a in fileList
-                            where a.IndexOf(strDt) != -1
-                            select new FileInfo(a);
+                            where a.Name.IndexOf(strDt) != -1
+                            select a;
                     }
                     else {
                         selectedFiles =
                             from a in fileList
-                            let fi = new FileInfo(a)
-                            where fi.LastWriteTime.Date == dt.Date
-                            select fi;
+                            where a.LastWriteTime.Date == dt.Date
+                            select a;
                     }
                     foreach (FileInfo item in selectedFiles) {
                         pickedList.Add(item.FullName);

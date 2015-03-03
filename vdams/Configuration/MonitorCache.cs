@@ -1,4 +1,4 @@
-﻿// FileList.cs
+﻿// MonitorCache.cs
 //
 // Copyright (C) 2014 Fabrício Godoy
 //
@@ -19,36 +19,29 @@
 using SklLib;
 using SklLib.IO;
 using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Permissions;
+using System.Text;
 using YamlDotNet.Serialization;
 
 namespace vdams.Configuration
 {
-    class FileList : IValidatable
+    class MonitorCache : IValidatable
     {
-        int dateDepth = 1;
+        TimeSpan _updateInterval = new TimeSpan(0, 1, 30);
 
-        [YamlAlias("bom")]
-        public bool BOM { get; set; }
         [YamlAlias("directory")]
         public string DirPath { get; set; }
-        public string Encoding { get; set; }
-        public Time? ScheduleTime { get; set; }
-        public int DateDepth { get { return dateDepth; } set { dateDepth = value; } }
+        public TimeSpan UpdateInterval { get { return _updateInterval; } set { _updateInterval = value; } }
 
         public bool HasPermissionDirPath()
         {
             return new FileInfo(DirPath).HasPermission(FileIOPermissionAccess.Write);
         }
 
-        public System.Text.Encoding GetEncodingInstance()
-        {
-            return EncodingParser.GetEncodingInstance(Encoding, BOM);
-        }
-
-        public bool Validate(System.Action<InvalidEventArgs> action)
+        public bool Validate(Action<InvalidEventArgs> action)
         {
             if (action == null)
                 throw new ArgumentNullException("action");
@@ -67,24 +60,10 @@ namespace vdams.Configuration
                     "DirPath", DirPath));
                 result = false;
             }
-            else if (!HasPermissionDirPath()){
+            else if (!HasPermissionDirPath()) {
                 action(new InvalidEventArgs(
                     string.Format("The current user doesn't has write permission on specified directory '{0}'", DirPath),
                     "DirPath", DirPath));
-                result = false;
-            }
-
-            if (GetEncodingInstance() == null) {
-                action(new InvalidEventArgs(
-                    string.Format("The specified encoding '{0}' for file-list file is invalid", Encoding ?? string.Empty),
-                    "Encoding", Encoding));
-                result = false;
-            }
-
-            if (ScheduleTime == null) {
-                action(new InvalidEventArgs(
-                    "The schedule time is required",
-                    "ScheduleTime", null));
                 result = false;
             }
 
